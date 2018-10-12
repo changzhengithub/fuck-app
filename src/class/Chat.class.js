@@ -36,6 +36,7 @@ export default class Chat {
         // if (window.app.$store.state.chat.target.id === message.from) {
         //   window.app.$store.commit('saveMessage', message)
         // } else {}
+        console.log(message)
         window.app.$store.commit('saveMessage', message)
       },
       onsessions: sessions => {
@@ -52,6 +53,10 @@ export default class Chat {
       },
       onupdatesysmsg: updattesysmsg => {
         console.log(updattesysmsg)
+      },
+      onfriends: friends => {
+        console.log(friends)
+        window.app.$store.commit('saveFriends', friends)
       },
       debug: false
     }
@@ -207,6 +212,7 @@ export default class Chat {
       scene: 'p2p',
       to: account,
       text: content,
+      isHistoryable: true,
       done: (error, msg) => {
         if (error) return operation
         if (operation.successCallback) operation.successCallback(msg)
@@ -216,12 +222,12 @@ export default class Chat {
     return operation
   }
 
-  static sendFile (fileInput) {
+  static sendImage (account, fileInput) {
     let operation = new Operation()
     this.refresh()
     this.nim.sendFile({
       scene: 'p2p',
-      to: 'account',
+      to: account,
       type: 'image',
       fileInput: fileInput,
       done: (error, msg) => {
@@ -232,17 +238,38 @@ export default class Chat {
     })
     return operation
   }
+  // {"type":8,"data":{"money":"500.00","title":"向你打个借条","id":"201803031402008552","type":"jt"}}
+  // {"type":8,"data":{"money":"10.00","title":"向你打个欠条","id":"201803061627558086","type":"qt"}}
+  // {"type":8,"data":{"money":"常彬彬的信用报告","title":"常彬彬的信用报告","id":"13955131374","type":"xybg"}}
+  // {"type":8,"data":{"money":"https:\/\/nim.nosdn.127.net\/NTE3Mjg2NQ==\/bmltYV8xNTQ4NjA2ODA3XzE1MjYyNzY3ODU4NDdfYzNjZjhhY2ItZWFlYS00MDE5LThkZDUtNzE3NzU4ZWY5Yjdl","title":"陈庆105","id":"100100105","type":"mp"}}
+  // {"data":{"money":"10","type":"zz"},"type":7}
 
-  static createMainIOU (account, content) {
+  /**
+   * 信用报告
+   * @param {json} content exemple
+   * {
+   *  target: '对方账号'
+   *  id: '信用报告账号'
+   *  title: '信用报告提示'
+   *  money: '信用报告内容'
+   * }
+  */
+  static creditReport (content) {
     let operation = new Operation()
     this.refresh()
     this.nim.sendCustomMsg({
       scene: 'p2p',
-      to: account,
-      text: JSON.stringify({
-        type: 1,
-        data: {}
+      to: content.target,
+      content: JSON.stringify({
+        type: 8,
+        data: {
+          money: content.money,
+          id: content.id,
+          title: content.title,
+          type: 'xybg'
+        }
       }),
+      isHistoryable: true,
       done: (error, msg) => {
         if (error) return operation
         if (operation.successCallback) operation.successCallback(msg)
@@ -252,16 +279,97 @@ export default class Chat {
     return operation
   }
 
+  /**
+   * 转账
+   * @param {json} content exemple
+   * {
+   *  target: '对方账号'
+   *  title: '转账提示'
+   *  money: '转账金额'
+   * }
+  */
+  static transferAccount (content) {
+    let operation = new Operation()
+    this.refresh()
+    this.nim.sendCustomMsg({
+      scene: 'p2p',
+      to: content.target,
+      content: JSON.stringify({
+        type: 7,
+        data: {
+          money: content.money,
+          title: content.title,
+          type: 'zz'
+        }
+      }),
+      isHistoryable: true,
+      done: (error, msg) => {
+        if (error) return operation
+        if (operation.successCallback) operation.successCallback(msg)
+        return operation
+      }
+    })
+    return operation
+  }
+
+  /**
+   * 打借条
+   * @param {json} content exemple
+   * {
+   *  target: '对方账号'
+   *  id: '借条账号'
+   *  title: '借条提示'
+   *  money: '借条金额'
+   * }
+  */
+  static createMainIOU (content) {
+    let operation = new Operation()
+    this.refresh()
+    this.nim.sendCustomMsg({
+      scene: 'p2p',
+      to: content.target,
+      content: JSON.stringify({
+        type: 8,
+        data: {
+          money: content.money,
+          id: content.id,
+          title: content.title,
+          type: 'jt'
+        }
+      }),
+      isHistoryable: true,
+      done: (error, msg) => {
+        if (error) return operation
+        if (operation.successCallback) operation.successCallback(msg)
+        return operation
+      }
+    })
+    return operation
+  }
+
+  /**
+  * 打欠条
+  * @param {json} account exemple
+  * {
+  *  target: '对方账号'
+  *  id: '欠条账号'
+  *  title: '欠条提示'
+  *  money'欠条金额'
+  * }
+  */
   static createAttachmentIOU (account, content) {
     let operation = new Operation()
     this.refresh()
     this.nim.sendCustomMsg({
       scene: 'p2p',
-      to: account,
+      to: content.target,
       text: JSON.stringify({
-        type: 1,
-        data: {}
+        money: content.money,
+        id: content.id,
+        title: content.title,
+        type: 'qt'
       }),
+      isHistoryable: true,
       done: (error, msg) => {
         if (error) return operation
         if (operation.successCallback) operation.successCallback(msg)
@@ -271,13 +379,53 @@ export default class Chat {
     return operation
   }
 
+  /**
+   * 发送名片
+   * @param { json } content example
+   * {
+   *  target: '对方账号'
+   *  id: '名片账号'
+   *  title: '名片姓名'
+   *  money'名片头像'
+   * }
+   */
+  static sendBusinessCard (content) {
+    let operation = new Operation()
+    this.refresh()
+    this.nim.sendCustomMsg({
+      scene: 'p2p',
+      to: content.target,
+      content: JSON.stringify({
+        type: 8,
+        data: {
+          id: content.id,
+          title: content.title,
+          money: content.money,
+          type: 'mp'
+        }
+      }),
+      isHistoryable: true,
+      done: (error, msg) => {
+        if (error) return operation
+        if (operation.successCallback) operation.successCallback(msg)
+        return operation
+      }
+    })
+    return operation
+  }
+
+  /**
+   * 获取云端历史记录
+   * @param {*} account
+   * account: 聊天对象, 账号
+   */
   static historyMsgs (account) {
     let operation = new Operation()
     this.refresh()
     this.nim.getHistoryMsgs({
       scene: 'p2p',
       to: account,
-      reverse: true,
+      limit: 20,
       done: (error, msg) => {
         if (error) return operation
         if (operation.successCallback) operation.successCallback(msg)
@@ -287,27 +435,12 @@ export default class Chat {
     return operation
   }
 
-  static localSessions (lastSessionId) {
-    let operation = new Operation()
-    this.refresh()
-    this.nim.getLocalSessions({
-      lastSessionId: lastSessionId,
-      limit: 100,
-      done: (error, msg) => {
-        if (error) return operation
-        if (operation.successCallback) operation.successCallback(msg)
-        return operation
-      }
-    })
-    return operation
-  }
-
-  static sessionUnread (sessionId) {
-    this.refresh()
-    this.nim.resetSessionUnread(sessionId)
-  }
-
-  static deleteLocalSession (sessionId) {
+  /**
+   * 删除会话
+   * @param {*} sessionId
+   * sessionId: 会话id或者会话id数组
+   */
+  static deleteSessions (sessionId) {
     let operation = new Operation()
     this.refresh()
     this.nim.deleteLocalSession({
@@ -320,16 +453,27 @@ export default class Chat {
     })
     return operation
   }
-}
 
+  /**
+   * 消息未读数
+   * @param {string} sessionId
+   * 会话id
+   */
+  static sessionUnread (sessionId) {
+    this.refresh()
+    this.nim.resetSessionUnread(sessionId)
+  }
+}
 class Operation {
   successCallback = null
   failCallback = null
   success (callback) {
     this.successCallback = callback
+    return this
   }
 
   fail (callback) {
     this.failCallback = callback
+    return this
   }
 }

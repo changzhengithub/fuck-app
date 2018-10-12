@@ -4,6 +4,8 @@ export default class Router {
   static mine = ['credit', 'settings']
   static borrow = ['wanna-borrow']
   static complain = ['complain']
+  static messages = ['chat']
+  static chat = ['wanna-borrow']
   static mark () {
     window.app.$store.commit('saveOrigin', window.app._route)
   }
@@ -43,12 +45,17 @@ export default class Router {
     }
     if (this.borrow.includes(page.name)) {
       params = {
-        name: 'index'
+        name: window.app.$store.state.origin.name
       }
     }
     if (this.complain.includes(page.name)) {
       params = {
         name: 'index'
+      }
+    }
+    if (this.messages.includes(page.name)) {
+      params = {
+        name: 'messages'
       }
     }
     if (params) {

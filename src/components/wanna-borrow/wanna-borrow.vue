@@ -96,6 +96,7 @@
 <script>
 import PublishComponent from './publish/publish.vue'
 // include dependence
+import Chat from '../../class/Chat.class.js'
 import Check from '../../class/Check.class.js'
 import Error from '../../class/Error.class.js'
 import Http from '../../class/Http.class.js'
@@ -266,6 +267,13 @@ export default {
         Error.show('请同意协议')
         return
       }
+      let content = {
+        content: Chat.target.id,
+        money: 'content.money',
+        id: 'content.id',
+        title: 'content.title'
+      }
+      Chat.createMainIOU(content).success(data => {})
       Http.send({
         url: 'Create',
         data: {

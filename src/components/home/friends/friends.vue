@@ -20,7 +20,7 @@
       <p class="font-30 color-black">新的好友</p>
     </div>
     <ul class="friends-list padding-horizontal-30 bg-white">
-      <li class="list-item border-bottom-1" v-for="(item, index) in friends" :key="index" @click="gotoPage('personal-info', item.account)">
+      <li class="list-item border-bottom-1" v-for="(item, index) in friends" :key="index" @click="gotoPersonalInfo('personal-info', item)">
         <div class="item-portrait">
           <img :src="item.avatar">
         </div>
@@ -43,6 +43,7 @@
 // include dependence
 import Chat from '../../../class/Chat.class.js'
 import Router from '../../../class/Router.class.js'
+import Storage from '../../../class/Storage.class.js'
 import TitleComponent from '../../../module/title/title.vue'
 export default {
   name: 'FriendsComponent',
@@ -85,7 +86,11 @@ export default {
       })
     },
     confirm () {},
-    gotoPage (page, account) {
+    gotoPage (page) {
+      Router.push(page)
+    },
+    gotoPersonalInfo (page, item) {
+      Storage.userInfo = item
       Router.push(page)
     }
   }

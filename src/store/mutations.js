@@ -95,8 +95,8 @@ const mutations = {
   saveWannaInfo (state, wannaInfo) {
     state.wannaInfo = wannaInfo
   },
-  savePersonalInfo (state, personalInfo) {
-    state.personalInfo = personalInfo
+  saveUserInfo (state, userInfo) {
+    state.userInfo = userInfo
   },
   // 保存聊天对象
   saveChatObject (state, chatObject) {
@@ -113,6 +113,22 @@ const mutations = {
   // 保存当前会话
   saveUpdatesession (state, updatesession) {
     state.updatesession = updatesession
+  },
+  // 保存好友列表
+  saveFriends (state, friends) {
+    state.friends = friends
+  },
+  // 保存个人名片信息
+  saveBusinessCard (state, businessCard) {
+    state.businessCard = businessCard
+  },
+  // 保存当前聊天对象消息列表
+  saveMessages (state, messages) {
+    state.messages = messages
+  },
+  // 保存聊天对象会话id
+  saveSessionId (state, sessionId) {
+    state.sessionId = sessionId
   }
 }
 export default mutations

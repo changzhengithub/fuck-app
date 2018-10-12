@@ -17,10 +17,10 @@ module.exports = {
     'Hasten': false,
     'Http': false,
     'Mock': false,
-    'Replace': false,
+    'Replace': true,
     'Router': true,
     'Status': false,
-    'Storage': false,
+    'Storage': true,
     'Time': false,
     'Type': false,
     'Url': false

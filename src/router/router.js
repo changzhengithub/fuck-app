@@ -22,6 +22,7 @@ const CreditComponent = () => import(/* webpackChunkName: 'credit' */ '../compon
 const CreditIdentityComponent = () => import(/* webpackChunkName: 'credit-identity' */ '../components/credit-identity/credit-identity.vue')
 const CreditQueryComponent = () => import(/* webpackChunkName: 'credit-query' */ '../components/credit-query/credit-query.vue')
 const CreditQueryResultComponent = () => import(/* webpackChunkName: 'credit-query-result' */ '../components/credit-query-result/credit-query-result.vue')
+const CreditReportComponent = () => import(/* webpackChunkName: 'credit-report' */ '../components/credit-report/credit-report.vue')
 const EmpowerComponent = () => import(/* webpackChunkName: 'empower' */ '../components/empower/empower.vue')
 const ExhibitionStatusComponent = () => import(/* webpackChunkName: 'exhibition-status' */ '../components/exhibition-status/exhibition-status.vue')
 const ExhibitonPeriodComponent = () => import(/* webpackChunkName: 'exhibiton-period' */ '../components/exhibiton-period/exhibiton-period.vue')
@@ -56,6 +57,7 @@ const PurposeComponent = () => import(/* webpackChunkName: 'purpose' */ '../comp
 const RechargeComponent = () => import(/* webpackChunkName: 'recharge' */ '../components/recharge/recharge.vue')
 const SearchFriendComponent = () => import(/* webpackChunkName: 'search-friend' */ '../components/search-friend/search-friend.vue')
 const SelectBankCardComponent = () => import(/* webpackChunkName: 'select-bank-card' */ '../components/select-bank-card/select-bank-card.vue')
+const SelectFriendComponent = () => import(/* webpackChunkName: 'select-friend' */ '../components/select-friend/select-friend.vue')
 const SetPayPasswordComponent = () => import(/* webpackChunkName: 'set-pay-password' */ '../components/set-pay-password/set-pay-password.vue')
 const SettingsComponent = () => import(/* webpackChunkName: 'settings' */ '../components/settings/settings.vue')
 const TransactionsComponent = () => import(/* webpackChunkName: 'transactions' */ '../components/transactions/transactions.vue')
@@ -166,6 +168,11 @@ export default new Router({
       path: '/credit-query-result',
       name: 'credit-query-result',
       component: CreditQueryResultComponent
+    },
+    {
+      path: '/credit-report',
+      name: 'credit-report',
+      component: CreditReportComponent
     },
     {
       path: '/',
@@ -339,6 +346,11 @@ export default new Router({
       path: '/select-bank-card',
       name: 'select-bank-card',
       component: SelectBankCardComponent
+    },
+    {
+      path: '/select-friend',
+      name: 'select-friend',
+      component: SelectFriendComponent
     },
     {
       path: '/set-pay-password',

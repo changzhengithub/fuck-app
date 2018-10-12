@@ -1,0 +1,70 @@
+// include module
+@import '../../../../dependencies/sass/_flex.scss';
+@import '../../../../dependencies/sass/_unit.scss';
+// current sass
+.send-card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 1000;
+  width: 600 / $unit * $symbol;
+  transform: translateX(-50%) translateY(-30%);
+  border-radius: 9 / $unit * $symbol;
+  .card-title {
+    @include vertical_center();
+    width: 100%;
+    height: 45 / $unit * $symbol;
+    border-top-left-radius: 9 / $unit * $symbol;
+    border-top-right-radius: 9 / $unit * $symbol;
+  }
+  .content-item {
+    @include vertical_center();
+    width: 100%;
+    height: 120 / $unit * $symbol;
+    padding: {
+      left: 60 / $unit * $symbol;
+      right: 60 / $unit * $symbol;
+    }
+    .item-portrait {
+      width: 78 / $unit * $symbol;
+      height: 78 / $unit * $symbol;
+      border-radius: 12 / $unit * $symbol;
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 12 / $unit * $symbol;
+      }
+    }
+    .item-detail {
+      flex: 1;
+      p:first-of-type {
+        padding: {
+          bottom: 9 / $unit * $symbol;
+        }
+      }
+    }
+  }
+  .card-buttons {
+    @include vertical_center_horizontal_between();
+    width: 100%;
+    height: 87 / $unit * $symbol;
+    button {
+      width: 50%;
+      height: 100%;
+      background: transparent;
+    }
+    button:first-of-type {
+      position: relative;
+      &::after {
+        position: absolute;
+        right: 0;
+        top: 0;
+        display: block;
+        content: '';
+        width: 1px;
+        height: 100%;
+        background-color: #ddd;
+      }
+    }
+  }
+}

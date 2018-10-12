@@ -29,10 +29,14 @@ const state = {
   sdk: false,
   wannaInfo: null,
   chat: null,
-  personalInfo: null,
+  userInfo: null,
   chatObject: null,
   message: null,
   sessions: null,
-  updatesession: null
+  updatesession: null,
+  friends: null,
+  businessCard: null,
+  messages: null,
+  sessionId: null
 }
 export default state

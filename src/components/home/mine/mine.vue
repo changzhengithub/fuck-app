@@ -3,7 +3,7 @@
   <section class="mine">
     <div class="mine-information padding-horizontal-24 margin-bottom-21">
       <div class="information-detail padding-vertical-15">
-        <div class="detail-portrait" @click="target('personal-info')">
+        <div class="detail-portrait" @click="gotoPage('personal-info')">
           <img :src="personalInfo.avatar">
         </div>
         <div class="detail-content">
@@ -12,11 +12,11 @@
         </div>
       </div>
       <div class="information-operation">
-        <p class="operation-item" @click="target('news')">
+        <p class="operation-item" @click="gotoPage('news')">
           <i class="iconfont icon-xiaoxi font-30 margin-right-12"></i>
           <span class="font-27">消息</span>
         </p>
-        <p class="operation-item" @click="target('settings')">
+        <p class="operation-item" @click="gotoPage('settings')">
           <i class="iconfont icon-shezhi font-30 margin-right-12"></i>
           <span class="font-27">设置</span>
         </p>
@@ -24,14 +24,14 @@
     </div>
     <div class="mine-balance padding-horizontal-30 margin-bottom-21">
       <div class="balance-count">
-        <p class="count-content" @click="target('account-balance')">
+        <p class="count-content" @click="gotoPage('account-balance')">
           <span class="color-deep-black font-27">我的总资产（元）</span>
           <span class="color-deep-black font-60">{{balance.Balance}}</span>
         </p>
         <i class="iconfont icon-arrow-right color-grey"></i>
       </div>
       <div class="balance-detail">
-        <div class="detail-item border-radius-12" @click="target('borrow-list')">
+        <div class="detail-item border-radius-12" @click="gotoPage('borrow-list')">
           <div class="item-bg">
             <img src="../../../assets/images/borrow-detail.png">
           </div>
@@ -40,7 +40,7 @@
             <p class="font-36 color-white">{{balance.BorrowAmount}}</p>
           </div>
         </div>
-        <div class="detail-item border-radius-12" @click="target('lend-list')">
+        <div class="detail-item border-radius-12" @click="gotoPage('lend-list')">
           <div class="item-bg">
             <img src="../../../assets/images/lend-detail.png">
           </div>
@@ -52,7 +52,7 @@
       </div>
     </div>
     <div class="mine-billboard-list bg-white">
-      <BillboardComponent class="list-item padding-right-30" :billboard="item" v-for="(item, index) in billboard" :key="index" @OPERATION_EVENT="target"></BillboardComponent>
+      <BillboardComponent class="list-item padding-right-30" :billboard="item" v-for="(item, index) in billboard" :key="index" @OPERATION_EVENT="gotoPage"></BillboardComponent>
     </div>
     <!-- <TabComponent></TabComponent> -->
   </section>
@@ -130,13 +130,10 @@ export default {
     this.init()
   },
   methods: {
-    target (page) {
-      Router.push(page)
-    },
     init () {
       Chat.getUserInfo(Storage.chat.id).success(data => {
         this.personalInfo = data
-        Storage.personalInfo = data
+        Storage.userInfo = data
       })
       Http.send({
         url: 'PersonalCenter',
@@ -153,6 +150,9 @@ export default {
           message: 'xxxxxx'
         }
       })
+    },
+    gotoPage (page) {
+      Router.push(page)
     }
   }
 }

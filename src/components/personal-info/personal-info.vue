@@ -61,9 +61,9 @@
               <i class="iconfont icon-cong"></i>
             </li>
           </ul>
-          <div class="home-chat padding-horizontal-30">
+          <div class="home-chat padding-horizontal-30" v-if="isMine">
             <div class="chat-send">
-              <button class="send-btn bg-blue" @click="gotoPage('chat')">
+              <button class="send-btn bg-blue" @click="gotoChat('chat')">
                 <div class="font-30 color-white">发起聊天</div>
               </button>
             </div>
@@ -154,8 +154,8 @@
 <script>
 import MoreComponent from './more/more.vue'
 // include dependence
+import Chat from '../../class/Chat.class.js'
 import Http from '../../class/Http.class.js'
-import Replace from '../../class/Replace.class.js'
 import Router from '../../class/Router.class.js'
 import Storage from '../../class/Storage.class.js'
 import ModalComponent from '../../module/modal/modal.vue'
@@ -169,7 +169,8 @@ export default {
       personalInfo: {},
       transferInfo: null,
       tabSwitchShow: false,
-      modalShow: false
+      modalShow: false,
+      isMine: false
       // start params
       // end params
     }
@@ -181,6 +182,7 @@ export default {
   },
   created () {
     this.init()
+    this.getPersonalInfo()
   },
   methods: {
     init () {
@@ -197,12 +199,17 @@ export default {
       }).fail(data => {
       })
     },
-    formatData (data) {
-      var info = data.MemberInfo
-      if (Storage.personalInfo) {
-        this.personalInfo = Storage.personalInfo
-        this.personalInfo.account = this.personalInfo.account === Storage.chat.id ? this.personalInfo.account : Replace.mask(this.personalInfo.account, 3, 4, '*')
+    getPersonalInfo () {
+      console.log(Storage.userInfo)
+      if (!Storage.userInfo) return
+      this.personalInfo = Storage.userInfo
+      // this.personalInfo.account = this.personalInfo.account === Storage.chat.id ? this.personalInfo.account : Replace.mask(this.personalInfo.account, 3, 4, '*')
+      if (this.personalInfo.account !== Storage.chat.id) {
+        this.isMine = true
       }
+    },
+    formatData (data) {
+      let info = data.MemberInfo
       if (!info.OverdueCount) {
         data.MemberInfo.OverdueCount = '无逾期'
       } else {
@@ -246,6 +253,13 @@ export default {
       this.modalShow = false
     },
     gotoPage (page) {
+      Router.push(page)
+    },
+    gotoChat (page) {
+      Chat.target = {
+        id: Storage.userInfo.account,
+        portrait: Storage.userInfo.avatar
+      }
       Router.push(page)
     }
   }

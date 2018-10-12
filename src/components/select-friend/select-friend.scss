@@ -1,0 +1,37 @@
+// include module
+@import '../../../dependencies/sass/_flex.scss';
+@import '../../../dependencies/sass/_unit.scss';
+// current sass
+.select-friend {
+  @include vertical_direction();
+  width: 100vw;
+  height: 100vh;
+  .friend-content {
+    flex: 1;
+    width: 100%;
+    overflow: auto;
+    .content-item {
+      @include vertical_center();
+      width: 100%;
+      height: 120 / $unit * $symbol;
+      .item-portrait {
+        width: 87 / $unit * $symbol;
+        height: 87 / $unit * $symbol;
+        border-radius: 12 / $unit * $symbol;
+        img {
+          width: 100%;
+          height: 100%;
+          border-radius: 12 / $unit * $symbol;
+        }
+      }
+      .item-detail {
+        flex: 1;
+        p:first-of-type {
+          padding: {
+            bottom: 9 / $unit * $symbol;
+          }
+        }
+      }
+    }
+  }
+}

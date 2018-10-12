@@ -21,53 +21,53 @@
           <div class="content-img" :class="item.isMine ? 'arrow-white-right' : 'arrow-white-left'" v-else-if="item.type == 'image'">
             <img src="../../assets/images/ivint.png">
           </div>
-          <div class="content-transfer" :class="item.isMine ? 'arrow-red-right' : 'arrow-red-left'" v-else-if="item.type == 'transfer'">
+          <div class="content-transfer" :class="item.isMine ? 'arrow-red-right' : 'arrow-red-left'" v-else-if="item.type == 'zz'">
             <div class="transfer-detail">
               <i class="iconfont icon-transfer"></i>
               <div class="detail-text">
-                <p class="text-price">1000元</p>
+                <p class="text-price">{{item.content.money}}元</p>
                 <p class="text-title">转账</p>
               </div>
             </div>
             <div class="transfer-title">借条大师-转账</div>
           </div>
-          <div class="content-iou" :class="item.isMine ? 'arrow-orange-right' : 'arrow-orange-left'" v-else-if="item.type == 'iou'">
+          <div class="content-iou" :class="item.isMine ? 'arrow-orange-right' : 'arrow-orange-left'" v-else-if="item.type == 'qt'">
             <div class="iou-detail">
               <i class="iconfont icon-qian"></i>
               <div class="detail-text">
-                <p class="text-price">1000元</p>
+                <p class="text-price">{{item.content.money}}元</p>
                 <p class="text-title">像你打了个欠条</p>
               </div>
             </div>
             <div class="iou-title">借条大师-欠条</div>
           </div>
-          <div class="content-receipt" :class="item.isMine ? 'arrow-blue-right' : 'arrow-blue-left'" v-else-if="item.type == 'receipt'">
+          <div class="content-receipt" :class="item.isMine ? 'arrow-blue-right' : 'arrow-blue-left'" v-else-if="item.type == 'jt'">
             <div class="receipt-detail">
               <i class="iconfont icon-jie"></i>
               <div class="detail-text">
-                <p class="text-price">1000元</p>
+                <p class="text-price">{{item.content.money}}元</p>
                 <p class="text-title">像你打了个借条</p>
               </div>
             </div>
             <div class="receipt-title">借条大师-转账</div>
           </div>
-          <div class="content-credit" :class="item.isMine ? 'arrow-white-right' : 'arrow-white-left'" v-else-if="item.type == 'credit'">
+          <div class="content-credit" :class="item.isMine ? 'arrow-white-right' : 'arrow-white-left'" v-else-if="item.type == 'xybg'">
             <div class="credit-detail">
               <svg class="icon" aria-hidden="true">
                 <use xlink:href="#icon-xinyongbaogaofasongtubiao"></use>
               </svg>
-              <p class="detail-title">戴安娜信用报告</p>
+              <p class="detail-title">{{item.content.title}}信用报告</p>
             </div>
             <div class="credit-title">信用报告</div>
           </div>
-          <div class="content-card" :class="item.isMine ? 'arrow-white-right' : 'arrow-white-left'" v-else-if="item.type == 'card'">
+          <div class="content-card" :class="item.isMine ? 'arrow-white-right' : 'arrow-white-left'" v-else-if="item.type == 'mp'">
             <div class="card-detail">
               <div class="detail-img">
-                <img src="http://iph.href.lu/90x90">
+                <img :src="item.content.money">
               </div>
               <div class="detail-text">
-                <p class="text-name">欧冰倩</p>
-                <p class="text-id">借条ID: 12424</p>
+                <p class="text-name">{{item.content.title}}</p>
+                <p class="text-id">借条ID: {{item.content.id}}</p>
               </div>
             </div>
             <div class="card-title">个人名片</div>
@@ -157,31 +157,31 @@
           </div>
           <p class="font-24">语音通话</p>
         </div>
-        <div class="more-item">
+        <div class="more-item" @click="gotoPage('wanna-borrow')">
           <div class="item-icon bg-white">
             <i class="iconfont icon-jie font-51"></i>
           </div>
           <p class="font-24">我要借</p>
         </div>
-        <div class="more-item">
+        <div class="more-item" @click="gotoPage('wanna-borrow')">
           <div class="item-icon bg-white">
             <i class="iconfont icon-qian font-51"></i>
           </div>
           <p class="font-24">打欠条</p>
         </div>
-        <div class="more-item">
+        <div class="more-item" @click="gotoPage('friend-transfer')">
           <div class="item-icon bg-white">
             <i class="iconfont icon-transfer font-51"></i>
           </div>
           <p class="font-24">转账</p>
         </div>
-        <div class="more-item">
+        <div class="more-item" @click="gotoPage('credit-report')">
           <div class="item-icon bg-white">
             <i class="iconfont icon-credit font-51"></i>
           </div>
           <p class="font-24">信用报告</p>
         </div>
-        <div class="more-item">
+        <div class="more-item" @click="gotoPage('select-friend')">
           <div class="item-icon bg-white">
             <i class="iconfont icon-Id font-51"></i>
           </div>
@@ -204,7 +204,9 @@ import CallComponent from './call/call.vue'
 // include dependence
 import Account from '../../class/Account.class.js'
 import Chat from '../../class/Chat.class.js'
+import Replace from '../../class/Replace.class.js'
 import Router from '../../class/Router.class.js'
+import Storage from '../../class/Storage.class.js'
 import ModalComponent from '../../module/modal/modal.vue'
 import TitleComponent from '../../module/title/title.vue'
 export default {
@@ -220,6 +222,7 @@ export default {
       content: '',
       facebread: 'small',
       inputText: '',
+      personalInfo: null,
       inputType: false,
       switchEmojiShow: false,
       switchMoreShow: false,
@@ -244,9 +247,56 @@ export default {
     // include components
   },
   created () {
+    this.init()
     this.getltArr()
   },
   methods: {
+    init () {
+      console.log(Storage.userInfo)
+      if (Storage.userInfo) {
+        this.title.contentText = Storage.userInfo.name
+      }
+      Chat.historyMsgs(Chat.target.id).success(data => {
+        console.log(data)
+        data.msgs = data.msgs.reverse()
+        data.msgs.forEach(message => {
+          let custom = {}
+          let isMine = true
+          let avator = Account.portrait
+          if (message.content) {
+            custom = JSON.parse(message.content)
+          }
+          let content = null
+          switch (message.type) {
+            case 'custom':
+              message.type = custom.data.type
+              // custom.data.id = Replace.mask(custom.data.id, 3, 4, '*')
+              content = custom.data
+              break
+            case 'text':
+              content = message.text
+              break
+            case 'image':
+              content = message.file
+              break
+            case 'audio':
+              content = message.file
+              break
+          }
+          if (Chat.target.id === message.from) {
+            isMine = false
+            avator = Chat.target.portrait
+          }
+          this.messages.push({
+            type: message.type,
+            content: content,
+            isMine: isMine,
+            portrait: avator,
+            mark: false
+          })
+        })
+      })
+    },
     getltArr () {
       for (let i = 1; i < 20; i++) {
         this.ltArr.push('lt0' + (i >= 10 ? i : '0' + i) + '.png')
@@ -287,6 +337,7 @@ export default {
       this.callShow = false
     },
     gotoPage (page) {
+      Storage.origin = page
       Router.push(page)
     },
     videoCall () {},
@@ -310,8 +361,17 @@ export default {
   },
   watch: {
     '$store.state.message': function (message) {
+      let custom = {}
+      if (message.content) {
+        custom = JSON.parse(message.content)
+      }
       let content = null
       switch (message.type) {
+        case 'custom':
+          message.type = custom.data.type
+          custom.data.id = Replace.mask(custom.data.id, 3, 4, '*')
+          content = custom.data
+          break
         case 'text':
           content = message.text
           break
@@ -329,6 +389,8 @@ export default {
         portrait: Chat.target.portrait,
         mark: false
       })
+      console.log(this.messages)
+      Chat.sessionUnread(message.sessionId)
     }
   }
 }

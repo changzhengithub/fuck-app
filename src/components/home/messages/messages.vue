@@ -3,7 +3,7 @@
   <section class="message">
     <div class="message-header font-30 color-white">
       <p>最近消息</p>
-      <i class="iconfont icon-jiahao" @click="openModal"></i>
+      <i class="iconfont icon-jiahao" @click="openMore"></i>
     </div>
     <div class="message-content">
       <div class="content-search padding-horizontal-30 font-24 border-bottom-1" @click="gotoPage('search-friend')">
@@ -13,7 +13,7 @@
         </div>
       </div>
       <ul class="content-list padding-horizontal-30">
-        <li class="list-item border-bottom-1" v-for="(item, index) in sessions" :key="index" @click="gotoChat(index, item.to, item.id, item.portrait)">
+        <li class="list-item border-bottom-1" v-for="(item, index) in sessions" :key="index" @click="gotoChat(item)">
           <div class="item-portrait">
             <img :src="item.portrait">
           </div>
@@ -36,7 +36,8 @@
       </ul>
     </div>
     <ModalComponent v-show="modalShow" @CLOSE_EVENT="closeModal">
-      <MoreComponent></MoreComponent>
+      <MoreComponent v-if="moreShow"></MoreComponent>
+      <DeleteSessionComponent v-if="deleteSessionShow" @DELETE_SESSION_EVENT="deleteSession"></DeleteSessionComponent>
     </ModalComponent>
   </section>
   <!-- e 消息 -->
@@ -44,6 +45,7 @@
 
 <script>
 import MoreComponent from './more/more.vue'
+import DeleteSessionComponent from './delete-session/delete-session.vue'
 // include dependence
 import Chat from '../../../class/Chat.class.js'
 import Router from '../../../class/Router.class.js'
@@ -54,15 +56,19 @@ export default {
   data () {
     return {
       sessions: [],
+      infoArr: [],
       updatesession: {},
-      modalShow: false
+      modalShow: false,
+      moreShow: false,
+      deleteSessionShow: false
       // start params
       // end params
     }
   },
   components: {
     ModalComponent,
-    MoreComponent
+    MoreComponent,
+    DeleteSessionComponent
     // TabComponent
     // include components
   },
@@ -71,32 +77,59 @@ export default {
   },
   methods: {
     init () {
+      let accounts = []
+      let count = -1
       if (!Storage.sessions) return
-      Storage.sessions.forEach(item => {
-        Chat.getUserInfo(item.to).success(data => {
-          item.portrait = data.avatar ? data.avatar : '../../../../static/img/master.png'
-          item.name = data.nick ? data.nick : data.account
-        })
+      this.sessions = Storage.sessions
+      this.sessions.forEach(item => {
+        accounts.push(item.to)
         if (!this.$store.state.updatesession) return
         if (item.to === this.$store.state.updatesession.to) {
           item.lastMsg = this.$store.state.updatesession.lastMsg
           item.unread = this.$store.state.updatesession.unread
         }
       })
-      this.sessions = Storage.sessions
-      console.log(this.sessions)
+      for (let i = 0; i < accounts.length; i += 3) {
+        count++
+        this.getUserInfo(accounts.slice(i, i + 3), count)
+      }
     },
-    openModal () {
+    getUserInfo (accounts, index) {
+      Chat.getUserInfo(accounts).success(data => {
+        data.forEach((item, i) => {
+          this.sessions[index * 3 + i].portrait = item.avatar ? item.avatar : '../../../../static/img/master.png'
+          this.sessions[index * 3 + i].name = item.nick ? item.nick : item.account
+        })
+      })
+    },
+    openMore () {
       this.modalShow = true
+      this.moreShow = true
+    },
+    openDeleteSession () {
+      this.modalShow = true
+      this.deleteSessionShow = true
+    },
+    deleteSession (index) {
+      this.sessions = this.sessions.splice(index, 1)
     },
     closeModal () {
       this.modalShow = false
+      this.deleteSessionShow = false
+      this.moreShow = false
     },
-    gotoChat (index, id, sessionId, portrait) {
-      Chat.sessionUnread(sessionId)
+    gotoChat (item) {
+      Storage.userInfo = {
+        account: item.to,
+        avatar: item.portrait,
+        nick: item.name,
+        updateTime: item.updateTime
+      }
+      Chat.sessionUnread(item.id)
+      Storage.sessionId = item.id
       Chat.target = {
-        id: id,
-        portrait: portrait
+        id: item.to,
+        portrait: item.portrait
       }
       Router.push('chat')
     },

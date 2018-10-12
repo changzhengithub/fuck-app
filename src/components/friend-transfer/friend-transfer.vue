@@ -10,9 +10,9 @@
     </div>
     <div class="transfer-object bg-white">
       <div class="object-portrait">
-        <img src="http://iph.href.lu/90x90">
+        <img :src="personalInfo.avatar">
       </div>
-      <p class="font-36 color-black">Name</p>
+      <p class="font-36 color-black">{{personalInfo.nick}}</p>
     </div>
     <div class="transfer-content bg-white">
       <div class="content-amount">
@@ -32,7 +32,7 @@
       <input type="text" maxlength="20" placeholder="20字以内">
     </div>
     <div class="transfer-button padding-horizontal-30">
-      <ButtonComponent :button="button" @SINGLE_SUBMIT_EVENT="transferSubmit"></ButtonComponent>
+      <ButtonComponent :button="button" @SUBMIT_EVENT="transferSubmit"></ButtonComponent>
     </div>
   </section>
   <!-- e 转账 -->
@@ -40,8 +40,11 @@
 
 <script>
 // include dependence
+import Chat from '../../class/Chat.class.js'
 import Check from '../../class/Check.class.js'
 import Http from '../../class/Http.class.js'
+import Router from '../../class/Router.class.js'
+import Storage from '../../class/Storage.class.js'
 import ButtonComponent from '../../module/button/button.vue'
 import InputsComponent from '../../module/inputs/inputs.vue'
 import TitleComponent from '../../module/title/title.vue'
@@ -49,6 +52,7 @@ export default {
   name: 'FriendTransferComponent',
   data () {
     return {
+      personalInfo: {},
       amountNumber: '',
       amountInput: {
         type: 'icon',
@@ -79,6 +83,9 @@ export default {
   mounted () {
     this.scroll()
   },
+  created () {
+    this.personalInfo = Storage.userInfo
+  },
   methods: {
     backPage () {},
     gotoPage () {},
@@ -98,7 +105,16 @@ export default {
       }, 8)
     },
     transferSubmit () {
-      if (!Check.money(this.amountNumber)) return // money is not correct
+      if (!Check.money(this.amountNumber)) return
+      let content = {
+        target: Chat.target.id,
+        money: this.amountNumber,
+        title: '转账'
+      }
+      Chat.transferAccount(content).success(data => {
+        console.log(data)
+        Router.push('chat')
+      })
       Http.send({
         url: 'url',
         data: {}

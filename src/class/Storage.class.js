@@ -143,10 +143,6 @@ export default class Storage {
     return this.getOut('complianPhone')
   }
 
-  static get info () {
-    return this.getOut('info')
-  }
-
   static set error (error) {
     this.save('error', error)
   }
@@ -183,12 +179,12 @@ export default class Storage {
     return this.getOut('chat')
   }
 
-  static set personalInfo (personalInfo) {
-    this.save('personalInfo', personalInfo)
+  static set userInfo (userInfo) {
+    this.save('userInfo', userInfo)
   }
 
-  static get personalInfo () {
-    return this.getOut('personalInfo')
+  static get userInfo () {
+    return this.getOut('userInfo')
   }
 
   // 消息列表
@@ -199,7 +195,6 @@ export default class Storage {
   static get sessions () {
     return this.getOut('sessions')
   }
-
   // 更新当前会话
   static set updatesession (updatesession) {
     this.save('updatesession', updatesession)
@@ -207,6 +202,33 @@ export default class Storage {
 
   static get updatesession () {
     return this.getOut('updatesession')
+  }
+
+  // 保存个人名片消息
+  static set businessCard (businessCard) {
+    this.save('businessCard', businessCard)
+  }
+
+  static get businessCard () {
+    return this.getOut('businessCard')
+  }
+
+  // 当前聊天对象消息列表
+  static set messages (messages) {
+    this.save('messages', messages)
+  }
+
+  static get messages () {
+    return this.getOut('messages')
+  }
+
+  // 当前聊天对象会话id
+  static set sessionId (sessionId) {
+    this.save('sessionId', sessionId)
+  }
+
+  static get sessionId () {
+    return this.getOut('sessionId')
   }
 
   static clear () {
