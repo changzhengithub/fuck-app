@@ -31,9 +31,9 @@
       <span class="font-27 color-deep-grey">我的好友</span>
     </div>
     <div class="object-friend padding-left-30 bg-white">
-      <div class="friend-item border-bottom-1" v-for="(friend, index) in friends" :key="index" @click="selectFriend(item, index)">
+      <div class="friend-item border-bottom-1" v-for="(friend, index) in friendList" :key="index" @click="selectFriend(friend, index)">
         <div class="item-portrait">
-          <img :src="friend.avatar" @load="getUserInfo">
+          <img :src="friend.avatar">
         </div>
         <div class="item-detail padding-horizontal-30">
           <div class="detail-title">
@@ -60,7 +60,7 @@ export default {
     return {
       selectIndex: null,
       selectShow: false,
-      friends: [],
+      friendList: [],
       // start params
       'title': {
         contentText: '发布对象',
@@ -80,34 +80,34 @@ export default {
   methods: {
     init () {
       let accounts = []
-      Chat.getFriends()
-        .success(friends => {
-          delete friends.invalid
-          friends.forEach(friend => {
-            accounts.push(friend.account)
-          })
-          for (let i = 0; accounts.length < 150; i++) {
-            accounts.slice(0, 150)
-            accounts = accounts.slice(150)
-            this.getFriendsInfo(accounts)
-          }
+      Chat.getFriends().success(friends => {
+        delete friends.invalid
+        friends.forEach(friend => {
+          accounts.push(friend.account)
         })
+        for (let i = 0; i < accounts.length; i += 150) {
+          this.getFriendsInfo(accounts.slice(i, i + 150))
+        }
+      })
     },
     getFriendsInfo (accounts) {
-      Chat.getUserInfo(accounts)
-        .success(friends => {
-          friends.forEach(friend => {
-            friend.selected = false
-            if (!friend.avatar) friend.avatar = 'https://bpic.588ku.com/illus_water_img/18/09/14/b658aea8ef673881994cec643681c640.jpg!/watermark/url/L3dhdGVyL3dhdGVyX2JhY2tfNDAwXzIwMC5wbmc=/repeat/true'
-            this.friends.push(friend)
-          })
+      Chat.getUserInfo(accounts).success(friends => {
+        friends.forEach(friend => {
+          friend.selected = false
+          if (!friend.avatar) friend.avatar = '../../../../static/img/master.png'
+          this.friendList.push(friend)
         })
+      })
     },
     confirm () {
       var selectObject = []
-      this.friends.forEach(ele => {
+      this.friendList.forEach(ele => {
         if (ele.selected) {
-          selectObject.push(ele)
+          selectObject.push({
+            imAccid: ele.Accid,
+            Name: ele.Name,
+            Phone: ele.UserPhone
+          })
         }
       })
       Storage.publishObject = selectObject

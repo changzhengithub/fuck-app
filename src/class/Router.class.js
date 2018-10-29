@@ -2,10 +2,9 @@ export default class Router {
   static unauthorized = ['account-balance', 'my-bank-card']
   static certification = ['add-contact', 'bind-bank-card', 'zhima-credit', 'identity-verification', 'operator-credit']
   static mine = ['credit', 'settings']
-  static borrow = ['wanna-borrow']
+  static borrow = ['iou-template']
   static complain = ['complain']
   static messages = ['chat']
-  static chat = ['wanna-borrow']
   static mark () {
     window.app.$store.commit('saveOrigin', window.app._route)
   }
@@ -43,9 +42,9 @@ export default class Router {
         name: 'mine'
       }
     }
-    if (this.borrow.includes(page.name)) {
+    if (this.borrow.includes(window.app.$store.state.origin.name)) {
       params = {
-        name: window.app.$store.state.origin.name
+        name: 'chat'
       }
     }
     if (this.complain.includes(page.name)) {
@@ -59,6 +58,7 @@ export default class Router {
       }
     }
     if (params) {
+      console.log(params)
       window.app.$router.push(params)
     } else {
       window.app.$router.back()

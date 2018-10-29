@@ -103,12 +103,12 @@ export default class Storage {
     return this.getOut('borrowId')
   }
 
-  static set borrowOrigin (borrowOrigin) {
-    this.save('borrowOrigin', borrowOrigin)
+  static set borrowType (borrowType) {
+    this.save('borrowType', borrowType)
   }
 
-  static get borrowOrigin () {
-    return this.getOut('borrowOrigin')
+  static get borrowType () {
+    return this.getOut('borrowType')
   }
   // 可用余额
   static set usableMoney (usableMoney) {
@@ -229,6 +229,15 @@ export default class Storage {
 
   static get sessionId () {
     return this.getOut('sessionId')
+  }
+
+  // 出借模板
+  static set loanTemplate (loanTemplate) {
+    this.save('loanTemplate', loanTemplate)
+  }
+
+  static get loanTemplate () {
+    return this.getOut('loanTemplate')
   }
 
   static clear () {

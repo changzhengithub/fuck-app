@@ -144,6 +144,7 @@ export default {
         url: url,
         data: data
       }).success(data => {
+        console.log(data)
         Account.info = data
         Chat.key = data
         Storage.token = data.Token

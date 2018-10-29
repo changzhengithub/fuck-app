@@ -2,4 +2,74 @@
 @import '../../../dependencies/sass/_flex.scss';
 @import '../../../dependencies/sass/_unit.scss';
 // current sass
-.credit-report {}
+.credit-report {
+  width: 100vw;
+  height: 100vh;
+  padding: {
+    top: (129 + 27) / $unit * $symbol;
+  }
+  overflow: auto;
+  .report-title {
+    @include vertical_center();
+    width: 100%;
+    height: 78 / $unit * $symbol;
+    color: #4c7bfd;
+    font-weight: 700;
+    &::before {
+      position: absolute;
+      top: 24 / $unit * $symbol;
+      left: 30 / $unit * $symbol;
+      z-index: 9;
+      display: block;
+      content: '';
+      width: 3 / $unit * $symbol;
+      height: 30 / $unit * $symbol;
+      background: #4c7bfd;
+    }
+  }
+  .report-default {
+    width: 100%;
+    .default-item {
+      @include vertical_center();
+      width: 100%;
+      height: 60 / $unit * $symbol;
+      span {
+        font-size: 27 / $unit * $symbol;
+        color: #333333;
+        padding: {
+          right: 12 / $unit * $symbol;
+        }
+      }
+    }
+  }
+  .report-risk {
+    width: 100%;
+    .risk-title {
+      width: 100%;
+      height: 52 / $unit * $symbol;
+      p {
+        @include vertical_center();
+        width: 100%;
+        height: 52 / $unit * $symbol;
+        background-color: #e7edf7;
+      }
+    }
+    .risk-list {
+      width: 100%;
+      .list-item {
+        @include vertical_center_horizontal_between();
+        width: 100%;
+        font-size: 27 / $unit * $symbol;
+        color: #333333;
+        .item-group {
+          .group-item {
+            @include vertical_center();
+            height: 60 / $unit * $symbol;
+            font-size: 27 / $unit * $symbol;
+            color: #333333;
+          }
+        }
+      }
+    }
+  }
+}

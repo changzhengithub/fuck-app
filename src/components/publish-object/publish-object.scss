@@ -59,6 +59,9 @@
         .detail-title {
           flex: 1;
           p:first-of-type {
+            @include vertical_center();
+            width: 100%;
+            height: 54 / $unit * $symbol;
             padding: {
               bottom: 9 / $unit * $symbol;
             }

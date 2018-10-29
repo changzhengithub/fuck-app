@@ -26,7 +26,7 @@
       </div>
     </header>
     <nav class="index-nav">
-      <div class="nav-item">
+      <div class="nav-item" @click="gotoPage('find-lender')">
         <i class="iconfont icon-zhaochujieren"></i>
         <p>找出借人</p>
       </div>

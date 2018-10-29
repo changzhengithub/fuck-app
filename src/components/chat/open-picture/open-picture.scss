@@ -22,10 +22,21 @@
     color: #3ea2ff;
   }
   .picture-switch {
+    position: relative;
     @include vertical_center();
     width: 100%;
     height: 99 / $unit * $symbol;
     font-size: 30 / $unit * $symbol;
     color: #333;
+    .switch-shoot, .switch-camera {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 9;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+    }
   }
 }

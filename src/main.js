@@ -5,6 +5,9 @@ import router from './router/router'
 import store from './store/index'
 import './main.scss'
 
+var VueTouch = require('vue-touch')
+Vue.use(VueTouch, {name: 'v-touch'})
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

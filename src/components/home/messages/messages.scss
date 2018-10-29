@@ -87,6 +87,15 @@
             @include vertical_center_horizontal_between();
             width: 100%;
             height: 45 / $unit * $symbol;
+            .recently-newest {
+              @include vertical_center();
+              display: block;
+              width: 450 / $unit * $symbol;
+              height: 48 / $unit * $symbol;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
             .recently-badge {
               @include center();
               width: 33 / $unit * $symbol;

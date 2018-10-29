@@ -13,7 +13,7 @@
         </div>
       </div>
       <ul class="content-list padding-horizontal-30">
-        <li class="list-item border-bottom-1" v-for="(item, index) in sessions" :key="index" @click="gotoChat(item)">
+        <li class="list-item border-bottom-1" v-for="(item, index) in sessions" :key="index" @click="gotoChat(item)" @touchstart="showDeleteModal" @touchend="cancelDeleteModal(item)">
           <div class="item-portrait">
             <img :src="item.portrait">
           </div>
@@ -25,11 +25,11 @@
                   <use xlink:href="#icon-cong"></use>
                 </svg>
               </p>
-              <p class="font-18 color-light-grey">昨天</p>
+              <p class="font-18 color-light-grey">{{item.chatTime}}</p>
             </div>
             <div class="message-recently">
-              <p class="recently-newest  font-24 color-light-grey">{{item.lastMsg.text}}</p>
-              <div class="recently-badge" v-if="item.unread"><span class="color-white font-21">{{item.unread}}</span></div>
+              <p class="recently-newest  font-24 color-light-grey">{{item.content}}</p>
+              <div class="recently-badge" v-if="item.unread"><span class="color-white font-21">{{item.unread > 100 ? +99 : item.unread}}</span></div>
             </div>
           </div>
         </li>
@@ -50,17 +50,21 @@ import DeleteSessionComponent from './delete-session/delete-session.vue'
 import Chat from '../../../class/Chat.class.js'
 import Router from '../../../class/Router.class.js'
 import Storage from '../../../class/Storage.class.js'
+import Time from '../../../class/Time.class.js'
 import ModalComponent from '../../../module/modal/modal.vue'
 export default {
   name: 'MessageComponent',
   data () {
     return {
+      longTap: null,
       sessions: [],
       infoArr: [],
       updatesession: {},
       modalShow: false,
       moreShow: false,
-      deleteSessionShow: false
+      deleteSessionShow: false,
+      deleteSessionItem: null,
+      deleteSessionIndex: null
       // start params
       // end params
     }
@@ -79,44 +83,48 @@ export default {
     init () {
       let accounts = []
       let count = -1
+      console.log(Storage.sessions)
       if (!Storage.sessions) return
       this.sessions = Storage.sessions
       this.sessions.forEach(item => {
         accounts.push(item.to)
-        if (!this.$store.state.updatesession) return
-        if (item.to === this.$store.state.updatesession.to) {
-          item.lastMsg = this.$store.state.updatesession.lastMsg
-          item.unread = this.$store.state.updatesession.unread
+        if (this.$store.state.updatesession) {
+          if (item.to === this.$store.state.updatesession.to) {
+            item.lastMsg = this.$store.state.updatesession.lastMsg
+            item.unread = this.$store.state.updatesession.unread
+          }
         }
+        item.chatTime = this.dealTime(item.lastMsg.time)
+        this.disposeMessageType(item)
       })
-      for (let i = 0; i < accounts.length; i += 3) {
+      for (let i = 0; i < accounts.length; i += 150) {
         count++
-        this.getUserInfo(accounts.slice(i, i + 3), count)
+        this.getUserInfo(accounts.slice(i, i + 150), count)
       }
+      console.log(Storage.sessions)
     },
     getUserInfo (accounts, index) {
       Chat.getUserInfo(accounts).success(data => {
         data.forEach((item, i) => {
-          this.sessions[index * 3 + i].portrait = item.avatar ? item.avatar : '../../../../static/img/master.png'
-          this.sessions[index * 3 + i].name = item.nick ? item.nick : item.account
+          this.sessions[index * 150 + i].portrait = item.avatar ? item.avatar : '../../../../static/img/master.png'
+          this.sessions[index * 150 + i].name = item.nick ? item.nick : item.account
         })
       })
     },
-    openMore () {
-      this.modalShow = true
-      this.moreShow = true
-    },
-    openDeleteSession () {
-      this.modalShow = true
-      this.deleteSessionShow = true
-    },
-    deleteSession (index) {
-      this.sessions = this.sessions.splice(index, 1)
-    },
-    closeModal () {
-      this.modalShow = false
-      this.deleteSessionShow = false
-      this.moreShow = false
+    dealTime (updateTime) {
+      let chatTime = ''
+      let weeHour = new Date(new Date().setHours(0, 0, 0, 0))
+      let befroeWeehour = new Date(new Date().setHours(0, 0, 0, 0)) - 86400000
+      if (updateTime > weeHour) {
+        chatTime = Time.format('HH', updateTime) > 12 ? '下午  ' + Time.format('hh : mm', updateTime) : '上午  ' + Time.format('hh : mm', updateTime)
+        return chatTime
+      }
+      if (updateTime > befroeWeehour) {
+        chatTime = '昨天'
+        return chatTime
+      }
+      chatTime = Time.format('YYYY-MM-DD', updateTime)
+      return chatTime
     },
     gotoChat (item) {
       Storage.userInfo = {
@@ -133,8 +141,53 @@ export default {
       }
       Router.push('chat')
     },
+    disposeMessageType (message) {
+      switch (message.lastMsg.type) {
+        case 'custom':
+          message.content = '自定义消息'
+          break
+        case 'text':
+          message.content = message.lastMsg.text
+          break
+        case 'image':
+          message.content = '图片'
+          break
+        case 'audio':
+          message.content = '语音'
+          break
+      }
+    },
     gotoPage (page) {
       Router.push(page)
+    },
+    openMore () {
+      this.modalShow = true
+      this.moreShow = true
+    },
+    deleteSession () {
+      Chat.deleteSessions(this.deleteSessionItem.id).success(data => {
+        console.log(data)
+        this.sessions.splice(this.deleteSessionIndex, 1)
+        this.modalShow = false
+        this.deleteSessionShow = false
+      })
+    },
+    closeModal () {
+      this.modalShow = false
+      this.deleteSessionShow = false
+      this.moreShow = false
+    },
+    showDeleteModal () {
+      clearInterval(this.longTap)
+      this.longTap = setTimeout(() => {
+        this.modalShow = true
+        this.deleteSessionShow = true
+      }, 1000)
+    },
+    cancelDeleteModal (item, index) {
+      clearInterval(this.longTap)
+      this.deleteSessionItem = item
+      this.deleteSessionIndex = index
     }
   },
   watch: {
@@ -143,6 +196,8 @@ export default {
         if (item.to === updatesession.to) {
           item.lastMsg = updatesession.lastMsg
           item.unread = updatesession.unread
+          item.chatTime = this.dealTime(updatesession.updateTime)
+          this.disposeMessageType(item)
         }
       })
     }

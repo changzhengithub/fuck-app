@@ -53,9 +53,7 @@ module.exports = {
         icon: 'jindu',
         selected: 'true'
       }`,
-    'title': `{
-        contentText: '我要借款'
-      }`,
+    'title': 1,
     'without': false,
     'work-card': false
   }

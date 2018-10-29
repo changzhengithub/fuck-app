@@ -77,7 +77,6 @@ export default {
     },
     getFriendsInfo (accounts) {
       Chat.getUserInfo(accounts).success(friends => {
-        this.friends = friends
         friends.forEach(friend => {
           friend.selected = false
           if (!friend.avatar) friend.avatar = '../../../../static/img/master.png'

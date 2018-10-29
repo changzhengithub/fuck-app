@@ -79,7 +79,6 @@ export default {
           phone: Storage.phone
         }
       }).success(data => {
-        Storage.borrowOrigin = 1
         Storage.publishObject = null
         Storage.purpose = null
         Storage.opinion = null

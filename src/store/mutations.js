@@ -58,9 +58,9 @@ const mutations = {
   saveBorrowId (state, borrowId) {
     state.borrowId = borrowId
   },
-  // 借条来源
-  saveBorrowOrigin (state, borrowOrigin) {
-    state.borrowOrigin = borrowOrigin
+  // 借条类型
+  saveBorrowType (state, borrowType) {
+    state.borrowType = borrowType
   },
   // 可用余额
   saveUsableMoney (state, usableMoney) {
@@ -129,6 +129,10 @@ const mutations = {
   // 保存聊天对象会话id
   saveSessionId (state, sessionId) {
     state.sessionId = sessionId
+  },
+  // 保存出借模板信息
+  saveLoanTemplate (state, loanTemplate) {
+    state.loanTemplate = loanTemplate
   }
 }
 export default mutations

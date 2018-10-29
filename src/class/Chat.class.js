@@ -36,7 +36,6 @@ export default class Chat {
         // if (window.app.$store.state.chat.target.id === message.from) {
         //   window.app.$store.commit('saveMessage', message)
         // } else {}
-        console.log(message)
         window.app.$store.commit('saveMessage', message)
       },
       onsessions: sessions => {
@@ -45,17 +44,24 @@ export default class Chat {
       },
       onupdatesession: onupdatesession => {
         console.log(onupdatesession)
+        let sessions = window.app.$store.state.sessions
+        let sessionId = []
+        sessions.forEach(item => {
+          sessionId.push(item.id)
+        })
+        if (sessionId.indexOf(onupdatesession.id) === -1) {
+          sessions.push(onupdatesession)
+        }
+        window.app.$store.commit('saveSessions', sessions)
         window.app.$store.commit('saveUpdatesession', onupdatesession)
       },
       onsysmsg: sysmsg => {
-        console.log(sysmsg)
         this.passFriendApply(sysmsg, sysmsg.from)
       },
       onupdatesysmsg: updattesysmsg => {
         console.log(updattesysmsg)
       },
       onfriends: friends => {
-        console.log(friends)
         window.app.$store.commit('saveFriends', friends)
       },
       debug: false
@@ -221,6 +227,23 @@ export default class Chat {
     })
     return operation
   }
+  static sendFile (account, type, fileInput) {
+    let operation = new Operation()
+    this.refresh()
+    this.nim.sendFile({
+      scene: 'p2p',
+      to: account,
+      type: type,
+      fileInput: fileInput,
+      isHistoryable: true,
+      done: (error, msg) => {
+        if (error) return operation
+        if (operation.successCallback) operation.successCallback(msg)
+        return operation
+      }
+    })
+    return operation
+  }
 
   static sendImage (account, fileInput) {
     let operation = new Operation()
@@ -317,7 +340,6 @@ export default class Chat {
    * @param {json} content exemple
    * {
    *  target: '对方账号'
-   *  id: '借条账号'
    *  title: '借条提示'
    *  money: '借条金额'
    * }
@@ -332,7 +354,6 @@ export default class Chat {
         type: 8,
         data: {
           money: content.money,
-          id: content.id,
           title: content.title,
           type: 'jt'
         }
@@ -349,15 +370,14 @@ export default class Chat {
 
   /**
   * 打欠条
-  * @param {json} account exemple
+  * @param {json} content exemple
   * {
   *  target: '对方账号'
-  *  id: '欠条账号'
   *  title: '欠条提示'
   *  money'欠条金额'
   * }
   */
-  static createAttachmentIOU (account, content) {
+  static createAttachmentIOU (content) {
     let operation = new Operation()
     this.refresh()
     this.nim.sendCustomMsg({
@@ -365,7 +385,6 @@ export default class Chat {
       to: content.target,
       text: JSON.stringify({
         money: content.money,
-        id: content.id,
         title: content.title,
         type: 'qt'
       }),

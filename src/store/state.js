@@ -37,6 +37,8 @@ const state = {
   friends: null,
   businessCard: null,
   messages: null,
-  sessionId: null
+  sessionId: null,
+  loanTemplate: null,
+  borrowType: null
 }
 export default state

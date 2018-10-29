@@ -1,7 +1,7 @@
 <template>
   <!-- s 转账 -->
   <section class="friend-transfer">
-    <TitleComponent :title="title" @BACK_EVENT="backPage" @OTHER_EVENT="gotoPage"></TitleComponent>
+    <TitleComponent :title="title" @OTHER_EVENT="gotoPage"></TitleComponent>
     <div class="transfer-tip">
       <div class="tip-icon">
         <i class="iconfont icon-cong"></i>
@@ -87,7 +87,6 @@ export default {
     this.personalInfo = Storage.userInfo
   },
   methods: {
-    backPage () {},
     gotoPage () {},
     getAmountInputText (text) {
       this.amountNumber = text
@@ -111,14 +110,14 @@ export default {
         money: this.amountNumber,
         title: '转账'
       }
-      Chat.transferAccount(content).success(data => {
-        console.log(data)
-        Router.push('chat')
-      })
       Http.send({
         url: 'url',
         data: {}
       }).success(data => {
+        Chat.transferAccount(content).success(data => {
+          console.log(data)
+          Router.push('chat')
+        })
       }).fail(data => {
       })
     }

@@ -1,8 +1,8 @@
 <template>
   <!-- s  -->
-  <section class="delete-session">
+  <section class="delete-session bg-white">
     <div class="session-title padding-horizontal-30"><span>长征</span></div>
-    <div class="session-switch padding-horizontal-30" @click="deleteSession"><span>删除聊天</span></div>
+    <div class="session-switch padding-horizontal-30" @click="deleteSession"><span class="font-30 color-black">删除该聊天</span></div>
   </section>
   <!-- e  -->
 </template>

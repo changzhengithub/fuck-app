@@ -110,12 +110,14 @@ export default {
   name: 'BorrowComponent',
   data () {
     return {
+      borrowType: 1,
       borrowDate: '',
       rateAmount: 0,
       ratePercent: '',
       borrowAmount: '',
       paymentTotl: '',
       borrowObject: '请选择',
+      borrowNameStr: '',
       borrowPhoneStr: '',
       borrowImAccidStr: '',
       borrowDeadline: '7',
@@ -124,6 +126,9 @@ export default {
       otherCost: 0.0,
       purposeShow: false,
       deadLineShow: false,
+      title: {
+        contentText: '我要借款'
+      },
       // start params
       'button': {
         default: [{
@@ -137,9 +142,6 @@ export default {
         protocol: '借条大师协议',
         icon: 'jindu',
         selected: 'true'
-      },
-      'title': {
-        contentText: '我要借款'
       }
       // end params
     }
@@ -152,36 +154,46 @@ export default {
     DeadlineComponent,
     PublishComponent
   },
-  mounted () {
-    this.scroll()
+  created () {
     this.initDate(7)
+    this.getBorrowType(Storage.borrowType)
     if (Storage.publishObject) this.formateData(Storage.publishObject)
     if (Storage.purpose) this.borrowPurpose = Storage.purpose
     if (Storage.wannaInfo) {
-      console.log(Storage.wannaInfo)
       this.borrowAmount = Storage.wannaInfo.borrowAmount
       this.ratePercent = Storage.wannaInfo.ratePercent
-      this.borrowDeadline = Storage.wannaInfo.borrowDeadline
+      this.borrowDeadline = Storage.wannaInfo.period
       this.borrowPublish = Storage.wannaInfo.borrowPublish
+      this.otherCost = Storage.wannaInfo.otherCost
+      this.borrowDate = Storage.wannaInfo.borrowDate
     }
+  },
+  mounted () {
+    this.scroll()
   },
   methods: {
     formateData (data) {
       if (data) {
         let borrowObjectName = []
+        let borrowObjectPhone = []
         let borrowObjectImAccid = []
         data.forEach(ele => {
           borrowObjectName.push(ele.Name)
+          borrowObjectPhone.push(ele.Phone)
           borrowObjectImAccid.push(ele.imAccid)
         })
-        this.borrowPhoneStr = borrowObjectName.toString()
+        this.borrowNameStr = borrowObjectName.toString()
+        this.borrowPhoneStr = borrowObjectPhone.toString()
         this.borrowImAccidStr = borrowObjectImAccid.toString()
         if (borrowObjectName.length > 1) {
           this.borrowObject = '好友'
         } else {
-          this.borrowObject = this.borrowPhoneStr
+          this.borrowObject = this.borrowNameStr
         }
       }
+    },
+    getBorrowType (type) {
+      if (type === 2) this.title.contentText = '打欠条'
     },
     scroll () {
       var tip = document.getElementById('tip')
@@ -217,11 +229,14 @@ export default {
       this.deadLineShow = false
     },
     gotoPage (page) {
+      if (Storage.origin.name === 'iou-template' && page === 'publish-object') return
       Storage.wannaInfo = {
         borrowAmount: this.borrowAmount,
         ratePercent: this.ratePercent,
-        borrowDeadline: this.borrowDeadline,
-        borrowPublish: this.borrowPublish
+        borrowPublish: this.borrowPublish,
+        period: this.borrowDeadline,
+        otherCost: this.otherCost,
+        borrowDate: this.borrowDate
       }
       Router.push(page)
     },
@@ -261,7 +276,7 @@ export default {
     },
     // 发布借条
     publishSubmit () {
-      if (!Check.money(this.borrowAmount)) return
+      if (!Check.money(this.borrowAmount.toString())) return
       if (!this.checkPercent(this.borrowAmount)) return
       if (!this.tip.selected) {
         Error.show('请同意协议')
@@ -269,17 +284,15 @@ export default {
       }
       let content = {
         content: Chat.target.id,
-        money: 'content.money',
-        id: 'content.id',
-        title: 'content.title'
+        money: this.borrowAmount,
+        title: this.borrowType === 1 ? '向你打个借条' : '向你打了个欠条'
       }
-      Chat.createMainIOU(content).success(data => {})
       Http.send({
         url: 'Create',
         data: {
           token: Storage.token,
           phone: Storage.phone,
-          type: 1,
+          type: this.borrowType,
           amount: this.borrowAmount,
           lendPhones: this.borrowPhoneStr,
           imAccid: this.borrowImAccidStr,
@@ -290,10 +303,19 @@ export default {
           purpose: this.borrowPurpose,
           purposeReason: Storage.opinion,
           expireDay: this.borrowPublish
-          // source: Storage.borrowOrigin
         }
       }).success(data => {
         Storage.borrowId = data.Id
+        if (this.borrowType === 1) {
+          Chat.createMainIOU(content).success(data => {
+            console.log(data)
+          })
+        }
+        if (this.borrowType === 2) {
+          Chat.createAttachmentIOU(content).success(data => {
+            console.log(data)
+          })
+        }
       }).fail(data => {
       })
     },

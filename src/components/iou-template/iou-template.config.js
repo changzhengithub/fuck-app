@@ -15,12 +15,12 @@ module.exports = {
     'Days': false,
     'Error': false,
     'Hasten': false,
-    'Http': false,
+    'Http': true,
     'Mock': false,
     'Replace': false,
-    'Router': false,
+    'Router': true,
     'Status': false,
-    'Storage': false,
+    'Storage': true,
     'Time': false,
     'Type': false,
     'Url': false
@@ -42,9 +42,7 @@ module.exports = {
     'receipt': false,
     'tab': false,
     'tip': false,
-    'title': `{
-        contentText: '借条模板'
-      }`,
+    'title': 1,
     'without': false,
     'work-card': false
   }

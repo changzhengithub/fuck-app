@@ -2,75 +2,77 @@
   <!-- s 好友聊天 -->
   <section class="chat" :class="{switchMore: switchMoreShow || switchEmojiShow}">
     <TitleComponent :title="title" @OTHER_EVENT="gotoPage('personal-info')"></TitleComponent>
-    <div class="chat-time">
-      <div class="time font-24 color-white">15:09</div>
-    </div>
-    <ul class="chat-list">
-      <li class="list-item padding-horizontal-30 clear" v-for="(item, index) in messages" :key="index">
-        <div class="item-portrait" :class="item.isMine ? 'fr' : 'fl'">
-          <img :src="item.portrait">
-        </div>
-        <div class="item-content" :class="item.isMine ? 'fr' : 'fl'">
-          <div class="content-text" :class="item.isMine ? 'arrow-blue-right' : 'arrow-white-left'"  v-if="item.type == 'text'">
-            <TextMessage :content="item"></TextMessage>
+    <ul class="chat-list" id="chat-list">
+      <li class="list-item" v-for="(item, index) in messages" :key="index">
+        <!-- <div class="chat-time" v-if="item.timeShow">
+          <div class="time font-24 color-white">15:09</div>
+        </div> -->
+        <div class="item-message padding-horizontal-30 clear">
+          <div class="message-portrait" :class="item.isMine ? 'fr' : 'fl'">
+            <img :src="item.portrait">
           </div>
-          <div class="content-voice" :class="[item.isMine ? 'arrow-blue-right' : 'arrow-white-left', item.isMine ? 'content-voice-right' : 'content-voice-left']" v-else-if="item.type == 'voice'">
-            <i class="iconfont font-33" :class="item.isMine ? 'icon-audio-right' : 'icon-yuyin'"></i>
-            <div class="voice-seconds voice-seconds-right font-30 color-light-grey">15"</div>
-          </div>
-          <div class="content-img" :class="item.isMine ? 'arrow-white-right' : 'arrow-white-left'" v-else-if="item.type == 'image'">
-            <img src="../../assets/images/ivint.png">
-          </div>
-          <div class="content-transfer" :class="item.isMine ? 'arrow-red-right' : 'arrow-red-left'" v-else-if="item.type == 'zz'">
-            <div class="transfer-detail">
-              <i class="iconfont icon-transfer"></i>
-              <div class="detail-text">
-                <p class="text-price">{{item.content.money}}元</p>
-                <p class="text-title">转账</p>
-              </div>
+          <div class="message-content" :class="item.isMine ? 'fr' : 'fl'">
+            <div class="content-text" :class="item.isMine ? 'arrow-blue-right' : 'arrow-white-left'"  v-if="item.type == 'text'">
+              <TextMessage :content="item"></TextMessage>
             </div>
-            <div class="transfer-title">借条大师-转账</div>
-          </div>
-          <div class="content-iou" :class="item.isMine ? 'arrow-orange-right' : 'arrow-orange-left'" v-else-if="item.type == 'qt'">
-            <div class="iou-detail">
-              <i class="iconfont icon-qian"></i>
-              <div class="detail-text">
-                <p class="text-price">{{item.content.money}}元</p>
-                <p class="text-title">像你打了个欠条</p>
-              </div>
+            <div class="content-voice" :class="[item.isMine ? 'arrow-blue-right' : 'arrow-white-left', item.isMine ? 'content-voice-right' : 'content-voice-left']" v-else-if="item.type == 'voice'">
+              <i class="iconfont font-33" :class="item.isMine ? 'icon-audio-right' : 'icon-yuyin'"></i>
+              <div class="voice-seconds voice-seconds-right font-30 color-light-grey">15"</div>
             </div>
-            <div class="iou-title">借条大师-欠条</div>
-          </div>
-          <div class="content-receipt" :class="item.isMine ? 'arrow-blue-right' : 'arrow-blue-left'" v-else-if="item.type == 'jt'">
-            <div class="receipt-detail">
-              <i class="iconfont icon-jie"></i>
-              <div class="detail-text">
-                <p class="text-price">{{item.content.money}}元</p>
-                <p class="text-title">像你打了个借条</p>
-              </div>
+            <div class="content-img" :class="item.isMine ? 'arrow-white-right' : 'arrow-white-left'" v-else-if="item.type == 'image'">
+              <img :src="item.content.url">
             </div>
-            <div class="receipt-title">借条大师-转账</div>
-          </div>
-          <div class="content-credit" :class="item.isMine ? 'arrow-white-right' : 'arrow-white-left'" v-else-if="item.type == 'xybg'">
-            <div class="credit-detail">
-              <svg class="icon" aria-hidden="true">
-                <use xlink:href="#icon-xinyongbaogaofasongtubiao"></use>
-              </svg>
-              <p class="detail-title">{{item.content.title}}信用报告</p>
-            </div>
-            <div class="credit-title">信用报告</div>
-          </div>
-          <div class="content-card" :class="item.isMine ? 'arrow-white-right' : 'arrow-white-left'" v-else-if="item.type == 'mp'">
-            <div class="card-detail">
-              <div class="detail-img">
-                <img :src="item.content.money">
+            <div class="content-transfer" :class="item.isMine ? 'arrow-red-right' : 'arrow-red-left'" v-else-if="item.type == 'zz'">
+              <div class="transfer-detail">
+                <i class="iconfont icon-transfer"></i>
+                <div class="detail-text">
+                  <p class="text-price">{{item.content.money}}元</p>
+                  <p class="text-title">转账</p>
+                </div>
               </div>
-              <div class="detail-text">
-                <p class="text-name">{{item.content.title}}</p>
-                <p class="text-id">借条ID: {{item.content.id}}</p>
-              </div>
+              <div class="transfer-title">借条大师-转账</div>
             </div>
-            <div class="card-title">个人名片</div>
+            <div class="content-iou" :class="item.isMine ? 'arrow-orange-right' : 'arrow-orange-left'" v-else-if="item.type == 'qt'">
+              <div class="iou-detail">
+                <i class="iconfont icon-qian"></i>
+                <div class="detail-text">
+                  <p class="text-price">{{item.content.money}}元</p>
+                  <p class="text-title">像你打了个欠条</p>
+                </div>
+              </div>
+              <div class="iou-title">借条大师-欠条</div>
+            </div>
+            <div class="content-receipt" :class="item.isMine ? 'arrow-blue-right' : 'arrow-blue-left'" v-else-if="item.type == 'jt'">
+              <div class="receipt-detail">
+                <i class="iconfont icon-jie"></i>
+                <div class="detail-text">
+                  <p class="text-price">{{item.content.money}}元</p>
+                  <p class="text-title">像你打了个借条</p>
+                </div>
+              </div>
+              <div class="receipt-title">借条大师-转账</div>
+            </div>
+            <div class="content-credit" :class="item.isMine ? 'arrow-white-right' : 'arrow-white-left'" v-else-if="item.type == 'xybg'">
+              <div class="credit-detail">
+                <svg class="icon" aria-hidden="true">
+                  <use xlink:href="#icon-xinyongbaogaofasongtubiao"></use>
+                </svg>
+                <p class="detail-title">{{item.content.title}}</p>
+              </div>
+              <div class="credit-title">信用报告</div>
+            </div>
+            <div class="content-card" :class="item.isMine ? 'arrow-white-right' : 'arrow-white-left'" v-else-if="item.type == 'mp'">
+              <div class="card-detail">
+                <div class="detail-img">
+                  <img :src="item.content.money">
+                </div>
+                <div class="detail-text">
+                  <p class="text-name">{{item.content.title}}</p>
+                  <p class="text-id">借条ID: {{item.content.id}}</p>
+                </div>
+              </div>
+              <div class="card-title">个人名片</div>
+            </div>
           </div>
         </div>
       </li>
@@ -81,6 +83,7 @@
         <div class="eara-content bg-white">
           <div class="content-text" v-if="!inputType">
             <input type="text" v-model="inputText">
+            <!-- <div class="textEmoji" ref="edit" contenteditable></div> -->
           </div>
           <div class="content-voice" v-if="inputType">
             <span>按住说话</span>
@@ -96,7 +99,7 @@
         <div class="facebread-content">
           <div class="content-item" v-if="facebread == 'small'">
             <ul class="small-list">
-              <li class="list-item" v-for="(item, index) in emojiArr" :key="index" @click="selectSmall(item.file)">
+              <li class="list-item" v-for="(item, index) in emojiArr" :key="index" @click="selectSmall(item.file, index)">
                 <img :src="'../../../static/img/emoji/' + item.file">
               </li>
             </ul>
@@ -157,19 +160,19 @@
           </div>
           <p class="font-24">语音通话</p>
         </div>
-        <div class="more-item" @click="gotoPage('wanna-borrow')">
+        <div class="more-item" @click="gotoBorrow(1)">
           <div class="item-icon bg-white">
             <i class="iconfont icon-jie font-51"></i>
           </div>
           <p class="font-24">我要借</p>
         </div>
-        <div class="more-item" @click="gotoPage('wanna-borrow')">
+        <div class="more-item" @click="gotoBorrow(2)">
           <div class="item-icon bg-white">
             <i class="iconfont icon-qian font-51"></i>
           </div>
           <p class="font-24">打欠条</p>
         </div>
-        <div class="more-item" @click="gotoPage('friend-transfer')">
+        <div class="more-item" @click="gotoTransfer('friend-transfer')">
           <div class="item-icon bg-white">
             <i class="iconfont icon-transfer font-51"></i>
           </div>
@@ -190,7 +193,7 @@
       </div>
     </div>
     <ModalComponent v-show="modalShow" @CLOSE_EVENT="closeModal">
-      <OpenPictureComponent v-if="openPictureShow" @TAKE_PICTURE_EVENT="takePicture" @SELECT_PICTURE_EVENT="selectPicture"></OpenPictureComponent>
+      <OpenPictureComponent v-if="openPictureShow" @SELECT_PICTURE_EVENT="selectPicture"></OpenPictureComponent>
       <CallComponent v-if="callShow" @VIDEO_CALL_EVENT="videoCall" @VOICE_CALL_EVENT="voiceCall" @CANCEL_EVENT="closeModal"></CallComponent>
     </ModalComponent>
   </section>
@@ -204,6 +207,8 @@ import CallComponent from './call/call.vue'
 // include dependence
 import Account from '../../class/Account.class.js'
 import Chat from '../../class/Chat.class.js'
+import Error from '../../class/Error.class.js'
+import Http from '../../class/Http.class.js'
 import Replace from '../../class/Replace.class.js'
 import Router from '../../class/Router.class.js'
 import Storage from '../../class/Storage.class.js'
@@ -247,19 +252,25 @@ export default {
     // include components
   },
   created () {
+    if (Storage.userInfo) {
+      this.title.contentText = Storage.userInfo.name
+    }
     this.init()
     this.getltArr()
   },
+  mounted () {
+    this.scrollToBottom()
+  },
+  updated () {
+    this.scrollToBottom()
+  },
   methods: {
     init () {
-      console.log(Storage.userInfo)
-      if (Storage.userInfo) {
-        this.title.contentText = Storage.userInfo.name
-      }
+      console.log(11111)
       Chat.historyMsgs(Chat.target.id).success(data => {
-        console.log(data)
+        this.messages = []
         data.msgs = data.msgs.reverse()
-        data.msgs.forEach(message => {
+        data.msgs.forEach((message, index) => {
           let custom = {}
           let isMine = true
           let avator = Account.portrait
@@ -287,6 +298,7 @@ export default {
             isMine = false
             avator = Chat.target.portrait
           }
+          console.log(2222)
           this.messages.push({
             type: message.type,
             content: content,
@@ -295,6 +307,13 @@ export default {
             mark: false
           })
         })
+        console.log(this.messages)
+      })
+    },
+    scrollToBottom () {
+      this.$nextTick(() => {
+        let container = document.getElementById('chat-list')
+        container.scrollTop = container.scrollHeight
       })
     },
     getltArr () {
@@ -307,6 +326,69 @@ export default {
       for (let i = 1; i < 40; i++) {
         this.xxyArr.push('xxy0' + (i >= 10 ? i : '0' + i) + '.png')
       }
+    },
+    gotoBorrow (type) {
+      Http.send({
+        url: 'IsLoanToTarget',
+        data: {
+          token: Storage.token,
+          type: type,
+          phone: Storage.phone,
+          targetPhone: Storage.userInfo.account
+        }
+      }).success(data => {
+        let selectObject = []
+        selectObject.push({
+          imAccid: '',
+          Name: Storage.userInfo.nick,
+          Phone: Storage.userInfo.account
+        })
+        Storage.publishObject = selectObject
+        Storage.borrowType = type
+        console.log(Storage.borrowType)
+        Router.push('iou-template')
+      }).fail(data => {
+        Error.show(data.message)
+      })
+    },
+    gotoTransfer (page) {
+      Http.send({
+        url: 'IsTransferAccounts',
+        data: {
+          token: Storage.token,
+          phone: Storage.phone,
+          targetPhone: Storage.userInfo.account
+        }
+      }).success(data => {
+        Router.push(page)
+      }).fail(data => {
+        Error.show(data.message)
+      })
+    },
+    sendText () {
+      if (!this.inputText) return
+      Chat.sendText(Chat.target.id, this.inputText)
+        .success(text => {
+          this.messages.push({
+            type: 'text',
+            isMine: true,
+            content: this.inputText,
+            portrait: Account.portrait,
+            mark: true
+          })
+          this.inputText = ''
+        })
+    },
+    gotoPage (page) {
+      Router.push(page)
+    },
+    videoCall () {},
+    voiceCall () {},
+    takePicture () {},
+    selectPicture () {
+      this.modalShow = false
+      this.openPictureShow = false
+      this.init()
     },
     toggleInputType () {
       this.inputType = !this.inputType
@@ -322,7 +404,11 @@ export default {
     selectFacebread (facebread) {
       this.facebread = facebread
     },
-    selectSmall (item, index) {},
+    selectSmall (file, index) {
+      let Img = document.createElement('img')
+      Img.src = '../../../static/img/emoji/' + file
+      this.$refs.edit.appendChild(Img)
+    },
     openPictureModal () {
       this.modalShow = true
       this.openPictureShow = true
@@ -335,28 +421,6 @@ export default {
       this.modalShow = false
       this.openPictureShow = false
       this.callShow = false
-    },
-    gotoPage (page) {
-      Storage.origin = page
-      Router.push(page)
-    },
-    videoCall () {},
-    voiceCall () {},
-    takePicture () {},
-    selectPicture () {},
-    sendText () {
-      if (!this.inputText) return
-      Chat.sendText(Chat.target.id, this.inputText)
-        .success(text => {
-          this.messages.push({
-            type: 'text',
-            isMine: true,
-            content: this.inputText,
-            portrait: Account.portrait,
-            mark: true
-          })
-          this.inputText = ''
-        })
     }
   },
   watch: {

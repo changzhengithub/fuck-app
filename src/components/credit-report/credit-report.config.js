@@ -6,21 +6,21 @@ module.exports = {
     state: false
   },
   class: {
-    'Account': false,
+    'Account': true,
     'BM': false,
     'Btn': false,
-    'Chat': false,
+    'Chat': true,
     'Check': false,
     'Citys': false,
     'Days': false,
     'Error': false,
     'Hasten': false,
-    'Http': false,
+    'Http': true,
     'Mock': false,
     'Replace': false,
-    'Router': false,
+    'Router': true,
     'Status': false,
-    'Storage': false,
+    'Storage': true,
     'Time': false,
     'Type': false,
     'Url': false
@@ -42,7 +42,10 @@ module.exports = {
     'receipt': false,
     'tab': false,
     'tip': false,
-    'title': false,
+    'title': `{
+        contentText: '信用报告',
+        rightText: '发送'
+      }`,
     'without': false,
     'work-card': false
   }
