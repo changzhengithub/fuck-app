@@ -6,6 +6,7 @@ const AboutPayPasswordSettingsComponent = () => import(/* webpackChunkName: 'abo
 const AccountBalanceComponent = () => import(/* webpackChunkName: 'account-balance' */ '../components/account-balance/account-balance.vue')
 const AccountDetailComponent = () => import(/* webpackChunkName: 'account-detail' */ '../components/account-detail/account-detail.vue')
 const AccountStatisticComponent = () => import(/* webpackChunkName: 'account-statistic' */ '../components/account-statistic/account-statistic.vue')
+const ActiveLenderComponent = () => import(/* webpackChunkName: 'active-lender' */ '../components/active-lender/active-lender.vue')
 const AddContactComponent = () => import(/* webpackChunkName: 'add-contact' */ '../components/add-contact/add-contact.vue')
 const AddFriendComponent = () => import(/* webpackChunkName: 'add-friend' */ '../components/add-friend/add-friend.vue')
 const BindBankCardComponent = () => import(/* webpackChunkName: 'bind-bank-card' */ '../components/bind-bank-card/bind-bank-card.vue')
@@ -88,6 +89,11 @@ export default new Router({
       path: '/account-statistic',
       name: 'account-statistic',
       component: AccountStatisticComponent
+    },
+    {
+      path: '/active-lender',
+      name: 'active-lender',
+      component: ActiveLenderComponent
     },
     {
       path: '/add-contact',

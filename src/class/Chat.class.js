@@ -56,12 +56,27 @@ export default class Chat {
         window.app.$store.commit('saveUpdatesession', onupdatesession)
       },
       onsysmsg: sysmsg => {
-        this.passFriendApply(sysmsg, sysmsg.from)
+        console.log(sysmsg)
+        let verifyList = []
+        let verifyType = []
+        let verifyAccount = []
+        if (window.app.$store.state.verifyMessage) {
+          verifyList = window.app.$store.state.verifyMessage
+          verifyList.forEach(item => {
+            verifyType.push(item.type)
+            verifyAccount.push(item.from)
+          })
+          if (verifyType.includes(sysmsg.type) && verifyAccount.includes(sysmsg.from)) return
+        }
+        verifyList.push(sysmsg)
+        window.app.$store.commit('saveVerifyMessage', verifyList)
+        // this.passFriendApply(sysmsg, sysmsg.from)
       },
       onupdatesysmsg: updattesysmsg => {
         console.log(updattesysmsg)
       },
       onfriends: friends => {
+        console.log(friends)
         window.app.$store.commit('saveFriends', friends)
       },
       debug: false
@@ -152,7 +167,34 @@ export default class Chat {
     })
   }
 
-  static set friend (account) {
+  /**
+   * 加入黑名单/从黑名单移除
+   * @param {*} account
+   * @param {*} isAdd
+   * account: 账号
+   * isAdd: `true`表示加入黑名单, `false`表示从黑名单移除
+   */
+  static balckToggle (account, isAdd) {
+    let operation = new Operation()
+    this.refresh()
+    this.nim.markInBlacklist({
+      account: account,
+      isAdd: isAdd,
+      done: (error, msg) => {
+        if (error) return operation
+        if (operation.successCallback) operation.successCallback(msg)
+        return operation
+      }
+    })
+    return operation
+  }
+
+  /**
+   * 申请加为好友
+   * @param {*} account
+   * account: 对方账号
+   */
+  static set applyFriend (account) {
     this.refresh()
     this.nim.applyFriend({
       account: account,
@@ -166,6 +208,13 @@ export default class Chat {
     })
   }
 
+  /**
+   * 通过好友申请
+   * @param {*} msg
+   * @param {*} account
+   * msg: 回调收到的消息
+   * account: 对方账号
+   */
   static passFriendApply (msg, account) {
     let operation = new Operation()
     this.refresh()
@@ -182,6 +231,13 @@ export default class Chat {
     return operation
   }
 
+  /**
+   * 拒绝好友申请
+   * @param {*} msg
+   * @param {*} account
+   * msg: 回调收到的消息
+   * account: 对方账号
+   */
   static rejectFriendApply (msg, account) {
     let operation = new Operation()
     this.refresh()
@@ -197,6 +253,11 @@ export default class Chat {
     return operation
   }
 
+  /**
+   * 删除好友
+   * @param {*} account
+   * account: 删除账号
+   */
   static deleteFriend (account) {
     let operation = new Operation()
     this.refresh()

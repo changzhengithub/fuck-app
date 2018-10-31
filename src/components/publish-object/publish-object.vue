@@ -81,7 +81,6 @@ export default {
     init () {
       let accounts = []
       Chat.getFriends().success(friends => {
-        delete friends.invalid
         friends.forEach(friend => {
           accounts.push(friend.account)
         })
@@ -94,7 +93,7 @@ export default {
       Chat.getUserInfo(accounts).success(friends => {
         friends.forEach(friend => {
           friend.selected = false
-          if (!friend.avatar) friend.avatar = '../../../../static/img/master.png'
+          friend.avatar = friend.avatar ? friend.avatar : '../../../static/img/master.png'
           this.friendList.push(friend)
         })
       })

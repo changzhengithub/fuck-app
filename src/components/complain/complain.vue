@@ -69,6 +69,7 @@ export default {
   },
   created () {
     this.selectPhone = Storage.complianPhone
+    Storage.complianPhone = null
   },
   methods: {
     getImg () {},

@@ -5,7 +5,7 @@
       <div class="header-title padding-horizontal-30">
         <i class="iconfont icon-sousuo font-30"></i>
         <div class="header-search">
-          <input type="text" v-model="phoneNumber" placeholder="搜索手机号">
+          <input type="text" v-model="phoneNumber" placeholder="搜索手机号" autofocus>
           <i class="iconfont icon-delete font-27" v-show="clearInputShow" @click="clearInput"></i>
         </div>
         <button class="button bg-white font-30 color-black" @click="searchFriend"><div>{{searchBtnName}}</div></button>
@@ -17,7 +17,7 @@
           <img src="http://iph.href.lu/87x87">
         </div>
         <p class="item-name font-30 color-black">名字</p>
-        <button class="button padding-horizontal-24 color-white font-24" :disabled="addDisabled" @click="addFriedn"><div>{{buttonText}}</div></button>
+        <button class="button padding-horizontal-24 color-white font-24" :disabled="addDisabled" @click="addFriedn(account)"><div>{{buttonText}}</div></button>
       </div>
       <WithoutComponent v-if="!searchFriendData"></WithoutComponent>
     </div>
@@ -27,6 +27,7 @@
 
 <script>
 // include dependence
+import Chat from '../../class/Chat.class.js'
 import Check from '../../class/Check.class.js'
 import Error from '../../class/Error.class.js'
 import Http from '../../class/Http.class.js'
@@ -75,7 +76,8 @@ export default {
       })
     },
     // 添加好友
-    addFriedn () {
+    addFriedn (account) {
+      Chat.applyFriend = account
       this.buttonText = '已发送'
       this.addDisabled = true
     },

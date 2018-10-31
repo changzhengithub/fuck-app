@@ -133,6 +133,14 @@ const mutations = {
   // 保存出借模板信息
   saveLoanTemplate (state, loanTemplate) {
     state.loanTemplate = loanTemplate
+  },
+  // 保存黑名单
+  saveBlackList (state, blackList) {
+    state.blackList = blackList
+  },
+  // 保存系统消息
+  saveVerifyMessage (state, verifyMessage) {
+    state.verifyMessage = verifyMessage
   }
 }
 export default mutations

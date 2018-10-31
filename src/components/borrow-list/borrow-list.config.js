@@ -31,7 +31,7 @@ module.exports = {
     'button': false,
     'deadline': false,
     'detail-list': false,
-    'image-bg': `'../../../static/img/lend-detail.gif'`,
+    'image-bg': `require('../../assets/images/borrow.png')`,
     'inputs': false,
     'keyboard': false,
     'modal': false,

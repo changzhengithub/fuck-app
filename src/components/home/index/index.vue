@@ -26,7 +26,7 @@
       </div>
     </header>
     <nav class="index-nav">
-      <div class="nav-item" @click="gotoPage('find-lender')">
+      <div class="nav-item" @click="gotoPage('active-lender')">
         <i class="iconfont icon-zhaochujieren"></i>
         <p>找出借人</p>
       </div>
@@ -74,11 +74,11 @@
       </div>
     </div>
     <div class="index-activity">
-      <div class="activity-find">
-        <img src="../../../assets/images/find.png">
-      </div>
       <div class="activity-invite">
         <img src="../../../assets/images/ivint.png">
+      </div>
+      <div class="activity-find" @click="gotoPage('active-lender')">
+        <img src="../../../assets/images/find.png">
       </div>
     </div>
     <!-- <TabComponent></TabComponent> -->

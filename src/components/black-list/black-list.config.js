@@ -45,7 +45,7 @@ module.exports = {
     'title': `{
         contentText: '黑名单'
       }`,
-    'without': false,
+    'without': 1,
     'work-card': false
   }
 }

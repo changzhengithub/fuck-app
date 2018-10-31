@@ -5,7 +5,7 @@
       <div class="header font-30">
         <i class="iconfont font-33 icon-arrow-left back" @click="back"></i>
         <span>个人资料</span>
-        <i class="iconfont font-33 icon-shenglvehao more" @click="more"></i>
+        <i class="iconfont font-33 icon-shenglvehao more" v-if="isMine" @click="more"></i>
       </div>
     </div>
     <div class="info-user">
@@ -68,7 +68,7 @@
               </button>
             </div>
             <div class="chat-lend">
-              <button class="lend-btn bg-white" @click="gotoPage('wanna-borrow')">
+              <button class="lend-btn bg-white" @click="gotoBorrow(1)">
                 <div class="font-30 color-black">向TA借款</div>
               </button>
             </div>
@@ -145,7 +145,7 @@
       </div>
     </div>
     <ModalComponent v-show="modalShow" @CLOSE_EVENT="closeModal">
-      <MoreComponent></MoreComponent>
+      <MoreComponent @ADD_BLACK_LIST="addBlackList" @DELETE_FRIEND_EVENT="deleteFriend" @COMPLAINT_EVENT="complaint" @SHARE_CARD_EVENT="shareCard"></MoreComponent>
     </ModalComponent>
   </section>
   <!-- e 个人信息 -->
@@ -155,6 +155,7 @@
 import MoreComponent from './more/more.vue'
 // include dependence
 import Chat from '../../class/Chat.class.js'
+import Error from '../../class/Error.class.js'
 import Http from '../../class/Http.class.js'
 import Router from '../../class/Router.class.js'
 import Storage from '../../class/Storage.class.js'
@@ -203,7 +204,6 @@ export default {
       console.log(Storage.userInfo)
       if (!Storage.userInfo) return
       this.personalInfo = Storage.userInfo
-      // this.personalInfo.account = this.personalInfo.account === Storage.chat.id ? this.personalInfo.account : Replace.mask(this.personalInfo.account, 3, 4, '*')
       if (this.personalInfo.account !== Storage.chat.id) {
         this.isMine = true
       }
@@ -220,9 +220,6 @@ export default {
       } else {
         data.MemberInfo.BorrowCount = info.BorrowCount + '笔'
       }
-      if (!info.Photo) {
-        data.MemberInfo.Photo = 'http://iph.href.lu/87x87'
-      }
       data.MemberInfo.RegTime = info.RegTime.substr(0, 10)
       let creditCenter = ''
       let credit = [info.IsIdentityPass, info.IsContactPass, info.IsPhonePass, info.IsZhiMaPass, info.IsBankCardPass]
@@ -236,6 +233,52 @@ export default {
         }
       }
       data.MemberInfo.creditCenter = creditCenter
+    },
+    gotoBorrow (type) {
+      Http.send({
+        url: 'IsLoanToTarget',
+        data: {
+          token: Storage.token,
+          type: type,
+          phone: Storage.phone,
+          targetPhone: Storage.userInfo.account
+        }
+      }).success(data => {
+        let selectObject = []
+        selectObject.push({
+          imAccid: '',
+          Name: Storage.userInfo.nick,
+          Phone: Storage.userInfo.account
+        })
+        Storage.publishObject = selectObject
+        Storage.borrowType = type
+        Router.push('iou-template')
+      }).fail(data => {
+        Error.show(data.message)
+      })
+    },
+    addBlackList () {
+      Chat.balckToggle(this.personalInfo.account, true).success(data => {
+        this.modalShow = false
+      })
+    },
+    deleteFriend () {
+      Chat.deleteFriend(this.personalInfo.account).success(data => {
+        this.modalShow = false
+      })
+    },
+    complaint () {
+      Storage.complianPhone = this.personalInfo.account
+      Router.push('complain')
+      this.modalShow = false
+    },
+    shareCard () {
+      Chat.target = {
+        id: Storage.userInfo.account,
+        portrait: Storage.userInfo.avatar
+      }
+      Router.push('select-friend')
+      this.modalShow = false
     },
     back () {
       Router.back()

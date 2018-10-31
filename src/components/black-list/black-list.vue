@@ -3,15 +3,16 @@
   <section class="black-list padding-top-126 bg-white">
     <TitleComponent :title="title"></TitleComponent>
     <div class="list-item padding-horizontal-30 border-bottom-1" v-for="(item, index) in blacklist" :key="index">
-      <img class="item-portrait" src="https://bpic.588ku.com/illus_water_img/18/09/14/b658aea8ef673881994cec643681c640.jpg!/watermark/url/L3dhdGVyL3dhdGVyX2JhY2tfNDAwXzIwMC5wbmc=/repeat/true" @load="getUserInfo(index)">
+      <img class="item-portrait" :src="item.portrait">
+      <!-- <img class="item-portrait" :src="item.portrait" @load="getUserInfo"> -->
       <div class="item-detail">
-        <p class="font-30 color-black">{{item.name}}</p>
-        <button class="detail-btn font-24 color-blue border-radius-12 bg-white" v-if="!item.remove" @click="remove(index)">
+        <p class="font-30 color-black">{{item.nick}}</p>
+        <button class="detail-btn font-24 color-blue border-radius-12 bg-white" @click="remove(index)">
           <div>解除黑名单</div>
         </button>
-        <p class="font-27 color-light-grey" v-if="item.remove">已移出黑名单</p>
       </div>
     </div>
+    <WithoutComponent v-if="!blacklist.length"></WithoutComponent>
   </section>
   <!-- e 黑名单 -->
 </template>
@@ -20,6 +21,7 @@
 // include dependence
 import Chat from '../../class/Chat.class.js'
 import TitleComponent from '../../module/title/title.vue'
+import WithoutComponent from '../../module/without/without.vue'
 export default {
   name: 'BlackListComponent',
   data () {
@@ -33,7 +35,8 @@ export default {
     }
   },
   components: {
-    TitleComponent
+    TitleComponent,
+    WithoutComponent
     // include components
   },
   created () {
@@ -41,46 +44,50 @@ export default {
   },
   methods: {
     init () {
+      let accounts = []
       Chat.getBlacklist().success(blacklist => {
         delete blacklist.invalid
         blacklist.forEach(item => {
-          console.log(item)
-          this.blacklist.push({
-            name: '',
-            mark: false,
-            remove: false,
-            account: item.account
-          })
-          console.log(this.blacklist)
+          accounts.push(item.account)
+        })
+        if (accounts.length === 0) return
+        this.getBlackUserInfo(accounts)
+      })
+    },
+    getBlackUserInfo (accounts) {
+      Chat.getUserInfo(accounts).success(data => {
+        console.log(data)
+        data.forEach(item => {
+          item.portrait = item.avatar ? item.avatar : '../../../static/img/master.png'
+          this.blacklist.push(item)
         })
       })
     },
-    getUserInfo (index) {
-      let item = this.blacklist[index]
-      if (item.mark || !item.account) return
-      Chat.getUserInfo(item.account).success(info => {
-        this.blacklist[index] = {
-          name: info.nick,
-          mark: true,
-          remove: item.remove,
-          account: item.account
-        }
-        let arr = []
-        this.blacklist.forEach(unit => {
-          arr.push(unit)
-        })
-        this.blacklist = arr
-      })
-    },
+    // getUserInfo (index) {
+    //   let item = this.blacklist[index]
+    //   if (item.mark || !item.account) return
+    //   Chat.getUserInfo(item.account).success(info => {
+    //     this.blacklist[index] = {
+    //       portrait: info.avatar,
+    //       name: info.nick,
+    //       mark: true,
+    //       remove: item.remove,
+    //       account: item.account
+    //     }
+    //     let arr = []
+    //     this.blacklist.forEach(unit => {
+    //       arr.push(unit)
+    //     })
+    //     this.blacklist = arr
+    //   })
+    // },
     remove (index) {
-      let item = this.blacklist[index]
-      Chat.removeBlack = item.account
-      this.blacklist[index].remove = true
-      let arr = []
-      this.blacklist.forEach(unit => {
-        arr.push(unit)
+      let balckUser = this.blacklist[index]
+      // Chat.removeBlack = item.account
+      Chat.balckToggle(balckUser.account, false).success(data => {
+        console.log(data)
+        this.blacklist.splice(index, 1)
       })
-      this.blacklist = arr
     }
   }
 }

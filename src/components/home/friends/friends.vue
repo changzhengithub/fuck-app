@@ -13,25 +13,25 @@
         <span class="font-30 color-balck">搜索手机号</span>
       </div>
     </div>
-    <div class="friends-new bg-white padding-horizontal-30" @click="gotoPage('new-friend')">
-      <div class="new-icon">
-        <i class="iconfont icon-xindehaoyou color-white"></i>
-      </div>
-      <p class="font-30 color-black">新的好友</p>
-    </div>
     <ul class="friends-list padding-horizontal-30 bg-white">
+      <li class="list-new bg-white " @click="gotoPage('new-friend')">
+        <div class="new-icon">
+          <i class="iconfont icon-xindehaoyou color-white"></i>
+        </div>
+        <p class="font-30 color-black">新的好友</p>
+      </li>
       <li class="list-item border-bottom-1" v-for="(item, index) in friends" :key="index" @click="gotoPersonalInfo('personal-info', item)">
         <div class="item-portrait">
           <img :src="item.avatar">
         </div>
-        <div class="item-detail padding-horizontal-30">
-          <p class="font-30 color-blue">
-            <span>{{item.nick}}</span>
+        <div class="item-detail">
+          <p class="font-33 color-blue">
+            <span>{{item.nick ? item.nick : item.account}}</span>
             <svg class="icon" aria-hidden="true">
               <use xlink:href="#icon-cong"></use>
             </svg>
           </p>
-          <p class="font-27 color-deep-grey"><span>借条ID：</span><span>{{item.account}}</span></p>
+          <!-- <p class="font-27 color-deep-grey"><span>借条ID：</span><span>{{item.account}}</span></p> -->
         </div>
       </li>
     </ul>
@@ -78,13 +78,12 @@ export default {
     getFriendsInfo (accounts) {
       Chat.getUserInfo(accounts).success(friends => {
         friends.forEach(friend => {
-          friend.selected = false
           if (!friend.avatar) friend.avatar = '../../../../static/img/master.png'
           this.friends.push(friend)
         })
+        console.log(this.friends)
       })
     },
-    confirm () {},
     gotoPage (page) {
       Router.push(page)
     },

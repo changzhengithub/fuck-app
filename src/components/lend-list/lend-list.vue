@@ -44,7 +44,7 @@ export default {
       type: 1,
       pageIndex: 1,
       // start params
-      'imageBg': '../../../static/img/borrow-detail.gif',
+      'imageBg': require('../../assets/images/lend.png'),
       'nav': {
         content: ['当前', '已放款', '已逾期', '已还清', '已失效'],
         active: ''

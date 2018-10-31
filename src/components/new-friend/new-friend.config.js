@@ -9,7 +9,7 @@ module.exports = {
     'Account': false,
     'BM': false,
     'Btn': false,
-    'Chat': false,
+    'Chat': true,
     'Check': false,
     'Citys': false,
     'Days': false,
@@ -20,7 +20,7 @@ module.exports = {
     'Replace': false,
     'Router': true,
     'Status': false,
-    'Storage': false,
+    'Storage': true,
     'Time': false,
     'Type': false,
     'Url': false

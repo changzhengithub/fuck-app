@@ -106,9 +106,10 @@ export default {
     getUserInfo (accounts, index) {
       Chat.getUserInfo(accounts).success(data => {
         data.forEach((item, i) => {
-          this.sessions[index * 150 + i].portrait = item.avatar ? item.avatar : '../../../../static/img/master.png'
+          this.sessions[index * 150 + i].portrait = item.avatar ? item.avatar : require('../../../../static/img/master.png')
           this.sessions[index * 150 + i].name = item.nick ? item.nick : item.account
         })
+        this.sessions = [...this.sessions]
       })
     },
     dealTime (updateTime) {
@@ -168,6 +169,7 @@ export default {
       Chat.deleteSessions(this.deleteSessionItem.id).success(data => {
         console.log(data)
         this.sessions.splice(this.deleteSessionIndex, 1)
+        Storage.sessions = this.sessions
         this.modalShow = false
         this.deleteSessionShow = false
       })

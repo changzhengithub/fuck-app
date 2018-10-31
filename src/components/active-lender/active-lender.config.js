@@ -1,5 +1,5 @@
 module.exports = {
-  content: '借出',
+  content: '活跃出借人',
   router: true,
   vuex: {
     mutations: false,
@@ -9,7 +9,7 @@ module.exports = {
     'Account': false,
     'BM': false,
     'Btn': false,
-    'Chat': false,
+    'Chat': true,
     'Check': false,
     'Citys': false,
     'Days': false,
@@ -18,37 +18,34 @@ module.exports = {
     'Http': true,
     'Mock': false,
     'Replace': false,
-    'Router': false,
-    'Status': true,
+    'Router': true,
+    'Status': false,
     'Storage': true,
     'Time': false,
-    'Type': true,
+    'Type': false,
     'Url': false
   },
   components: {
     'billboard': false,
-    'board': 1,
+    'board': false,
     'button': false,
     'deadline': false,
     'detail-list': false,
-    'image-bg': `require('../../assets/images/lend.png')`,
+    'image-bg': false,
     'inputs': false,
     'keyboard': false,
     'modal': false,
     'modals': false,
-    'nav': `{
-        content: ['当前', '已放款', '已逾期', '已还清', '已失效'],
-        active: ''
-      }`,
+    'nav': false,
     'pay-password': false,
-    'pull-refresh': `''`,
-    'receipt': `[]`,
+    'pull-refresh': false,
+    'receipt': false,
     'tab': false,
     'tip': false,
     'title': `{
-        contentText: '借出'
+        contentText: '活跃出借人'
       }`,
-    'without': 1,
+    'without': false,
     'work-card': false
   }
 }

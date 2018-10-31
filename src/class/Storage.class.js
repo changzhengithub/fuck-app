@@ -240,6 +240,24 @@ export default class Storage {
     return this.getOut('loanTemplate')
   }
 
+  // 保存黑名单
+  static set blackList (blackList) {
+    this.save('blackList', blackList)
+  }
+
+  static get blackList () {
+    return this.getOut('blackList')
+  }
+
+  // 保存系统消息
+  static set verifyMessage (verifyMessage) {
+    this.save('verifyMessage', verifyMessage)
+  }
+
+  static get verifyMessage () {
+    return this.getOut('verifyMessage')
+  }
+
   static clear () {
     for (const item in window.app.$store.mutations) window.app.$store.commit(item, null)
     try {

@@ -39,6 +39,8 @@ const state = {
   messages: null,
   sessionId: null,
   loanTemplate: null,
-  borrowType: null
+  borrowType: null,
+  blackList: [], // 黑名单
+  verifyMessage: null
 }
 module.exports = state
