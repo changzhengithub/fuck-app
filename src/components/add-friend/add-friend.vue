@@ -13,7 +13,7 @@
     </div>
     <div class="friend-wechat bg-white padding-horizontal-30">
       <div class="wechat-portrait">
-        <img src="http://iph.href.lu/87x87">
+        <img src="../../assets/images/master.png">
       </div>
       <div class="wechat-detail">
         <p class="font-30 color-black">微信好友</p>
@@ -23,7 +23,7 @@
     <ul class="friend-list padding-left-30 bg-white">
       <li class="list-item border-bottom-1">
         <div class="item-portrait">
-          <img src="http://iph.href.lu/87x87">
+          <img src="../../assets/images/master.png">
         </div>
         <div class="item-detail">
           <p class="font-30 color-black">微信好友</p>

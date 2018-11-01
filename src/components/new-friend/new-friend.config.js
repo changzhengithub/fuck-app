@@ -21,7 +21,7 @@ module.exports = {
     'Router': true,
     'Status': false,
     'Storage': true,
-    'Time': false,
+    'Time': true,
     'Type': false,
     'Url': false
   },

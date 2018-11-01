@@ -55,6 +55,7 @@
     }
     overflow: auto;
     .list-new {
+      position: relative;
       @include vertical_center();
       width: 100%;
       height: 120 / $unit * $symbol;
@@ -73,41 +74,56 @@
           left: 18 / $unit * $symbol;
         }
       }
+      .new-unread {
+        position: absolute;
+        left: 240 / $unit * $symbol;
+        top: 45 / $unit * $symbol;
+        z-index: 9;
+        @include center();
+        background-color: red;
+        width: 39 / $unit * $symbol;
+        height: 39 / $unit * $symbol;
+        border-radius: 50%;
+      }
     }
     .list-item {
-      @include vertical_center();
       width: 100%;
       height: 120 / $unit * $symbol;
-      .item-portrait {
-        width: 87 / $unit * $symbol;
-        height: 87 / $unit * $symbol;
-        border-radius: 6 / $unit * $symbol;
-        img {
-          width: 100%;
-          height: 100%;
+      .item-content {
+        @include vertical_center();
+        width: 100%;
+        height: 100%;
+        .content-portrait {
+          width: 87 / $unit * $symbol;
+          height: 87 / $unit * $symbol;
           border-radius: 6 / $unit * $symbol;
-        }
-      }
-      .item-detail {
-        flex: 1;
-        padding: {
-          left: 36 / $unit * $symbol;
-        }
-        p:first-of-type {
-          padding: {
-            bottom: 9 / $unit * $symbol;
+          img {
+            width: 100%;
+            height: 100%;
+            border-radius: 6 / $unit * $symbol;
           }
-          .icon {
-            width: 30 / $unit * $symbol;
-            height: 30 / $unit * $symbol;
-            margin: {
-              left: 9 / $unit * $symbol;
+        }
+        .content-detail {
+          flex: 1;
+          padding: {
+            left: 36 / $unit * $symbol;
+          }
+          p:first-of-type {
+            padding: {
+              bottom: 9 / $unit * $symbol;
+            }
+            .icon {
+              width: 30 / $unit * $symbol;
+              height: 30 / $unit * $symbol;
+              margin: {
+                left: 9 / $unit * $symbol;
+              }
             }
           }
         }
       }
     }
-    .list-item:last-of-type {
+    .list-item:last-of-type .item-content {
       border: none;
     }
   }

@@ -38,12 +38,14 @@
             padding: {
               bottom: 9 / $unit * $symbol;
             }
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
+            .title-time {
+              padding: {
+                left: 15 / $unit * $symbol;
+              }
+            }
           }
           .message-tip {
-            width: 200 / $unit * $symbol;
+            width: 270 / $unit * $symbol;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;

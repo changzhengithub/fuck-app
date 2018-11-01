@@ -258,6 +258,15 @@ export default class Storage {
     return this.getOut('verifyMessage')
   }
 
+  // 系统通知未读数
+  static set sysMsgUnread (sysMsgUnread) {
+    this.save('sysMsgUnread', sysMsgUnread)
+  }
+
+  static get sysMsgUnread () {
+    return this.getOut('sysMsgUnread')
+  }
+
   static clear () {
     for (const item in window.app.$store.mutations) window.app.$store.commit(item, null)
     try {

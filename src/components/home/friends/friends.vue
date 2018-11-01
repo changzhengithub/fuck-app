@@ -13,25 +13,28 @@
         <span class="font-30 color-balck">搜索手机号</span>
       </div>
     </div>
-    <ul class="friends-list padding-horizontal-30 bg-white">
-      <li class="list-new bg-white " @click="gotoPage('new-friend')">
+    <ul class="friends-list">
+      <li class="list-new padding-horizontal-30 bg-white " @click="gotoPage('new-friend')">
         <div class="new-icon">
           <i class="iconfont icon-xindehaoyou color-white"></i>
         </div>
         <p class="font-30 color-black">新的好友</p>
+        <div class="new-unread font-24 color-white" v-if="unRead">{{unRead}}</div>
       </li>
-      <li class="list-item border-bottom-1" v-for="(item, index) in friends" :key="index" @click="gotoPersonalInfo('personal-info', item)">
-        <div class="item-portrait">
-          <img :src="item.avatar">
-        </div>
-        <div class="item-detail">
-          <p class="font-33 color-blue">
-            <span>{{item.nick ? item.nick : item.account}}</span>
-            <svg class="icon" aria-hidden="true">
-              <use xlink:href="#icon-cong"></use>
-            </svg>
-          </p>
-          <!-- <p class="font-27 color-deep-grey"><span>借条ID：</span><span>{{item.account}}</span></p> -->
+      <li class="list-item padding-horizontal-30 bg-white" v-for="(item, index) in friends" :key="index" @click="gotoPersonalInfo('personal-info', item)">
+        <div class="item-content border-bottom-1">
+          <div class="content-portrait">
+            <img :src="item.avatar">
+          </div>
+          <div class="content-detail">
+            <p class="font-33 color-blue">
+              <span>{{item.nick ? item.nick : item.account}}</span>
+              <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-cong"></use>
+              </svg>
+            </p>
+            <!-- <p class="font-27 color-deep-grey"><span>借条ID：</span><span>{{item.account}}</span></p> -->
+          </div>
         </div>
       </li>
     </ul>
@@ -50,6 +53,7 @@ export default {
   data () {
     return {
       friends: [],
+      unRead: '',
       // start params
       'title': {
         contentText: '好友',
@@ -67,6 +71,7 @@ export default {
   },
   methods: {
     init () {
+      this.unRead = Storage.sysMsgUnread
       let accounts = []
       Chat.getFriends().success(friends => {
         friends.forEach(friend => {
@@ -90,6 +95,11 @@ export default {
     gotoPersonalInfo (page, item) {
       Storage.userInfo = item
       Router.push(page)
+    }
+  },
+  watch: {
+    '$store.state.sysMsgUnread': function (sysMsgUnread) {
+      this.unRead = sysMsgUnread
     }
   }
 }

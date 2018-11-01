@@ -7,7 +7,10 @@
         <!-- <div class="chat-time" v-if="item.timeShow">
           <div class="time font-24 color-white">15:09</div>
         </div> -->
-        <div class="item-message padding-horizontal-30 clear">
+        <div class="item-tip" v-if="item.type == 'tip'">
+          <div class="tip-msg font-18 color-white">{{item.content}}</div>
+        </div>
+        <div class="item-message padding-horizontal-30 clear" v-if="item.type !== 'tip'">
           <div class="message-portrait" :class="item.isMine ? 'fr' : 'fl'">
             <img :src="item.portrait">
           </div>
@@ -272,8 +275,12 @@ export default {
         data.msgs = data.msgs.reverse()
         data.msgs.forEach((message, index) => {
           let custom = {}
+          let tipMsg = {}
           let isMine = true
           let avator = Account.portrait
+          if (message.custom) {
+            tipMsg = JSON.parse(message.custom)
+          }
           if (message.content) {
             custom = JSON.parse(message.content)
           }
@@ -286,6 +293,9 @@ export default {
               break
             case 'text':
               content = message.text
+              break
+            case 'tip':
+              content = tipMsg.content
               break
             case 'image':
               content = message.file
@@ -426,6 +436,10 @@ export default {
   watch: {
     '$store.state.message': function (message) {
       let custom = {}
+      let tipMsg = {}
+      if (message.custom) {
+        tipMsg = JSON.parse(message.custom)
+      }
       if (message.content) {
         custom = JSON.parse(message.content)
       }
@@ -438,6 +452,9 @@ export default {
           break
         case 'text':
           content = message.text
+          break
+        case 'tip':
+          content = tipMsg.content
           break
         case 'image':
           content = message.file

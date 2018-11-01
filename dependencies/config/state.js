@@ -41,6 +41,7 @@ const state = {
   loanTemplate: null,
   borrowType: null,
   blackList: [], // 黑名单
-  verifyMessage: null
+  verifyMessage: null,
+  sysMsgUnread: null // 系统通知未读数
 }
 module.exports = state

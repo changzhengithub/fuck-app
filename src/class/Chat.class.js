@@ -44,36 +44,25 @@ export default class Chat {
       },
       onupdatesession: onupdatesession => {
         console.log(onupdatesession)
-        let sessions = window.app.$store.state.sessions
+        let sessions = []
         let sessionId = []
-        sessions.forEach(item => {
-          sessionId.push(item.id)
-        })
+        if (window.app.$store.state.sessions) {
+          sessions = window.app.$store.state.sessions
+          sessions.forEach(item => {
+            sessionId.push(item.id)
+          })
+        }
         if (sessionId.indexOf(onupdatesession.id) === -1) {
           sessions.push(onupdatesession)
+          window.app.$store.commit('saveSessions', sessions)
         }
-        window.app.$store.commit('saveSessions', sessions)
         window.app.$store.commit('saveUpdatesession', onupdatesession)
       },
       onsysmsg: sysmsg => {
-        console.log(sysmsg)
-        let verifyList = []
-        let verifyType = []
-        let verifyAccount = []
-        if (window.app.$store.state.verifyMessage) {
-          verifyList = window.app.$store.state.verifyMessage
-          verifyList.forEach(item => {
-            verifyType.push(item.type)
-            verifyAccount.push(item.from)
-          })
-          if (verifyType.includes(sysmsg.type) && verifyAccount.includes(sysmsg.from)) return
-        }
-        verifyList.push(sysmsg)
-        window.app.$store.commit('saveVerifyMessage', verifyList)
-        // this.passFriendApply(sysmsg, sysmsg.from)
+        window.app.$store.commit('saveVerifyMessage', sysmsg)
       },
-      onupdatesysmsg: updattesysmsg => {
-        console.log(updattesysmsg)
+      onupdatesysmsgunread: onupdatesysmsgunread => {
+        window.app.$store.commit('saveSysMsgUnread', onupdatesysmsgunread.friend)
       },
       onfriends: friends => {
         console.log(friends)
@@ -221,10 +210,9 @@ export default class Chat {
     this.nim.passFriendApply({
       idServer: msg.idServer,
       account: account,
-      done: error => {
-        console.log('hello world')
+      done: (error, msg) => {
         if (error) return operation
-        if (operation.successCallback) operation.successCallback()
+        if (operation.successCallback) operation.successCallback(msg)
         return operation
       }
     })
@@ -244,9 +232,9 @@ export default class Chat {
     this.nim.rejectFriendApply({
       idServer: msg.idServer,
       account: account,
-      done: error => {
+      done: (error, msg) => {
         if (error) return operation
-        if (operation.successCallback) operation.successCallback()
+        if (operation.successCallback) operation.successCallback(msg)
         return operation
       }
     })
@@ -263,15 +251,116 @@ export default class Chat {
     this.refresh()
     this.nim.deleteFriend({
       account: account,
-      done: error => {
+      done: (error, msg) => {
         if (error) return operation
-        if (operation.successCallback) operation.successCallback()
+        if (operation.successCallback) operation.successCallback(msg)
         return operation
       }
     })
     return operation
   }
 
+  /**
+   * 获取本地系统通知
+   */
+  static localSysMsgs () {
+    let operation = new Operation()
+    this.refresh()
+    this.nim.getLocalSysMsgs({
+      limit: 100,
+      reverse: true,
+      done: (error, msg) => {
+        if (error) return operation
+        if (operation.successCallback) operation.successCallback(msg)
+        return operation
+      }
+    })
+    return operation
+  }
+
+  /**
+   * 更改系统通知
+   *  @param {*} sysMsgs
+   * sysMsgs: 接收到的系统通知或者系统通知数组
+   */
+  static markSysMsgRead (sysMsgs) {
+    let operation = new Operation()
+    this.refresh()
+    this.nim.markSysMsgRead({
+      sysMsgs: sysMsgs,
+      done: (error, msg) => {
+        if (error) return operation
+        if (operation.successCallback) operation.successCallback(msg)
+        return operation
+      }
+    })
+    return operation
+  }
+
+  /**
+   * 删除系统消息
+   * @param {*} idServer
+   * idServer: 删除系统消息账号
+   */
+  static deleteLocalSysMsg (idServer) {
+    let operation = new Operation()
+    this.refresh()
+    this.nim.deleteLocalSysMsg({
+      idServer: idServer,
+      done: (error, msg) => {
+        if (error) return operation
+        if (operation.successCallback) operation.successCallback(msg)
+        return operation
+      }
+    })
+    return operation
+  }
+
+  /**
+   * 删除所有系统消息
+   */
+  static deleteLocalSysMsgs () {
+    let operation = new Operation()
+    this.refresh()
+    this.nim.deleteAllLocalSysMsgs({
+      done: (error, msg) => {
+        if (error) return operation
+        if (operation.successCallback) operation.successCallback(msg)
+        return operation
+      }
+    })
+    return operation
+  }
+
+  /**
+   * 更改系统通知
+   *  @param {*} msg
+   *  @param {*} status
+   * msg: 系统消息
+   * status: 自定义名字
+   */
+  static updateLocalSysMsg (msg, status) {
+    let operation = new Operation()
+    this.refresh()
+    this.nim.updateLocalSysMsg({
+      idServer: msg.idServer,
+      status: status,
+      done: (error, msg) => {
+        if (error) return operation
+        if (operation.successCallback) operation.successCallback(msg)
+        return operation
+      }
+    })
+    return operation
+  }
+
+  /**
+   * 发送文本消息
+   * @param {*} account
+   * @param {*} content
+   * account: 对方账号
+   * content: 内容
+   */
   static sendText (account, content) {
     let operation = new Operation()
     this.refresh()
@@ -288,6 +377,13 @@ export default class Chat {
     })
     return operation
   }
+
+  /**
+   * 发送文件消息
+   * @param {*} account
+   * @param {*} type
+   * @param {*} fileInput
+   */
   static sendFile (account, type, fileInput) {
     let operation = new Operation()
     this.refresh()

@@ -65,6 +65,7 @@
         }
       }
       .list-item {
+        position: relative;
         @include vertical_direction();
         @include vertical_center();
         height: 100%;
@@ -75,6 +76,17 @@
         p {
           font-size: 18 / $unit * $symbol;
           color: #fff;
+        }
+        .item-unread {
+          position: absolute;
+          left: 45 / $unit * $symbol;
+          top: -9 / $unit * $symbol;
+          z-index: 9;
+          @include center();
+          background-color: red;
+          width: 33 / $unit * $symbol;
+          height: 33 / $unit * $symbol;
+          border-radius: 50%;
         }
       }
     }

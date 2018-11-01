@@ -12,12 +12,12 @@
       </div>
     </div>
     <div class="friend-content">
-      <div class="content-item padding-horizontal-30" v-if="searchFriendData" @click="gotoPage">
+      <div class="content-item padding-horizontal-30" v-if="searchFriendData" @click="gotoPage('personal-info')">
         <div class="item-portrait">
-          <img src="http://iph.href.lu/87x87">
+          <img :src="searchFriendData.avatar">
         </div>
-        <p class="item-name font-30 color-black">名字</p>
-        <button class="button padding-horizontal-24 color-white font-24" :disabled="addDisabled" @click="addFriedn(account)"><div>{{buttonText}}</div></button>
+        <p class="item-name font-30 color-black">{{searchFriendData.nick}}</p>
+        <button class="button padding-horizontal-24 color-white font-24" :disabled="addDisabled" @click.stop="addFriedn(searchFriendData.account)"><div>{{buttonText}}</div></button>
       </div>
       <WithoutComponent v-if="!searchFriendData"></WithoutComponent>
     </div>
@@ -30,7 +30,6 @@
 import Chat from '../../class/Chat.class.js'
 import Check from '../../class/Check.class.js'
 import Error from '../../class/Error.class.js'
-import Http from '../../class/Http.class.js'
 import Router from '../../class/Router.class.js'
 import WithoutComponent from '../../module/without/without.vue'
 export default {
@@ -38,6 +37,7 @@ export default {
   data () {
     return {
       phoneNumber: '',
+      friendList: [],
       buttonText: '添加好友',
       addDisabled: false,
       searchFriendData: null,
@@ -51,11 +51,22 @@ export default {
     WithoutComponent
     // include components
   },
+  created () {
+    this.init()
+  },
   methods: {
     clearInput () {
       if (!this.phoneNumber) return
       this.phoneNumber = ''
       this.clearInputShow = false
+      this.searchFriendData = null
+    },
+    init () {
+      Chat.getFriends().success(friends => {
+        friends.forEach(friend => {
+          this.friendList.push(friend.account)
+        })
+      })
     },
     // 搜索好友
     searchFriend () {
@@ -67,12 +78,20 @@ export default {
         Error.show('请输入正确手机号')
         return
       }
-      Http.send({
-        url: 'url',
-        data: {}
-      }).success(data => {
+      Chat.getUserInfo(this.phoneNumber).success(data => {
+        if (!data) {
+          Error.show('暂无注册账号')
+          return
+        }
+        if (this.friendList.includes(data.account)) {
+          this.buttonText = '已添加'
+          this.addDisabled = true
+        }
+        data.avatar = data.avatar ? data.avatar : require('../../../static/img/master.png')
+        data.nick = data.nick ? data.nick : data.account
         this.searchFriendData = data
       }).fail(data => {
+        console.log(data)
       })
     },
     // 添加好友
@@ -81,7 +100,9 @@ export default {
       this.buttonText = '已发送'
       this.addDisabled = true
     },
-    gotoPage () {}
+    gotoPage (page) {
+      Router.push(page)
+    }
   },
   watch: {
     phoneNumber (newData, oldData) {

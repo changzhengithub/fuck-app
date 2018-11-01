@@ -13,11 +13,12 @@
       <div class="header-list padding-horizontal-21">
         <div class="list-search padding-horizontal-30">
           <i class="iconfont icon-sousuo font-30 color-white"></i>
-          <input type="text" placeholder="搜索你可能认识的朋友">
+          <input type="text" placeholder="搜索你可能认识的朋友" @focus="gotoPage('search-friend')">
         </div>
         <div class="list-item" @click="gotoPage('friends')">
           <i class="iconfont icon-haoyou1"></i>
           <p>联系人</p>
+          <div class="item-unread font-24 color-white" v-if="unRead">{{unRead}}</div>
         </div>
         <div class="list-item" @click="gotoPage('add-friend')">
           <i class="iconfont icon-tianjiatupianjiahao"></i>
@@ -100,7 +101,8 @@ export default {
       broadSwiper: null,
       bannerList: [],
       broadList: [],
-      share: {}
+      share: {},
+      unRead: ''
       // start    params
       // end params
     }
@@ -109,6 +111,7 @@ export default {
     // TabComponent
   },
   created () {
+    this.unRead = Storage.sysMsgUnread
     Http.send({
       url: 'Index',
       data: {
@@ -166,6 +169,11 @@ export default {
         observeParents: true
       })
       this.broadSwiper.detachEvents()
+    }
+  },
+  watch: {
+    '$store.state.sysMsgUnread': function (sysMsgUnread) {
+      this.unRead = sysMsgUnread
     }
   }
 }

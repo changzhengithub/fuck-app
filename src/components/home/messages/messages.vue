@@ -153,6 +153,9 @@ export default {
         case 'image':
           message.content = '图片'
           break
+        case 'tip':
+          message.content = ''
+          break
         case 'audio':
           message.content = '语音'
           break
