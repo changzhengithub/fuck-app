@@ -16,9 +16,11 @@ module.exports = {
     'Error': true,
     'Hasten': false,
     'Http': true,
+    'Initial': false,
     'Mock': false,
     'Replace': false,
     'Router': true,
+    'Sort': false,
     'Status': false,
     'Storage': true,
     'Time': false,
@@ -34,6 +36,7 @@ module.exports = {
           text: '确认添加'
         }]
       }`,
+    'contact-list': false,
     'deadline': false,
     'detail-list': false,
     'image-bg': false,

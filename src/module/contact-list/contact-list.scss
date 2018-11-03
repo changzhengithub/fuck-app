@@ -1,0 +1,103 @@
+// include module
+@import '../../../dependencies/sass/_flex.scss';
+@import '../../../dependencies/sass/_unit.scss';
+// current sass
+.test {
+  width: 100%;
+  height: 100%;
+  padding: {
+    bottom: 99 / $unit * $symbol;
+  }
+  &-navbar {
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 9;
+    width: 45 / $unit * $symbol;
+    .navbar-list {
+      width: 100%;
+      background: rgba($color: #000000, $alpha: 0.3);
+      .list-item {
+        @include center();
+        width: 100%;
+        height: 42 / $unit * $symbol;
+      }
+    }
+    .navbar-toast {
+      position: fixed;
+      top: 40%;
+      left: 43%;
+      z-index: 9;
+      @include center();
+      width: 120 / $unit * $symbol;
+      height: 120 / $unit * $symbol;
+      border-radius: 15 / $unit * $symbol;
+      background: rgba($color: #000000, $alpha: 0.3)
+    }
+  }
+  &-content {
+    width: 100%;
+    height: 100%;
+    // overflow: auto;
+    .content-list {
+      width: 100%;
+      .list-char {
+        width: 100%;
+        .char-title {
+          @include vertical_center();
+          width: 100%;
+          height: 78 / $unit * $symbol;
+          padding: {
+            left: 45 / $unit * $symbol;
+            right: 45 / $unit * $symbol;
+          }
+          background-color: #f2f2f2;
+        }
+        .char-list {
+          width: 100%;
+          .list-friend {
+            width: 100%;
+            height: 120 / $unit * $symbol;
+            padding: {
+              left: 30 / $unit * $symbol;
+              right: 45 / $unit * $symbol;
+            }
+            .friend-content {
+              @include vertical_center();
+              width: 100%;
+              height: 100%;
+              .content-portrait {
+                width: 87 / $unit * $symbol;
+                height: 87 / $unit * $symbol;
+                border-radius: 6 / $unit * $symbol;
+                img {
+                  width: 100%;
+                  height: 100%;
+                  border-radius: 6 / $unit * $symbol;
+                }
+              }
+              .content-detail {
+                flex: 1;
+                padding: {
+                  left: 36 / $unit * $symbol;
+                }
+                p:first-of-type {
+                  padding: {
+                    bottom: 9 / $unit * $symbol;
+                  }
+                  .icon {
+                    width: 30 / $unit * $symbol;
+                    height: 30 / $unit * $symbol;
+                    margin: {
+                      left: 9 / $unit * $symbol;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

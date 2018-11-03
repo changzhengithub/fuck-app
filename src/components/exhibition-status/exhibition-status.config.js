@@ -16,9 +16,11 @@ module.exports = {
     'Error': false,
     'Hasten': false,
     'Http': true,
+    'Initial': false,
     'Mock': false,
     'Replace': false,
     'Router': false,
+    'Sort': false,
     'Status': false,
     'Storage': true,
     'Time': false,
@@ -34,6 +36,7 @@ module.exports = {
           text: '确认'
         }]
       }`,
+    'contact-list': false,
     'deadline': false,
     'detail-list': `[
         {

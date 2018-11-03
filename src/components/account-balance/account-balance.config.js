@@ -16,9 +16,11 @@ module.exports = {
     'Error': false,
     'Hasten': false,
     'Http': true,
+    'Initial': false,
     'Mock': false,
     'Replace': false,
     'Router': true,
+    'Sort': false,
     'Status': false,
     'Storage': true,
     'Time': true,
@@ -40,6 +42,7 @@ module.exports = {
           }
         ]
       }`,
+    'contact-list': false,
     'deadline': false,
     'detail-list': 1,
     'image-bg': false,

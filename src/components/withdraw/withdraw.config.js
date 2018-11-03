@@ -16,9 +16,11 @@ module.exports = {
     'Error': false,
     'Hasten': false,
     'Http': false,
+    'Initial': false,
     'Mock': false,
     'Replace': false,
     'Router': false,
+    'Sort': false,
     'Status': false,
     'Storage': true,
     'Time': true,
@@ -34,6 +36,7 @@ module.exports = {
           text: '提现'
         }]
       }`,
+    'contact-list': false,
     'deadline': false,
     'detail-list': false,
     'image-bg': false,

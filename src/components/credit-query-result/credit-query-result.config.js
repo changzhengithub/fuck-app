@@ -16,9 +16,11 @@ module.exports = {
     'Error': false,
     'Hasten': false,
     'Http': false,
+    'Initial': false,
     'Mock': false,
     'Replace': true,
     'Router': false,
+    'Sort': false,
     'Status': false,
     'Storage': true,
     'Time': false,
@@ -29,6 +31,7 @@ module.exports = {
     'billboard': false,
     'board': `'center'`,
     'button': false,
+    'contact-list': false,
     'deadline': false,
     'detail-list': `[
         {
