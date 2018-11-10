@@ -131,6 +131,7 @@ export default {
   },
   methods: {
     init () {
+      console.log(Storage.chat)
       Chat.getUserInfo(Storage.chat.id).success(data => {
         this.personalInfo = data
         Storage.userInfo = data

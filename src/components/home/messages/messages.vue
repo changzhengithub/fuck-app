@@ -77,9 +77,15 @@ export default {
     // include components
   },
   created () {
+    this.getLoaclSessions()
     this.init()
   },
   methods: {
+    getLoaclSessions () {
+      Chat.getLocalSession().success(data => {
+        console.log(data)
+      })
+    },
     init () {
       let accounts = []
       let count = -1

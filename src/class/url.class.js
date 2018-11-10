@@ -8,8 +8,8 @@ export default class Url {
   static PersonalDetail = '/Member/Detail'
   static TransferALL = '/Member/TransferALL'
   static CurrentStep = '/Member/CurrentStep'
+  static TargetDetail = '/Member/TargetDetail'
   static IdentityAuth = '/Member/IdentityAuth'
-  static DiscreditQuery = '/Member/DiscreditQuery'
   static ContactsAuth = '/Member/ContactsAuth' // 联系人认证
   static UserSmsLogin = '/Member/UserSmsLogin'
   static FindPassword = '/Member/FindPassword'
@@ -18,6 +18,7 @@ export default class Url {
   static SetPaymentPwd = '/Member/SetPaymentPwd'
   static TransferDetail = '/Member/TransferDetail'
   static LendMemberList = '/Member/LendMemberList'
+  static DiscreditQuery = '/Member/DiscreditQuery'
   static PersonalCenter = '/Member/PersonalCenter'
   static UpdatePaymentPwd = '/Member/UpdatePaymentPwd'
   static ForgetPaymentPwd = '/Member/ForgetPaymentPwd'

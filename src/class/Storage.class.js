@@ -267,6 +267,15 @@ export default class Storage {
     return this.getOut('sysMsgUnread')
   }
 
+  // 自定义消息
+  static set customMsg (customMsg) {
+    this.save('customMsg', customMsg)
+  }
+
+  static get customMsg () {
+    return this.getOut('customMsg')
+  }
+
   static clear () {
     for (const item in window.app.$store.mutations) window.app.$store.commit(item, null)
     try {

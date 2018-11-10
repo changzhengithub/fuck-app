@@ -64,7 +64,7 @@
               </div>
               <div class="credit-title">信用报告</div>
             </div>
-            <div class="content-card" :class="item.isMine ? 'arrow-white-right' : 'arrow-white-left'" v-else-if="item.type == 'mp'">
+            <div class="content-card" :class="item.isMine ? 'arrow-white-right' : 'arrow-white-left'" v-else-if="item.type == 'mp'" @click="gotoPage('personal-info')">
               <div class="card-detail">
                 <div class="detail-img">
                   <img :src="item.content.money">
@@ -195,6 +195,7 @@
         </div>
       </div>
     </div>
+    <CallVideoComponent></CallVideoComponent>
     <ModalComponent v-show="modalShow" @CLOSE_EVENT="closeModal">
       <OpenPictureComponent v-if="openPictureShow" @SELECT_PICTURE_EVENT="selectPicture"></OpenPictureComponent>
       <CallComponent v-if="callShow" @VIDEO_CALL_EVENT="videoCall" @VOICE_CALL_EVENT="voiceCall" @CANCEL_EVENT="closeModal"></CallComponent>
@@ -207,6 +208,7 @@
 import TextMessage from './message/message.vue'
 import OpenPictureComponent from './open-picture/open-picture.vue'
 import CallComponent from './call/call.vue'
+import CallVideoComponent from './call-video/call-video.vue'
 // include dependence
 import Account from '../../class/Account.class.js'
 import Chat from '../../class/Chat.class.js'
@@ -251,7 +253,8 @@ export default {
     OpenPictureComponent,
     ModalComponent,
     CallComponent,
-    TextMessage
+    TextMessage,
+    CallVideoComponent
     // include components
   },
   created () {
@@ -269,10 +272,12 @@ export default {
   },
   methods: {
     init () {
-      console.log(11111)
       Chat.historyMsgs(Chat.target.id).success(data => {
         this.messages = []
         data.msgs = data.msgs.reverse()
+        if (Storage.customMsg) {
+          data.msgs.push(Storage.customMsg)
+        }
         data.msgs.forEach((message, index) => {
           let custom = {}
           let tipMsg = {}
@@ -308,7 +313,6 @@ export default {
             isMine = false
             avator = Chat.target.portrait
           }
-          console.log(2222)
           this.messages.push({
             type: message.type,
             content: content,
@@ -317,6 +321,7 @@ export default {
             mark: false
           })
         })
+        Storage.customMsg = null
         console.log(this.messages)
       })
     },
@@ -395,10 +400,16 @@ export default {
     videoCall () {},
     voiceCall () {},
     takePicture () {},
-    selectPicture () {
+    selectPicture (data) {
       this.modalShow = false
       this.openPictureShow = false
-      this.init()
+      this.messages.push({
+        type: data.type,
+        isMine: true,
+        content: data.file,
+        portrait: Account.portrait,
+        mark: true
+      })
     },
     toggleInputType () {
       this.inputType = !this.inputType

@@ -183,10 +183,19 @@ export default {
   },
   created () {
     this.init()
-    this.getPersonalInfo()
   },
   methods: {
     init () {
+      if (!Storage.userInfo) return
+      this.personalInfo = Storage.userInfo
+      if (Storage.userInfo.account !== Storage.phone) {
+        this.isMine = true
+        this.getTargetDetail()
+      } else {
+        this.getMineDetail()
+      }
+    },
+    getMineDetail () {
       Http.send({
         url: 'PersonalDetail',
         data: {
@@ -200,8 +209,22 @@ export default {
       }).fail(data => {
       })
     },
+    getTargetDetail () {
+      Http.send({
+        url: 'TargetDetail',
+        data: {
+          token: Storage.token,
+          phone: Storage.phone,
+          target: this.personalInfo.account
+        }
+      }).success(data => {
+        this.formatData(data)
+        this.personalDetail = data.MemberInfo
+        this.transferInfo = data.TransactionInfo
+      }).fail(data => {
+      })
+    },
     getPersonalInfo () {
-      console.log(Storage.userInfo)
       if (!Storage.userInfo) return
       this.personalInfo = Storage.userInfo
       if (this.personalInfo.account !== Storage.chat.id) {

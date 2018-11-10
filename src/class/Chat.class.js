@@ -1,4 +1,5 @@
 import Account from './Account.class.js'
+import Call from './Call.class.js'
 export default class Chat {
   static nim = null
   static successCallback = null
@@ -70,7 +71,10 @@ export default class Chat {
       },
       debug: false
     }
-    if (window.NIM) window.app.$store.commit('saveNim', window.NIM.getInstance(config))
+    if (window.NIM) {
+      window.app.$store.commit('saveNim', window.NIM.getInstance(config))
+      Call.init(window.app.$store.state.nim)
+    }
   }
 
   static refresh () {
@@ -83,6 +87,7 @@ export default class Chat {
     if (account instanceof Array) {
       this.nim.getUsers({
         accounts: account,
+        sync: true,
         done: (error, user) => {
           if (error) return operation
           if (operation.successCallback) operation.successCallback(user)
@@ -92,6 +97,7 @@ export default class Chat {
     } else {
       this.nim.getUser({
         account: account,
+        sync: true,
         done: (error, users) => {
           if (error) return operation
           if (operation.successCallback) operation.successCallback(users)
@@ -621,6 +627,25 @@ export default class Chat {
     this.refresh()
     this.nim.deleteLocalSession({
       id: sessionId,
+      done: (error, msg) => {
+        if (error) return operation
+        if (operation.successCallback) operation.successCallback(msg)
+        return operation
+      }
+    })
+    return operation
+  }
+
+  /**
+   * 获取本地会话
+   * @param {*} sessionId
+   * sessionId: 会话id或者会话id数组
+   */
+  static getLocalSession () {
+    let operation = new Operation()
+    this.refresh()
+    this.nim.getLocalSessions({
+      limit: 100,
       done: (error, msg) => {
         if (error) return operation
         if (operation.successCallback) operation.successCallback(msg)

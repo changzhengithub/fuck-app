@@ -42,6 +42,7 @@ const state = {
   borrowType: null,
   blackList: [], // 黑名单
   verifyMessage: null,
-  sysMsgUnread: null // 系统通知未读数
+  sysMsgUnread: null, // 系统通知未读数
+  customMsg: null // 自定义消息
 }
 module.exports = state

@@ -145,6 +145,10 @@ const mutations = {
   // 系统通知未读数
   saveSysMsgUnread (state, sysMsgUnread) {
     state.sysMsgUnread = sysMsgUnread
+  },
+  // 自定义消息
+  saveCustomMsg (state, customMsg) {
+    state.customMsg = customMsg
   }
 }
 module.exports = mutations

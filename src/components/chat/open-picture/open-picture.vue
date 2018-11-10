@@ -4,11 +4,11 @@
     <div class="picture-title padding-horizontal-30"><span>图片</span></div>
     <div class="picture-switch padding-horizontal-30 border-bottom-1" @click="takePicture">
       <span>拍摄</span>
-      <input class="switch-shoot" type="file" name="file" capture='camera'>
+      <input class="switch-shoot" type="file" accept="image/* capture=camera">
     </div>
     <div class="picture-switch padding-horizontal-30">
       <span>从手机相册选择</span>
-      <input class="switch-camera" type="file" ref="inputFile" name="image" multiple accept='image/*' @change="getImageFile($event)">
+      <input class="switch-camera" type="file" ref="inputFile" accept='image/*' @change="getImageFile($event)">
     </div>
   </section>
   <!-- e  -->
@@ -37,15 +37,9 @@ export default {
       this.$emit('SELECT_PICTURE_EVENT')
     },
     getImageFile (e) {
-      // let file = e.target.files[0]
-      // let reader = new FileReader()
-      // reader.readAsDataURL(file)
-      // reader.onloadend = () => {
-      //   this.imgDataUrl = reader.result
-      // }
       Chat.sendFile(Chat.target.id, 'image', this.$refs.inputFile).success(data => {
         console.log(data)
-        this.$emit('SELECT_PICTURE_EVENT')
+        this.$emit('SELECT_PICTURE_EVENT', data)
       })
     }
   }

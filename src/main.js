@@ -3,8 +3,12 @@ import App from './App'
 import Modal from './Modal.vue'
 import router from './router/router'
 import store from './store/index'
+import 'babel-polyfill'
+import Es6Promise from 'es6-promise'
 import './main.scss'
 
+require('es6-promise').polyfill()
+Es6Promise.polyfill()
 var VueTouch = require('vue-touch')
 Vue.use(VueTouch, {name: 'v-touch'})
 

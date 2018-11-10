@@ -25,6 +25,7 @@ import SendCardComponent from './send-card/send-card.vue'
 // include dependence
 import Chat from '../../class/Chat.class.js'
 import Router from '../../class/Router.class.js'
+import Storage from '../../class/Storage.class.js'
 import ModalComponent from '../../module/modal/modal.vue'
 import TitleComponent from '../../module/title/title.vue'
 export default {
@@ -84,7 +85,8 @@ export default {
     },
     sendCard () {
       Chat.sendBusinessCard(this.cardInfo).success(data => {
-        console.log(data)
+        Storage.customMsg = data
+        console.log(Storage.customMsg)
         if (data) Router.push('chat')
       })
     },
