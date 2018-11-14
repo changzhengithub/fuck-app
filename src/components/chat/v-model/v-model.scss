@@ -1,0 +1,27 @@
+// include module
+@import '../../../../dependencies/sass/_flex.scss';
+@import '../../../../dependencies/sass/_unit.scss';
+// current sass
+.container-text {
+  width: 100%;
+  line-height: 45 / $unit * $symbol;
+  padding: {
+    left: 12 / $unit * $symbol;
+    right: 6 / $unit * $symbol;
+  }
+  font-size: 27 / $unit * $symbol;
+  color: #333;
+  overflow: auto;
+  word-break: break-all;
+  outline: none;
+  user-select: text;
+  white-space: pre-wrap;
+  .text-emoji {
+    display: inline-block;
+    margin: {
+      bottom: -12 / $unit * $symbol;
+    }
+    width: 42 / $unit * $symbol;
+    height: 42 / $unit * $symbol;
+  }
+}

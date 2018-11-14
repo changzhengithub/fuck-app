@@ -2,6 +2,9 @@ const mutations = {
   saveNim (state, nim) {
     state.nim = nim
   },
+  saveNetcall (state, netcall) {
+    state.netcall = netcall
+  },
   saveSDK (state, sdk) {
     state.sdk = sdk
   },

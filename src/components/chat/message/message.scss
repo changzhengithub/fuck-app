@@ -16,6 +16,15 @@
     width: 42 / $unit * $symbol;
     height: 42 / $unit * $symbol;
   }
+  .text-emoji {
+    width: 42 / $unit * $symbol;
+    height: 42 / $unit * $symbol;
+    margin: {
+      left: 3 / $unit * $symbol;
+      right: 3 / $unit * $symbol;
+      bottom: -9 / $unit * $symbol;
+    }
+  }
 }
 .text-right {
   background-color: #4d7bfe;
@@ -25,4 +34,8 @@
   border: 1px solid #dedede;
   background-color: #fff;
   color: #333;
+}
+.text-emoji {
+  width: 42 / $unit * $symbol;
+  height: 42 / $unit * $symbol;
 }

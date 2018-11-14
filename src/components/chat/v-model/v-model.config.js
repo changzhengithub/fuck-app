@@ -1,5 +1,5 @@
 module.exports = {
-  content: '视频通话',
+  content: '',
   router: false,
   vuex: {
     mutations: false,

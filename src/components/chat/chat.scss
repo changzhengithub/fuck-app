@@ -496,7 +496,10 @@
     .input-eara {
       @include vertical_center_horizontal_around();
       width: 100%;
-      height: 99 / $unit * $symbol;
+      padding: {
+        top: 9 / $unit * $symbol;
+        bottom: 9 / $unit * $symbol;
+      }
       border: {
         top: 1px solid #d5d5d7;
         bottom: 1px solid #d5d5d7;
@@ -522,41 +525,46 @@
       }
       .eara-content {
         width: 486 / $unit * $symbol;
-        height: 72 / $unit * $symbol;
         border: 1px solid #dddddd;
         border-radius: 6 / $unit * $symbol;
-        .content-text {
+        .content-edit {
           width: 100%;
-          height: 100%;
-          border-radius: 6 / $unit * $symbol;
-          input {
-            width: 100%;
-            height: 100%;
-            padding: {
-              left: 21 / $unit * $symbol;
-            }
-            font-size: 27 / $unit * $symbol;
-            color: #333;
+          padding: {
+            top: 9 / $unit * $symbol;
+            bottom: 9 / $unit * $symbol;
           }
-          .textEmoji {
+          border-radius: 6 / $unit * $symbol;
+          .edit-container {
             @include vertical-center();
             width: 100%;
-            height: 100%;
-            padding: {
-              left: 21 / $unit * $symbol;
+            height: auto;
+            border-radius: 6 / $unit * $symbol;
+            max-height: 180 / $unit * $symbol;
+            overflow: auto;
+            .text-emoji {
+              display: inline-block;
+              margin: {
+                bottom: -12 / $unit * $symbol;
+              }
+              width: 42 / $unit * $symbol;
+              height: 42 / $unit * $symbol;
             }
-            font-size: 27 / $unit * $symbol;
-            color: #333;
-            img {
-              width: 30 / $unit * $symbol;
-              height: 30 / $unit * $symbol;
-            }
+            // .container-text {
+            //   width: 100%;
+            //   line-height: 45 / $unit * $symbol;
+            //   padding: {
+            //     left: 12 / $unit * $symbol;
+            //     right: 6 / $unit * $symbol;
+            //   }
+            //   font-size: 27 / $unit * $symbol;
+            //   color: #333;
+            // }
           }
         }
         .content-voice {
           @include center();
           width: 100%;
-          height: 100%;
+          height: 63 / $unit * $symbol;
           font-size: 27 / $unit * $symbol;
           color: #666666;
         }
@@ -585,9 +593,15 @@
               @include center();
               width: 102 / $unit * $symbol;
               height: 90 / $unit * $symbol;
+              padding: {
+                top: 15 / $unit * $symbol;
+                right: 21 / $unit * $symbol;
+                bottom: 15 / $unit * $symbol;
+                left: 21 / $unit * $symbol;
+              }
               img {
-                width: 60 / $unit * $symbol;
-                height: 60 / $unit * $symbol;
+                width: 100%;
+                height: 100%;
               }
             }
           }
@@ -681,3 +695,7 @@
     bottom: (459 + 120) / $unit * $symbol;
   }
 }
+// .text-emoji {
+//   width: 30 / $unit * $symbol;
+//   height: 30 / $unit * $symbol;
+// }
