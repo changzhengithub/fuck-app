@@ -10,30 +10,45 @@
     bottom: 18 / $unit * $symbol;
     left: 18 / $unit * $symbol;
   }
-  line-height: 42 / $unit * $symbol;
   border-radius: 6 / $unit * $symbol;
-  .image {
-    width: 42 / $unit * $symbol;
-    height: 42 / $unit * $symbol;
-  }
-  .text-emoji {
-    width: 42 / $unit * $symbol;
-    height: 42 / $unit * $symbol;
-    margin: {
-      left: 3 / $unit * $symbol;
-      right: 3 / $unit * $symbol;
-      bottom: -9 / $unit * $symbol;
+  .message-text {
+    width: 100%;
+    line-height: 42 / $unit * $symbol;
+    word-break: break-all;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+    white-space: pre-wrap;
+    .text-emoji {
+      width: 42 / $unit * $symbol;
+      height: 42 / $unit * $symbol;
+      margin: {
+        left: 3 / $unit * $symbol;
+        right: 3 / $unit * $symbol;
+        bottom: -9 / $unit * $symbol;
+      }
     }
   }
 }
 .text-right {
   background-color: #4d7bfe;
   color: #fff;
+  .message-text {
+    .text-link {
+      color: blue;
+    }
+  }
 }
 .text-left {
   border: 1px solid #dedede;
   background-color: #fff;
   color: #333;
+  .message-text {
+    .text-link {
+      color: green;
+    }
+  }
 }
 .text-emoji {
   width: 42 / $unit * $symbol;

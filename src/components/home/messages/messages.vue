@@ -28,7 +28,10 @@
               <p class="font-18 color-light-grey">{{item.chatTime}}</p>
             </div>
             <div class="message-recently">
-              <p class="recently-newest  font-24 color-light-grey">{{item.content}}</p>
+              <div class="recently-lastmsg">
+                <p class="lastmsg-newest  font-24 color-light-grey" v-if="item.lastMsg.status == 'success'">{{item.content}}</p>
+                <i class="iconfont icon-tishi1 font-24" v-if="item.lastMsg.status == 'fail'"></i>
+              </div>
               <div class="recently-badge" v-if="item.unread"><span class="color-white font-21">{{item.unread > 100 ? +99 : item.unread}}</span></div>
             </div>
           </div>
@@ -149,21 +152,47 @@ export default {
       Router.push('chat')
     },
     disposeMessageType (message) {
-      switch (message.lastMsg.type) {
+      let msgType = message.lastMsg.type
+      if (!/text|image|file|audio|video|geo|custom|tip/i.test(msgType)) return ''
+      switch (msgType) {
         case 'custom':
-          message.content = '自定义消息'
+          let custom = JSON.parse(message.lastMsg.content)
+          if (custom.type === 3) {
+            message.content = '[贴图]'
+          } else {
+            message.content = '[自定义消息]'
+          }
           break
         case 'text':
           message.content = message.lastMsg.text
           break
         case 'image':
-          message.content = '图片'
-          break
-        case 'tip':
-          message.content = ''
+          message.content = '[图片]'
           break
         case 'audio':
-          message.content = '语音'
+          message.content = '[语音]'
+          break
+        case 'video':
+          message.content = '[视频]'
+          break
+        case 'geo':
+          message.content = '[位置]'
+          break
+        case 'tip':
+          message.content = '[提醒消息]'
+          break
+        case 'robot':
+          message.content = '[机器人消息]'
+          break
+        case 'file':
+          if (!/exe|bat/i.test(message.lastMsg.file.ext)) {
+            message.content = '[文件]'
+          } else {
+            message.content = '[非法文件，已被本站拦截]'
+          }
+          break
+        default:
+          message.content += '[未知消息类型]'
           break
       }
     },

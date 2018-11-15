@@ -4,9 +4,9 @@
     <TitleComponent :title="title" @OTHER_EVENT="gotoPage('personal-info')"></TitleComponent>
     <ul class="chat-list" id="chat-list">
       <li class="list-item" v-for="(item, index) in messages" :key="index">
-        <!-- <div class="chat-time" v-if="item.timeShow">
-          <div class="time font-24 color-white">15:09</div>
-        </div> -->
+        <div class="item-time" v-if="item.timeShow">
+          <div class="time font-24 color-white">{{item.timeShow}}</div>
+        </div>
         <div class="item-tip" v-if="item.type == 'tip'">
           <div class="tip-msg font-18 color-white">{{item.content}}</div>
         </div>
@@ -23,6 +23,9 @@
               <div class="voice-seconds voice-seconds-right font-30 color-light-grey">15"</div>
             </div>
             <div class="content-img" :class="item.isMine ? 'arrow-white-right' : 'arrow-white-left'" v-else-if="item.type == 'image'">
+              <img :src="item.content.url">
+            </div>
+            <div class="content-chartlet" :class="item.isMine ? 'arrow-white-right' : 'arrow-white-left'" v-else-if="item.type == 'tt'">
               <img :src="item.content.url">
             </div>
             <div class="content-transfer" :class="item.isMine ? 'arrow-red-right' : 'arrow-red-left'" v-else-if="item.type == 'zz'">
@@ -104,28 +107,28 @@
         <div class="facebread-content">
           <div class="content-item" v-if="facebread == 'small'">
             <ul class="small-list">
-              <li class="list-item" v-for="(item, index) in emojiArr" :key="index" @click="selectSmall(item, index)">
-                <img :src="item.file">
+              <li class="list-item" v-for="(item, index) in emojiArr" :key="index">
+                <img :src="item.file" @click="selectSmall(item)">
               </li>
             </ul>
           </div>
           <div class="content-item" v-if="facebread == 'rooster'">
             <ul class="rooster-list">
-              <li class="list-item" v-for="(item, index) in ajmdArr" :key="index">
+              <li class="list-item" v-for="(item, index) in ajmdArr" :key="index"  @click="selectEmoji(item, index)">
                 <img :src="item.file">
               </li>
             </ul>
           </div>
           <div class="content-item" v-if="facebread == 'dog'">
             <ul class="dog-list">
-              <li class="list-item" v-for="(item, index) in xxyArr" :key="index">
+              <li class="list-item" v-for="(item, index) in xxyArr" :key="index" @click="selectEmoji(item, index)">
                 <img :src="item.file">
               </li>
             </ul>
           </div>
           <div class="content-item" v-if="facebread == 'rabbit'">
             <ul class="rabbit-list">
-              <li class="list-item" v-for="(item, index) in ltArr" :key="index">
+              <li class="list-item" v-for="(item, index) in ltArr" :key="index" @click="selectEmoji(item, index)">
                 <img :src="item.file">
               </li>
             </ul>
@@ -220,6 +223,7 @@ import Http from '../../class/Http.class.js'
 import Replace from '../../class/Replace.class.js'
 import Router from '../../class/Router.class.js'
 import Storage from '../../class/Storage.class.js'
+import Time from '../../class/Time.class.js'
 import ModalComponent from '../../module/modal/modal.vue'
 import TitleComponent from '../../module/title/title.vue'
 export default {
@@ -263,7 +267,7 @@ export default {
   },
   created () {
     if (Storage.userInfo) {
-      this.title.contentText = Storage.userInfo.name
+      this.title.contentText = Storage.userInfo.nick
     }
     this.init()
     this.getEmojiArr()
@@ -275,26 +279,6 @@ export default {
     this.scrollToBottom()
   },
   methods: {
-    // 表情
-    selectSmall (item, index) {
-      this.$refs.edit.selectImg(item)
-    },
-    // 处理input输入数据
-    getInputValue (value) {
-      this.enCodeInput = value
-      this.inputText = this.emojiEncode(value)
-    },
-    // 表情src反解码
-    emojiEncode (inputEmojiText) {
-      let reg = /<[^>]+>/g
-      let reg1 = /\[([^\][]*)\]/g
-      let matches = inputEmojiText.match(reg) || '<>'
-      for (var j = 0; j < matches.length; ++j) {
-        let emojiMatch = matches[j].match(reg1) || '[]'
-        inputEmojiText = inputEmojiText.replace(matches[j], emojiMatch[0])
-      }
-      return inputEmojiText
-    },
     // 初始化
     init () {
       Chat.historyMsgs(Chat.target.id).success(data => {
@@ -303,29 +287,43 @@ export default {
         if (Storage.customMsg) {
           data.msgs.push(Storage.customMsg)
         }
+        // this.getSendMsgsTime(data.msgs)
         data.msgs.forEach((message, index) => {
+          if (index === 0) {
+            data.msgs[0].timeShow = this.dealTime(message.time)
+          } else {
+            if (message.time - data.msgs[index - 1].time > 5 * 60 * 1000) {
+              message.timeShow = this.dealTime(message.time)
+            } else {
+              message.timeShow = ''
+            }
+          }
+          console.log(message)
           let custom = {}
-          let tipMsg = {}
           let isMine = true
           let avator = Account.portrait
-          if (message.custom) {
-            tipMsg = JSON.parse(message.custom)
-          }
-          if (message.content) {
-            custom = JSON.parse(message.content)
-          }
           let content = null
           switch (message.type) {
             case 'custom':
-              message.type = custom.data.type
+              custom = JSON.parse(message.content)
+              if (custom.type === 3) {
+                let file = {}
+                message.type = 'tt'
+                file.url = require('../../assets/images/' + custom.data.catalog + '/' + custom.data.chartlet + '.png')
+                content = file
+              }
+              if (custom.type === 8 || custom.type === 7) {
+                message.type = custom.data.type
+                content = custom.data
+              }
               // custom.data.id = Replace.mask(custom.data.id, 3, 4, '*')
-              content = custom.data
               break
             case 'text':
-              content = message.text
+              let regexp = /((http|ftp|https|file):[^'"\s]+)/ig // 识别链接
+              content = message.text.replace(regexp, "<a class='text-link' href='$1' target='_blank'>$1</a>")
               break
             case 'tip':
-              content = tipMsg.content
+              content = message.tip
               break
             case 'image':
               content = message.file
@@ -343,12 +341,107 @@ export default {
             content: content,
             isMine: isMine,
             portrait: avator,
+            timeShow: message.timeShow,
             mark: false
           })
         })
         Storage.customMsg = null
-        console.log(this.messages)
       })
+    },
+    // 表情
+    selectSmall (item) {
+      this.$refs.edit.selectImg(item)
+    },
+    // 发送文本消息
+    sendText () {
+      if (!this.inputText) return
+      Chat.sendText(Chat.target.id, this.inputText)
+        .success(text => {
+          this.messages.push({
+            type: 'text',
+            isMine: true,
+            content: this.inputText,
+            portrait: Account.portrait,
+            mark: true
+          })
+          this.inputText = ''
+          this.enCodeInput = ''
+          this.$refs.edit.handleInput(this.enCodeInput)
+        })
+    },
+    // 表情包发送
+    selectEmoji (item, index) {
+      let content = {}
+      content.target = Chat.target.id
+      content.chartlet = item.chartlet
+      content.catalog = item.catalog
+      Chat.chartletMsg(content).success(data => {
+        let file = {}
+        file.url = require('../../assets/images/' + content.catalog + '/' + content.chartlet + '.png')
+        this.messages.push({
+          type: 'tt',
+          isMine: true,
+          content: file,
+          portrait: Account.portrait,
+          mark: true
+        })
+      })
+    },
+    // 处理input输入数据
+    getInputValue (value) {
+      this.enCodeInput = value
+      this.inputText = this.emojiEncode(value)
+    },
+    // 获取表情src
+    getEmojiArr () {
+      for (let i = 1; i < 20; i++) {
+        let ltJson = {}
+        ltJson.file = require('../../assets/images/lt/lt0' + (i >= 10 ? i : '0' + i) + '.png')
+        ltJson.catalog = 'lt'
+        ltJson.chartlet = 'lt0' + (i >= 10 ? i : '0' + i)
+        this.ltArr.push(ltJson)
+      }
+      for (let i = 1; i < 48; i++) {
+        let ltJson = {}
+        ltJson.file = require('../../assets/images/ajmd/ajmd0' + (i >= 10 ? i : '0' + i) + '.png')
+        ltJson.catalog = 'ajmd'
+        ltJson.chartlet = 'ajmd0' + (i >= 10 ? i : '0' + i)
+        this.ajmdArr.push(ltJson)
+      }
+      for (let i = 1; i < 40; i++) {
+        let ltJson = {}
+        ltJson.file = require('../../assets/images/xxy/xxy0' + (i >= 10 ? i : '0' + i) + '.png')
+        ltJson.catalog = 'xxy'
+        ltJson.chartlet = 'xxy0' + (i >= 10 ? i : '0' + i)
+        this.xxyArr.push(ltJson)
+      }
+    },
+    // 表情src反解码
+    emojiEncode (inputEmojiText) {
+      let reg = /<[^>]+>/g
+      let reg1 = /\[([^\][]*)\]/g
+      let matches = inputEmojiText.match(reg) || '<>'
+      for (let j = 0; j < matches.length; ++j) {
+        let emojiMatch = matches[j].match(reg1) || '[]'
+        inputEmojiText = inputEmojiText.replace(matches[j], emojiMatch[0])
+      }
+      return inputEmojiText
+    },
+    // 时间间隔处理
+    dealTime (updateTime) {
+      let chatTime = ''
+      let weeHour = new Date(new Date().setHours(0, 0, 0, 0))
+      let befroeWeehour = new Date(new Date().setHours(0, 0, 0, 0)) - 86400000
+      if (updateTime > weeHour) {
+        chatTime = '今天   ' + Time.format('HH : mm', updateTime)
+        return chatTime
+      }
+      if (updateTime > befroeWeehour) {
+        chatTime = '昨天   ' + Time.format('HH : mm', updateTime)
+        return chatTime
+      }
+      chatTime = Time.format('YYYY-MM-DD', updateTime) + '   ' + Time.format('HH : mm', updateTime)
+      return chatTime
     },
     // 聊天记录滚动底部
     scrollToBottom () {
@@ -356,24 +449,6 @@ export default {
         let container = document.getElementById('chat-list')
         container.scrollTop = container.scrollHeight
       })
-    },
-    // 获取表情src
-    getEmojiArr () {
-      for (let i = 1; i < 20; i++) {
-        let ltJson = {}
-        ltJson.file = require('../../assets/images/lt/lt0' + (i >= 10 ? i : '0' + i) + '.png')
-        this.ltArr.push(ltJson)
-      }
-      for (let i = 1; i < 48; i++) {
-        let ltJson = {}
-        ltJson.file = require('../../assets/images/ajmd/ajmd0' + (i >= 10 ? i : '0' + i) + '.png')
-        this.ajmdArr.push(ltJson)
-      }
-      for (let i = 1; i < 40; i++) {
-        let ltJson = {}
-        ltJson.file = require('../../assets/images/xxy/xxy0' + (i >= 10 ? i : '0' + i) + '.png')
-        this.xxyArr.push(ltJson)
-      }
     },
     gotoBorrow (type) {
       Http.send({
@@ -393,7 +468,6 @@ export default {
         })
         Storage.publishObject = selectObject
         Storage.borrowType = type
-        console.log(Storage.borrowType)
         Router.push('iou-template')
       }).fail(data => {
         Error.show(data.message)
@@ -412,23 +486,6 @@ export default {
       }).fail(data => {
         Error.show(data.message)
       })
-    },
-    // 发送文本消息
-    sendText () {
-      if (!this.inputText) return
-      Chat.sendText(Chat.target.id, this.inputText)
-        .success(text => {
-          this.messages.push({
-            type: 'text',
-            isMine: true,
-            content: this.inputText,
-            portrait: Account.portrait,
-            mark: true
-          })
-          this.inputText = ''
-          this.enCodeInput = ''
-          this.$refs.edit.handleInput(this.enCodeInput)
-        })
     },
     gotoPage (page) {
       Router.push(page)
@@ -485,25 +542,28 @@ export default {
   watch: {
     '$store.state.message': function (message) {
       let custom = {}
-      let tipMsg = {}
-      if (message.custom) {
-        tipMsg = JSON.parse(message.custom)
-      }
-      if (message.content) {
-        custom = JSON.parse(message.content)
-      }
       let content = null
       switch (message.type) {
         case 'custom':
-          message.type = custom.data.type
-          custom.data.id = Replace.mask(custom.data.id, 3, 4, '*')
-          content = custom.data
+          custom = JSON.parse(message.content)
+          if (custom.type === 3) {
+            let file = {}
+            message.type = 'tt'
+            file.url = require('../../assets/images/' + custom.data.catalog + '/' + custom.data.chartlet + '.png')
+            content = file
+          }
+          if (custom.type === 8 || custom.type === 7) {
+            message.type = custom.data.type
+            custom.data.id = Replace.mask(custom.data.id, 3, 4, '*')
+            content = custom.data
+          }
           break
         case 'text':
-          content = message.text
+          let regexp = /((http|ftp|https|file):[^'"\s]+)/ig // 识别链接
+          content = message.text.replace(regexp, "<a class='text-link' href='$1' target='_blank'>$1</a>")
           break
         case 'tip':
-          content = tipMsg.content
+          content = message.tip
           break
         case 'image':
           content = message.file
@@ -519,7 +579,6 @@ export default {
         portrait: Chat.target.portrait,
         mark: false
       })
-      console.log(this.messages)
       Chat.sessionUnread(message.sessionId)
     }
   }

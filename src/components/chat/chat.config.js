@@ -24,7 +24,7 @@ module.exports = {
     'Sort': false,
     'Status': false,
     'Storage': true,
-    'Time': false,
+    'Time': true,
     'Type': false,
     'Url': false
   },

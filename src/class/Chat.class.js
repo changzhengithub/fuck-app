@@ -424,11 +424,45 @@ export default class Chat {
     })
     return operation
   }
+  // 自定义消息
   // {"type":8,"data":{"money":"500.00","title":"向你打个借条","id":"201803031402008552","type":"jt"}}
   // {"type":8,"data":{"money":"10.00","title":"向你打个欠条","id":"201803061627558086","type":"qt"}}
   // {"type":8,"data":{"money":"常彬彬的信用报告","title":"常彬彬的信用报告","id":"13955131374","type":"xybg"}}
   // {"type":8,"data":{"money":"https:\/\/nim.nosdn.127.net\/NTE3Mjg2NQ==\/bmltYV8xNTQ4NjA2ODA3XzE1MjYyNzY3ODU4NDdfYzNjZjhhY2ItZWFlYS00MDE5LThkZDUtNzE3NzU4ZWY5Yjdl","title":"陈庆105","id":"100100105","type":"mp"}}
   // {"data":{"money":"10","type":"zz"},"type":7}
+  // {"data":{"catalog":"ajmd","chartlet":"ajmd001"},"type":3}
+
+  /**
+   * 贴图消息
+   * @param {json} content exemple
+   * {
+   *  target: '对方账号'
+   *  catalog: '贴图类型 lt xxy ajmd'
+   *  chartlet: '贴图名字'
+   * }
+  */
+  static chartletMsg (content) {
+    let operation = new Operation()
+    this.refresh()
+    this.nim.sendCustomMsg({
+      scene: 'p2p',
+      to: content.target,
+      content: JSON.stringify({
+        type: 3,
+        data: {
+          catalog: content.catalog,
+          chartlet: content.chartlet
+        }
+      }),
+      isHistoryable: true,
+      done: (error, msg) => {
+        if (error) return operation
+        if (operation.successCallback) operation.successCallback(msg)
+        return operation
+      }
+    })
+    return operation
+  }
 
   /**
    * 信用报告

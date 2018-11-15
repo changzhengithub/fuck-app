@@ -1,6 +1,8 @@
 <template>
   <!-- s  -->
-  <section class="message font-30" :class="content.isMine ? 'text-right' : 'text-left'" v-html="emojiDecode(content.content)"></section>
+  <section class="message" :class="content.isMine ? 'text-right' : 'text-left'">
+    <p class="message-text font-30" v-html="emojiDecode(content.content)"></p>
+  </section>
   <!-- e  -->
 </template>
 
