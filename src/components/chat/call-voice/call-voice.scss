@@ -2,4 +2,101 @@
 @import '../../../../dependencies/sass/_flex.scss';
 @import '../../../../dependencies/sass/_unit.scss';
 // current sass
-.call-voice {}
+.call-voice {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  width: 100vw;
+  height: 100vh;
+  padding: {
+    right: 30 / $unit * $symbol;
+    left: 30 / $unit * $symbol;
+  }
+  background: #606265;
+  .voice-top {
+    @include vertical_direction_center();
+    width: 100%;
+    height: 930 / $unit * $symbol;
+    .top-switch {
+      width: 100%;
+      height: 180 / $unit * $symbol;
+      padding: {
+        top: 78 / $unit * $symbol;
+      }
+      .switch-video {
+        @include center();
+        width: 186 / $unit * $symbol;
+        height: 99 / $unit * $symbol;
+        padding: {
+          right: 15 / $unit * $symbol;
+        }
+        border: 1px solid #909092;
+        border-radius: 9 / $unit * $symbol;
+        background: #272e32;
+      }
+    }
+    .top-info {
+      @include vertical_direction_center();
+      width: 100%;
+      padding: {
+        top: 150 / $unit * $symbol;
+      }
+      .info-portrait {
+        width: 150 / $unit * $symbol;
+        height: 150 / $unit * $symbol;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .info-account {
+        @include center();
+        width: 100%;
+        height: 120 / $unit * $symbol;
+      }
+      .info-accept {
+        width: 100%;
+        p {
+          @include center();
+          width: 100%;
+          height: 81 / $unit * $symbol;
+        }
+      }
+      .info-waiting {
+        @include center();
+        width: 100%;
+        height: 51 / $unit * $symbol;
+      }
+    }
+  }
+  .voice-switch {
+    @include vertical_center_horizontal_between();
+    width: 100%;
+    height: 150 / $unit * $symbol;
+    .switch-item {
+      width: 216 / $unit * $symbol;
+      height: 120 / $unit * $symbol;
+      border-radius: 9 / $unit * $symbol;
+      .item-btn {
+        @include vertical_center_horizontal_between();
+        padding: {
+          right: 30 / $unit * $symbol;
+          left: 30 / $unit * $symbol;
+        }
+        font-size: 30 / $unit * $symbol;
+        color: #fff;
+        border: 2px solid #909092;
+        border-radius: 9 / $unit * $symbol;
+      }
+    }
+  }
+  .voice-over {
+    @include center();
+    width: 100%;
+    height: 135 / $unit * $symbol;
+    background: #f5455e;
+    border-radius: 12 / $unit * $symbol;
+  }
+}

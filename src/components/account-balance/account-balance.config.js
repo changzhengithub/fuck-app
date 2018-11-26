@@ -46,6 +46,7 @@ module.exports = {
     'contact-list': false,
     'deadline': false,
     'detail-list': 1,
+    'dialog': false,
     'image-bg': false,
     'inputs': false,
     'keyboard': false,

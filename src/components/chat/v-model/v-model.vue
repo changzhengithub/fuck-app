@@ -24,7 +24,8 @@ export default {
   data () {
     return {
       innerText: '',
-      isLocked: false
+      isLocked: false,
+      interval: null
     }
   },
   mounted () {
@@ -43,6 +44,11 @@ export default {
   },
   methods: {
     inputFocus () {
+      // this.$refs.emoji.scrollIntoView()
+      // this.interval = setInterval(() => {
+      //   document.body.scrollTop = document.body.scrollHeight
+      // }, 100)
+      // this.$emit('INTO_VIEW_EVENT')
       this.isLocked = true
     },
     inputBlur () {

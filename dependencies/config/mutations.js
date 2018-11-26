@@ -152,6 +152,38 @@ const mutations = {
   // 自定义消息
   saveCustomMsg (state, customMsg) {
     state.customMsg = customMsg
+  },
+  // 音视频通话信息
+  saveBeCalling (state, beCalling) {
+    state.beCalling = beCalling
+  },
+  // 主叫收到被叫拒绝的通知
+  saveCallRejected (state, callRejected) {
+    state.callRejected = callRejected
+  },
+  // 主叫收到被叫接受的通知
+  saveCallAccepted (state, callAccepted) {
+    state.callAccepted = callAccepted
+  },
+  // 收到挂断通知
+  saveHangup (state, hangup) {
+    state.hangup = hangup
+  },
+  // 通话中收到远端的控制指令
+  saveControl (state, control) {
+    state.control = control
+  },
+  // sdk内部出现错误或者服务器反馈一些通知
+  saveWebRTCError (state, webRTCError) {
+    state.webRTCError = webRTCError
+  },
+  // 音量大小实时回调通知
+  saveAudioVolume (state, audioVolume) {
+    state.audioVolume = audioVolume
+  },
+  // 对方接入WebRTC通知
+  saveRemoteTrack (state, remoteTrack) {
+    state.remoteTrack = remoteTrack
   }
 }
 module.exports = mutations

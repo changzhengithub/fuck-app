@@ -40,6 +40,7 @@ module.exports = {
     'contact-list': false,
     'deadline': 1,
     'detail-list': false,
+    'dialog': false,
     'image-bg': false,
     'inputs': false,
     'keyboard': false,

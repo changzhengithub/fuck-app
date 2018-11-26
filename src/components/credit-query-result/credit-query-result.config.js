@@ -51,6 +51,7 @@ module.exports = {
           value: '58天'
         }
       ]`,
+    'dialog': false,
     'image-bg': false,
     'inputs': false,
     'keyboard': false,

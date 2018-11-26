@@ -35,6 +35,7 @@ module.exports = {
     'contact-list': false,
     'deadline': false,
     'detail-list': false,
+    'dialog': false,
     'image-bg': `require('../../assets/images/borrow.png')`,
     'inputs': false,
     'keyboard': false,

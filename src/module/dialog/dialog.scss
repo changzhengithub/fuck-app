@@ -1,0 +1,63 @@
+// include module
+@import '../../../dependencies/sass/_flex.scss';
+@import '../../../dependencies/sass/_unit.scss';
+// current sass
+.dialog {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 998;
+  @include center();
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba($color: #000000, $alpha: .5);
+  &-container {
+    width: 560 / $unit * $symbol;
+    padding: {
+      top: 12 / $unit * $symbol;
+    }
+    border-radius: 9 / $unit * $symbol;
+    background: #fff;
+    .container-content {
+      width: 100%;
+      padding: {
+        left: 39 / $unit * $symbol;
+        right: 39 / $unit * $symbol;
+        bottom: 21 / $unit * $symbol;
+      }
+      border-top-left-radius: 9 / $unit * $symbol;
+      border-top-right-radius: 9 / $unit * $symbol;
+      border: {
+        bottom: 1px solid #dddddd;
+      }
+      .content-text {
+        line-height: 48 / $unit * $symbol;
+        font-size: 30 / $unit * $symbol;
+        color: #333333;
+      }
+    }
+    .container-button {
+      width: 100%;
+      height: 99 / $unit * $symbol;
+      .button-single {
+        @include center();
+        width: 100%;
+        height: 100%;
+        font-size: 30 / $unit * $symbol;
+        color: #333333;
+      }
+      .button-double {
+        width: 100%;
+        height: 100%;
+        .double-btn {
+          @include center();
+          width: 50%;
+          height: 100%;
+          font-size: 30 / $unit * $symbol;
+          color: #333333;
+        }
+      }
+    }
+  }
+}

@@ -72,6 +72,7 @@ module.exports = {
           value: '50元'
         }
       ]`,
+    'dialog': false,
     'image-bg': false,
     'inputs': false,
     'keyboard': false,

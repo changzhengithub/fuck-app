@@ -2,6 +2,7 @@
 @import './_unit.scss';
 
 button {
+  background-color: transparent;
   div {
     $param: (flex flex) (alignItems center) (justifyContent center);
     @include flexSet($param);
@@ -230,6 +231,10 @@ button {
 
 .bg-blue {
   background-color: #4d7bfe;
+}
+
+.bg-red {
+  background-color: #f5455e;
 }
 
 .bg-grey {

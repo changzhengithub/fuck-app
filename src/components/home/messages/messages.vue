@@ -13,7 +13,7 @@
         </div>
       </div>
       <ul class="content-list padding-horizontal-30">
-        <li class="list-item border-bottom-1" v-for="(item, index) in sessions" :key="index" @click="gotoChat(item)" @touchstart="showDeleteModal" @touchend="cancelDeleteModal(item)">
+        <li class="list-item border-bottom-1" v-for="(item, index) in sessions" :key="index" @click="gotoChat(item)" @touchstart="tapDeleteModal" @touchend="showDeleteModal(item, index)">
           <div class="item-portrait">
             <img :src="item.portrait">
           </div>
@@ -80,61 +80,13 @@ export default {
     // include components
   },
   created () {
-    this.getLoaclSessions()
     this.init()
   },
   methods: {
-    getLoaclSessions () {
-      Chat.getLocalSession().success(data => {
-        console.log(data)
-      })
-    },
     init () {
-      let accounts = []
-      let count = -1
-      console.log(Storage.sessions)
       if (!Storage.sessions) return
       this.sessions = Storage.sessions
-      this.sessions.forEach(item => {
-        accounts.push(item.to)
-        if (this.$store.state.updatesession) {
-          if (item.to === this.$store.state.updatesession.to) {
-            item.lastMsg = this.$store.state.updatesession.lastMsg
-            item.unread = this.$store.state.updatesession.unread
-          }
-        }
-        item.chatTime = this.dealTime(item.lastMsg.time)
-        this.disposeMessageType(item)
-      })
-      for (let i = 0; i < accounts.length; i += 150) {
-        count++
-        this.getUserInfo(accounts.slice(i, i + 150), count)
-      }
-      console.log(Storage.sessions)
-    },
-    getUserInfo (accounts, index) {
-      Chat.getUserInfo(accounts).success(data => {
-        data.forEach((item, i) => {
-          this.sessions[index * 150 + i].portrait = item.avatar ? item.avatar : require('../../../../static/img/master.png')
-          this.sessions[index * 150 + i].name = item.nick ? item.nick : item.account
-        })
-        this.sessions = [...this.sessions]
-      })
-    },
-    dealTime (updateTime) {
-      let chatTime = ''
-      let weeHour = new Date(new Date().setHours(0, 0, 0, 0))
-      let befroeWeehour = new Date(new Date().setHours(0, 0, 0, 0)) - 86400000
-      if (updateTime > weeHour) {
-        chatTime = Time.format('HH', updateTime) > 12 ? '下午  ' + Time.format('hh : mm', updateTime) : '上午  ' + Time.format('hh : mm', updateTime)
-        return chatTime
-      }
-      if (updateTime > befroeWeehour) {
-        chatTime = '昨天'
-        return chatTime
-      }
-      chatTime = Time.format('YYYY-MM-DD', updateTime)
-      return chatTime
+      this.dealSessions(this.sessions)
     },
     gotoChat (item) {
       Storage.userInfo = {
@@ -151,6 +103,71 @@ export default {
       }
       Router.push('chat')
     },
+    gotoPage (page) {
+      Router.push(page)
+    },
+    // 删除会话
+    deleteSession () {
+      Chat.deleteSessions(this.deleteSessionItem.id).success(data => {
+        this.sessions.splice(this.deleteSessionIndex, 1)
+        Storage.sessions = this.sessions
+        this.modalShow = false
+        this.deleteSessionShow = false
+      })
+    },
+    openMore () {
+      this.modalShow = true
+      this.moreShow = true
+    },
+    closeModal () {
+      this.modalShow = false
+      this.deleteSessionShow = false
+      this.moreShow = false
+    },
+    // 长按
+    tapDeleteModal () {
+      clearInterval(this.longTap)
+      this.longTap = setTimeout(() => {
+        this.modalShow = true
+        this.deleteSessionShow = true
+      }, 1000)
+    },
+    showDeleteModal (item, index) {
+      clearInterval(this.longTap)
+      this.deleteSessionItem = item
+      this.deleteSessionIndex = index
+    },
+    // 处理sessions
+    dealSessions (sessions) {
+      let accounts = []
+      let count = -1
+      sessions.forEach(item => {
+        accounts.push(item.to)
+        if (this.$store.state.updatesession) {
+          if (item.to === this.$store.state.updatesession.to) {
+            item.lastMsg = this.$store.state.updatesession.lastMsg
+            item.unread = this.$store.state.updatesession.unread
+          }
+        }
+        item.chatTime = this.dealTime(item.lastMsg.time)
+        this.disposeMessageType(item)
+      })
+      for (let i = 0; i < accounts.length; i += 150) {
+        count++
+        this.getUserInfo(accounts.slice(i, i + 150), count)
+      }
+    },
+    // 获取用户信息
+    getUserInfo (accounts, index) {
+      Chat.getUserInfo(accounts).success(data => {
+        data.forEach((item, i) => {
+          this.sessions[index * 150 + i].portrait = item.avatar ? item.avatar : require('../../../../static/img/master.png')
+          this.sessions[index * 150 + i].name = item.nick ? item.nick : item.account
+        })
+        this.sessions = [...this.sessions]
+      })
+    },
+    // 处理消息类型
     disposeMessageType (message) {
       let msgType = message.lastMsg.type
       if (!/text|image|file|audio|video|geo|custom|tip/i.test(msgType)) return ''
@@ -196,41 +213,25 @@ export default {
           break
       }
     },
-    gotoPage (page) {
-      Router.push(page)
-    },
-    openMore () {
-      this.modalShow = true
-      this.moreShow = true
-    },
-    deleteSession () {
-      Chat.deleteSessions(this.deleteSessionItem.id).success(data => {
-        console.log(data)
-        this.sessions.splice(this.deleteSessionIndex, 1)
-        Storage.sessions = this.sessions
-        this.modalShow = false
-        this.deleteSessionShow = false
-      })
-    },
-    closeModal () {
-      this.modalShow = false
-      this.deleteSessionShow = false
-      this.moreShow = false
-    },
-    showDeleteModal () {
-      clearInterval(this.longTap)
-      this.longTap = setTimeout(() => {
-        this.modalShow = true
-        this.deleteSessionShow = true
-      }, 1000)
-    },
-    cancelDeleteModal (item, index) {
-      clearInterval(this.longTap)
-      this.deleteSessionItem = item
-      this.deleteSessionIndex = index
+    // 处理显示时间
+    dealTime (updateTime) {
+      let chatTime = ''
+      let weeHour = new Date(new Date().setHours(0, 0, 0, 0))
+      let befroeWeehour = new Date(new Date().setHours(0, 0, 0, 0)) - 86400000
+      if (updateTime > weeHour) {
+        chatTime = Time.format('HH', updateTime) > 12 ? '下午  ' + Time.format('hh : mm', updateTime) : '上午  ' + Time.format('hh : mm', updateTime)
+        return chatTime
+      }
+      if (updateTime > befroeWeehour) {
+        chatTime = '昨天'
+        return chatTime
+      }
+      chatTime = Time.format('YYYY-MM-DD', updateTime)
+      return chatTime
     }
   },
   watch: {
+    // 监听消息，更新未读数
     '$store.state.updatesession': function (updatesession) {
       this.sessions.forEach(item => {
         if (item.to === updatesession.to) {
@@ -240,6 +241,11 @@ export default {
           this.disposeMessageType(item)
         }
       })
+    },
+    // 更新会话列表
+    '$store.state.sessions': function (sessions) {
+      this.sessions = sessions
+      this.dealSessions(this.sessions)
     }
   }
 }

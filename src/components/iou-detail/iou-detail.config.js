@@ -61,6 +61,7 @@ module.exports = {
           value: '0元'
         }
       ]`,
+    'dialog': false,
     'image-bg': false,
     'inputs': false,
     'keyboard': 1,

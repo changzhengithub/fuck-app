@@ -8,7 +8,7 @@
     </div>
     <div class="picture-switch padding-horizontal-30">
       <span>从手机相册选择</span>
-      <input class="switch-camera" type="file" ref="inputFile" accept='image/*' @change="getImageFile($event)">
+      <input class="switch-camera" type="file" ref="inputFile" accept="audio/*" @change="getImageFile($event)">
     </div>
   </section>
   <!-- e  -->
@@ -37,10 +37,14 @@ export default {
       this.$emit('SELECT_PICTURE_EVENT')
     },
     getImageFile (e) {
-      Chat.sendFile(Chat.target.id, 'image', this.$refs.inputFile).success(data => {
+      Chat.previewFile(this.$refs.inputFile).success(data => {
         console.log(data)
-        this.$emit('SELECT_PICTURE_EVENT', data)
+        alert(data.url)
       })
+      // Chat.sendFile(Chat.target.id, 'image', this.$refs.inputFile).success(data => {
+      //   console.log(data)
+      //   this.$emit('SELECT_PICTURE_EVENT', data)
+      // })
     }
   }
 }

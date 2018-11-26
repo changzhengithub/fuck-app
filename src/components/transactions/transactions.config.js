@@ -35,6 +35,7 @@ module.exports = {
     'contact-list': false,
     'deadline': false,
     'detail-list': `[]`,
+    'dialog': false,
     'image-bg': false,
     'inputs': false,
     'keyboard': false,

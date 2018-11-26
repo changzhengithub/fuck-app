@@ -37,6 +37,7 @@ export default class Chat {
         // if (window.app.$store.state.chat.target.id === message.from) {
         //   window.app.$store.commit('saveMessage', message)
         // } else {}
+        console.log(message)
         window.app.$store.commit('saveMessage', message)
       },
       onsessions: sessions => {
@@ -408,6 +409,35 @@ export default class Chat {
     return operation
   }
 
+  // 预览文件
+  static previewFile (fileInput) {
+    let operation = new Operation()
+    this.refresh()
+    this.nim.previewFile({
+      type: 'image',
+      fileInput: fileInput,
+      uploadprogress: (obj) => {
+        console.log('文件总大小: ' + obj.total + 'bytes')
+        console.log('已经上传的大小: ' + obj.loaded + 'bytes')
+        console.log('上传进度: ' + obj.percentage)
+        console.log('上传进度文本: ' + obj.percentageText)
+      },
+      done: (error, msg) => {
+        if (error) return operation
+        if (operation.successCallback) operation.successCallback(msg)
+        return operation
+      }
+    })
+    return operation
+  }
+
+  /**
+   * 发送图片消息
+   * @param {*} account
+   * @param {*} fileInput
+   * account: 对方账号
+   * fileInput: input表单
+   */
   static sendImage (account, fileInput) {
     let operation = new Operation()
     this.refresh()
@@ -704,6 +734,7 @@ class Operation {
   failCallback = null
   success (callback) {
     this.successCallback = callback
+    console.log(this)
     return this
   }
 

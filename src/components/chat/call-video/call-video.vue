@@ -1,9 +1,36 @@
 <template>
   <!-- s  -->
   <section class="call-video">
-    <div class="video-container" id="video-container"></div>
-    <div class="vider-remoteContainer" id="vider-remoteContainer"></div>
-    <div class="video-footer"></div>
+    <div class="video-container">
+      <div class="container-info">
+        <div class="info-portrait">
+          <img src="../../../assets/images/master.png">
+        </div>
+        <div class="info-detail">
+          <p class="info-account font-39 color-white">17730127131</p>
+          <p class="info-waiting font-30 color-white">等待对方接听...</p>
+        </div>
+      </div>
+      <div class="container-myself" id="video-container"></div>
+      <div class="container-remoteContainer" id="vider-remoteContainer"></div>
+      <div class="container-footer bg-white">
+        <div class="footer-item">
+          <i class="iconfont icon-video"></i>
+        </div>
+        <div class="footer-item">
+          <i class="iconfont icon-video"></i>
+        </div>
+        <div class="footer-item">
+          <i class="iconfont icon-video"></i>
+        </div>
+        <div class="footer-item">
+          <i class="iconfont icon-video"></i>
+        </div>
+        <div class="footer-item bg-red color-white" @click="cancelVideo">
+          <i class="iconfont icon-video"></i>
+        </div>
+      </div>
+    </div>
   </section>
   <!-- e  -->
 </template>
@@ -21,7 +48,11 @@ export default {
   components: {
     // include components
   },
-  methods: {}
+  methods: {
+    cancelVideo () {
+      this.$emit('CANCEL_VIDEO_EVENT')
+    }
+  }
 }
 </script>
 

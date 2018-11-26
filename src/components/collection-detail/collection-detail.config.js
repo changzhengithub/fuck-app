@@ -49,6 +49,7 @@ module.exports = {
           value: ''
         }
       ]`,
+    'dialog': false,
     'image-bg': false,
     'inputs': false,
     'keyboard': false,

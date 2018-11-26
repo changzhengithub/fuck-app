@@ -35,6 +35,7 @@ module.exports = {
     'contact-list': `undefined`,
     'deadline': false,
     'detail-list': false,
+    'dialog': false,
     'image-bg': false,
     'inputs': false,
     'keyboard': false,

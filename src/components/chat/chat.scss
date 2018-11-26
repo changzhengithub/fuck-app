@@ -3,6 +3,7 @@
 @import '../../../dependencies/sass/_unit.scss';
 // current sass
 .chat {
+  // position: relative;
   width: 100vw;
   height: 100vh;
   padding: {
@@ -501,8 +502,8 @@
       }
     }
   }
-  &-input {
-    position: fixed;
+  .chat-input {
+    position: absolute;
     bottom: 0;
     left: 0;
     right: 0;

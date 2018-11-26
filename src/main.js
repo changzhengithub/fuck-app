@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App'
 import Modal from './Modal.vue'
+import Call from './Call.vue'
 import router from './router/router'
 import store from './store/index'
 import 'babel-polyfill'
@@ -15,6 +16,12 @@ Vue.use(VueTouch, {name: 'v-touch'})
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
+window.call = new Vue({
+  el: '#call',
+  store,
+  render: f => f(Call)
+})
+
 window.modal = new Vue({
   el: '#modal',
   store,

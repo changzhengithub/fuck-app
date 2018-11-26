@@ -1,0 +1,95 @@
+// include module
+@import '../../../../dependencies/sass/_flex.scss';
+@import '../../../../dependencies/sass/_unit.scss';
+// current sass
+.call-inform {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  width: 100vw;
+  height: 100vh;
+  padding: {
+    right: 30 / $unit * $symbol;
+    left: 30 / $unit * $symbol;
+  }
+  background: #606265;
+  .voice-info {
+    @include vertical_direction_center();
+    width: 100%;
+    height: 930 / $unit * $symbol;
+    padding: {
+      top: 150 / $unit * $symbol;
+    }
+    .info-portrait {
+      width: 150 / $unit * $symbol;
+      height: 150 / $unit * $symbol;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .info-account {
+      @include center();
+      width: 100%;
+      height: 120 / $unit * $symbol;
+    }
+    .info-waiting {
+      @include center();
+      width: 100%;
+      height: 51 / $unit * $symbol;
+    }
+  }
+  .inform-video {
+    width: 100%;
+    height: 930 / $unit * $symbol;
+    padding: {
+      top: 30 / $unit * $symbol;
+    }
+    .video-info {
+      @include vertical_center();
+      width: 100%;
+      height: 150 / $unit * $symbol;
+      padding: {
+        right: 21 / $unit * $symbol;
+        left: 21 / $unit * $symbol;
+      }
+      .info-portrait {
+        width: 120 / $unit * $symbol;
+        height: 120 / $unit * $symbol;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .info-detail {
+        flex: 1;
+        padding: {
+          left: 24 / $unit * $symbol;
+        }
+        .info-account {
+          @include vertical_center();
+          width: 100%;
+          height: 60 / $unit * $symbol;
+        }
+        .info-waiting {
+          @include vertical_center();
+          width: 100%;
+          height: 60 / $unit * $symbol;
+        }
+      }
+    }
+  }
+  .inform-switch {
+    @include vertical_center_horizontal_between();
+    width: 100%;
+    height: 135 / $unit * $symbol;
+    .switch-item {
+      @include center();
+      width: 339 / $unit * $symbol;
+      height: 100%;
+      border-radius: 9 / $unit * $symbol;
+    }
+  }
+}
