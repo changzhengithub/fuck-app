@@ -61,6 +61,7 @@ export default class Chat {
         window.app.$store.commit('saveUpdatesession', onupdatesession)
       },
       onsysmsg: sysmsg => {
+        console.log(sysmsg)
         window.app.$store.commit('saveVerifyMessage', sysmsg)
       },
       onupdatesysmsgunread: onupdatesysmsgunread => {
@@ -734,7 +735,6 @@ class Operation {
   failCallback = null
   success (callback) {
     this.successCallback = callback
-    console.log(this)
     return this
   }
 

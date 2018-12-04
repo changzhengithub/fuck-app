@@ -52,6 +52,8 @@ const state = {
   control: null, // 通话中收到远端的控制指令
   webRTCError: null, // sdk内部出现错误或者服务器反馈一些通知
   audioVolume: null, // 音量大小实时回调通知
-  remoteTrack: null // 对接入webrtc通知
+  remoteTrack: null, // 对接入webrtc通知
+  callType: null, // 发起音视频通话类型
+  callMessage: null // 通话时的消息
 }
 module.exports = state

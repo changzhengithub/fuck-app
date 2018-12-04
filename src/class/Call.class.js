@@ -291,13 +291,26 @@ export default class Call {
   }
 
   /**
+   * 从音频模式切换为视频模式
+   */
+  static switchAudioToVideo () {
+    return this.netcall.switchAudioToVideo()
+  }
+
+  /**
+   * 从视频模式切换为音频模式
+   */
+  static switchVideoToAudio () {
+    return this.netcall.switchVideoToAudio()
+  }
+
+  /**
    * 设置自己画面的尺寸
    */
-  static setVideoViewSize () {
+  static setVideoViewSize (width, height) {
     return this.netcall.setVideoViewSize({
-      width: 300,
-      height: 300,
-      cut: true
+      width: width,
+      height: height
     })
   }
 
@@ -308,7 +321,7 @@ export default class Call {
   static startRemoteStream (account) {
     return this.netcall.startRemoteStream({
       account: account,
-      node: document.getElementById('vider-remoteContainer')
+      node: document.getElementById('video-remoteContainer')
     })
   }
 
@@ -318,18 +331,17 @@ export default class Call {
   static stopRemoteStream (account) {
     return this.netcall.stopRemoteStream({
       account: account,
-      node: document.getElementById('vider-remoteContainer')
+      node: document.getElementById('video-remoteContainer')
     })
   }
 
   /**
    * 设置对方画面的尺寸
    */
-  static setVideoViewRemoteSize () {
+  static setVideoViewRemoteSize (width, height) {
     return this.netcall.setVideoViewRemoteSize({
-      width: 300,
-      height: 300,
-      cut: true
+      width: width,
+      height: height
     })
   }
 
@@ -350,19 +362,15 @@ export default class Call {
   /**
    * 暂停播放对方的视频画面
    */
-  static suspendRemoteStream (account) {
-    return this.netcall.suspendRemoteStream({
-      account: account
-    })
+  static suspendRemoteStream () {
+    return this.netcall.suspendRemoteStream()
   }
 
   /**
    * 继续播放对方的视频画面
    */
-  static resumeRemoteStream (account) {
-    return this.netcall.resumeRemoteStream({
-      account: account
-    })
+  static resumeRemoteStream () {
+    return this.netcall.resumeRemoteStream()
   }
 
   /**

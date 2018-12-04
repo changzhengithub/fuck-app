@@ -1,15 +1,10 @@
 // include module
-@import '../../../../dependencies/sass/_flex.scss';
-@import '../../../../dependencies/sass/_unit.scss';
+@import '../../../dependencies/sass/_flex.scss';
+@import '../../../dependencies/sass/_unit.scss';
 // current sass
 .call-voice {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 9999;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   padding: {
     right: 30 / $unit * $symbol;
     left: 30 / $unit * $symbol;
@@ -71,32 +66,48 @@
       }
     }
   }
-  .voice-switch {
-    @include vertical_center_horizontal_between();
-    width: 100%;
-    height: 150 / $unit * $symbol;
-    .switch-item {
-      width: 216 / $unit * $symbol;
-      height: 120 / $unit * $symbol;
-      border-radius: 9 / $unit * $symbol;
-      .item-btn {
-        @include vertical_center_horizontal_between();
-        padding: {
-          right: 30 / $unit * $symbol;
-          left: 30 / $unit * $symbol;
-        }
-        font-size: 30 / $unit * $symbol;
-        color: #fff;
-        border: 2px solid #909092;
+  .voice-answer {
+    .answer-switch {
+      @include vertical_center_horizontal_between();
+      width: 100%;
+      height: 150 / $unit * $symbol;
+      .switch-item {
+        width: 216 / $unit * $symbol;
+        height: 120 / $unit * $symbol;
         border-radius: 9 / $unit * $symbol;
+        .item-btn {
+          @include vertical_center_horizontal_between();
+          padding: {
+            right: 30 / $unit * $symbol;
+            left: 30 / $unit * $symbol;
+          }
+          font-size: 30 / $unit * $symbol;
+          color: #fff;
+          border: 2px solid #909092;
+          border-radius: 9 / $unit * $symbol;
+        }
       }
     }
+    .answer-over {
+      @include center();
+      width: 100%;
+      height: 135 / $unit * $symbol;
+      background: #f5455e;
+      border-radius: 12 / $unit * $symbol;
+    }
   }
-  .voice-over {
-    @include center();
+  .voice-waiting {
+    @include vertical_center_horizontal_between();
     width: 100%;
-    height: 135 / $unit * $symbol;
-    background: #f5455e;
-    border-radius: 12 / $unit * $symbol;
+    height: 285 / $unit * $symbol;
+    padding: {
+      top: 150 / $unit * $symbol;
+    }
+    .waiting-item {
+      @include center();
+      width: 339 / $unit * $symbol;
+      height: 100%;
+      border-radius: 9 / $unit * $symbol;
+    }
   }
 }

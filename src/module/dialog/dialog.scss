@@ -7,24 +7,22 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: 998;
+  z-index: 10000;
   @include center();
   width: 100vw;
   height: 100vh;
   background-color: rgba($color: #000000, $alpha: .5);
   &-container {
     width: 560 / $unit * $symbol;
-    padding: {
-      top: 12 / $unit * $symbol;
-    }
     border-radius: 9 / $unit * $symbol;
     background: #fff;
     .container-content {
       width: 100%;
       padding: {
+        top: 51 / $unit * $symbol;
         left: 39 / $unit * $symbol;
         right: 39 / $unit * $symbol;
-        bottom: 21 / $unit * $symbol;
+        bottom: 51 / $unit * $symbol;
       }
       border-top-left-radius: 9 / $unit * $symbol;
       border-top-right-radius: 9 / $unit * $symbol;
@@ -33,7 +31,8 @@
       }
       .content-text {
         line-height: 48 / $unit * $symbol;
-        font-size: 30 / $unit * $symbol;
+        text-align: center;
+        font-size: 36 / $unit * $symbol;
         color: #333333;
       }
     }
@@ -48,6 +47,7 @@
         color: #333333;
       }
       .button-double {
+        @include center();
         width: 100%;
         height: 100%;
         .double-btn {
@@ -56,6 +56,22 @@
           height: 100%;
           font-size: 30 / $unit * $symbol;
           color: #333333;
+        }
+        .double-left {
+          position: relative;
+        }
+        .double-left::after {
+          position: absolute;
+          right: 0;
+          top: 0;
+          z-index: 9;
+          display: block;
+          content: '';
+          width: 0;
+          height: 100%;
+          border: {
+            left: 1px solid #ccc;
+          }
         }
       }
     }

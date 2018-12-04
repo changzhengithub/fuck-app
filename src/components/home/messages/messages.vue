@@ -85,8 +85,7 @@ export default {
   methods: {
     init () {
       if (!Storage.sessions) return
-      this.sessions = Storage.sessions
-      this.dealSessions(this.sessions)
+      this.dealSessions(Storage.sessions)
     },
     gotoChat (item) {
       Storage.userInfo = {
@@ -141,16 +140,22 @@ export default {
     dealSessions (sessions) {
       let accounts = []
       let count = -1
-      sessions.forEach(item => {
-        accounts.push(item.to)
-        if (this.$store.state.updatesession) {
-          if (item.to === this.$store.state.updatesession.to) {
-            item.lastMsg = this.$store.state.updatesession.lastMsg
-            item.unread = this.$store.state.updatesession.unread
+      sessions.forEach((item, index) => {
+        if (item.lastMsg) {
+          console.log(1111)
+          console.log(item.lastMsg)
+          let account = item.id.substr(4)
+          accounts.push(account)
+          if (this.$store.state.updatesession) {
+            if (item.to === this.$store.state.updatesession.to) {
+              item.lastMsg = this.$store.state.updatesession.lastMsg
+              item.unread = this.$store.state.updatesession.unread
+            }
           }
+          item.chatTime = this.dealTime(item.lastMsg.time)
+          this.disposeMessageType(item)
+          this.sessions.push(item)
         }
-        item.chatTime = this.dealTime(item.lastMsg.time)
-        this.disposeMessageType(item)
       })
       for (let i = 0; i < accounts.length; i += 150) {
         count++
@@ -170,8 +175,13 @@ export default {
     // 处理消息类型
     disposeMessageType (message) {
       let msgType = message.lastMsg.type
-      if (!/text|image|file|audio|video|geo|custom|tip/i.test(msgType)) return ''
+      console.log(msgType)
+      console.log(2222)
+      if (!/text|image|file|audio|video|geo|custom|tip|notification/i.test(msgType)) return ''
       switch (msgType) {
+        case 'notification':
+          message.content = this.disposeCallMsg(message.lastMsg.attach)
+          break
         case 'custom':
           let custom = JSON.parse(message.lastMsg.content)
           if (custom.type === 3) {
@@ -228,24 +238,55 @@ export default {
       }
       chatTime = Time.format('YYYY-MM-DD', updateTime)
       return chatTime
+    },
+    // 音视频消息处理
+    disposeCallMsg (msg) {
+      console.log(msg)
+      let toggleType = null
+      if (typeof msg.duration === 'number') msg.duration = this.dealCallTime(msg.duration)
+      if (!msg.duration) msg.duration = ''
+      if (msg.netcallType === 1) toggleType = '[音频通话]' + msg.duration
+      if (msg.netcallType === 2) toggleType = '[视频通话]' + msg.duration
+      return toggleType
+    },
+    dealCallTime (time) {
+      let callTime = null
+      let callHour = null
+      let callMinute = null
+      let callSecond = null
+      callHour = this.fillZero(parseInt(time / 60 / 60))
+      callMinute = this.fillZero(parseInt(time / 60))
+      callSecond = this.fillZero(time % 60)
+      if (parseInt(time / 60 / 60)) {
+        callTime = callHour + ' : ' + callMinute + ' : ' + callSecond
+        return callTime
+      }
+      callTime = callMinute + ' : ' + callSecond
+      return callTime
+    },
+    fillZero (num) {
+      num = num < 10 ? '0' + num : num
+      return num
     }
   },
   watch: {
     // 监听消息，更新未读数
-    '$store.state.updatesession': function (updatesession) {
+    '$store.state.updatesession' (updatesession) {
+      console.log(updatesession)
       this.sessions.forEach(item => {
         if (item.to === updatesession.to) {
           item.lastMsg = updatesession.lastMsg
           item.unread = updatesession.unread
           item.chatTime = this.dealTime(updatesession.updateTime)
+          console.log(item)
           this.disposeMessageType(item)
         }
       })
     },
     // 更新会话列表
     '$store.state.sessions': function (sessions) {
-      this.sessions = sessions
-      this.dealSessions(this.sessions)
+      this.dealSessions(sessions)
+      console.log(3333)
     }
   }
 }

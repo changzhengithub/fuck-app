@@ -18,12 +18,23 @@
             <div class="content-text" :class="item.isMine ? 'arrow-blue-right' : 'arrow-white-left'"  v-if="item.type == 'text'">
               <TextMessage :content="item"></TextMessage>
             </div>
-            <div class="content-notification" :class="item.isMine ? 'arrow-blue-right' : 'arrow-white-left'"  v-if="item.type == 'notification'">
-              <p>{{item.content}}</p>
+            <div class="content-notification" :class="[item.isMine ? 'arrow-blue-right' : 'arrow-white-left', item.isMine ? 'content-notification-right' : 'content-notification-left']"  v-if="item.type == 'notification'">
+              <div class="notification-none">
+                <i class="iconfont font-30" :class="item.content.toggleType ? 'icon-shouye' : 'icon-sousuo'"></i>
+                <span class="font-30">{{item.content.duration}}</span>
+              </div>
             </div>
-            <div class="content-voice" :class="[item.isMine ? 'arrow-blue-right' : 'arrow-white-left', item.isMine ? 'content-voice-right' : 'content-voice-left']" v-else-if="item.type == 'voice'">
-              <i class="iconfont font-33" :class="item.isMine ? 'icon-audio-right' : 'icon-yuyin'"></i>
-              <div class="voice-seconds voice-seconds-right font-30 color-light-grey">15"</div>
+            <div class="content-voice" :class="[item.isMine ? 'arrow-blue-right' : 'arrow-white-left']" v-else-if="item.type == 'audio'" @click="playAudio(item.content, index)">
+              <div class="voice-left" v-if="!item.isMine">
+                <i class="iconfont icon-yuyin font-33"></i>
+                <div class="voice-seconds font-30 color-light-grey">{{item.content.dur}}"</div>
+                <!-- <audio :src="item.content.mp3Url"></audio> -->
+              </div>
+              <div class="voice-right" v-else-if="item.isMine">
+                <!-- <audio :src="item.content.mp3Url"></audio> -->
+                <div class="voice-seconds font-30 color-white">{{item.content.dur}}"</div>
+                <i class="iconfont icon-audio-right font-33"></i>
+              </div>
             </div>
             <div class="content-img" :class="item.isMine ? 'arrow-white-right' : 'arrow-white-left'" v-else-if="item.type == 'image'">
               <img :src="item.content.url">
@@ -159,13 +170,13 @@
           </div>
           <p class="font-24">图片</p>
         </div>
-        <div class="more-item" @click="videoCall">
+        <div class="more-item" @click="gotoCall('videoCall')">
           <div class="item-icon bg-white">
             <i class="iconfont icon-video font-51"></i>
           </div>
           <p class="font-24">视频通话</p>
         </div>
-        <div class="more-item" @click="voiceCall">
+        <div class="more-item" @click="gotoCall('voiceCall')">
           <div class="item-icon bg-white">
             <i class="iconfont icon-phone1 font-51"></i>
           </div>
@@ -203,10 +214,6 @@
         </div>
       </div>
     </div>
-    <DialogComponent v-if="dialogShow" :dialog="dialog"></DialogComponent>
-    <CallVideoComponent v-if="videoCallShow" @CANCEL_VIDEO_EVENT="cancelVideo"></CallVideoComponent>
-    <CallVoiceComponent v-if="voiceCallShow" :isWebRTCConnect="isWebRTCConnect" :netcallDurationText="netcallDurationText" @CANCEL_VOICE_EVENT="cancelVoice"></CallVoiceComponent>
-    <CallInformComponent v-if="informCallShow" :isCallType="isCallType" @ACCEPT_EVENT="acceptVoice" @REJECT_EVENT="rejectVoice"></CallInformComponent>
     <ModalComponent v-show="modalShow" @CLOSE_EVENT="closeModal">
       <OpenPictureComponent v-if="openPictureShow" @SELECT_PICTURE_EVENT="selectPicture"></OpenPictureComponent>
       <!-- <CallComponent v-if="callShow" @VIDEO_CALL_EVENT="videoCall" @VOICE_CALL_EVENT="voiceCall" @CANCEL_EVENT="closeModal"></CallComponent> -->
@@ -218,13 +225,9 @@
 <script>
 import TextMessage from './message/message.vue'
 import OpenPictureComponent from './open-picture/open-picture.vue'
-import CallVideoComponent from './call-video/call-video.vue'
-import CallVoiceComponent from './call-voice/call-voice.vue'
-import CallInformComponent from './call-inform/call-inform.vue'
 import Vmodel from './v-model/v-model.vue'
 // include dependence
 import Account from '../../class/Account.class.js'
-import Call from '../../class/Call.class.js'
 import Chat from '../../class/Chat.class.js'
 import Error from '../../class/Error.class.js'
 import Http from '../../class/Http.class.js'
@@ -232,7 +235,6 @@ import Replace from '../../class/Replace.class.js'
 import Router from '../../class/Router.class.js'
 import Storage from '../../class/Storage.class.js'
 import Time from '../../class/Time.class.js'
-import DialogComponent from '../../module/dialog/dialog.vue'
 import ModalComponent from '../../module/modal/modal.vue'
 import TitleComponent from '../../module/title/title.vue'
 export default {
@@ -244,25 +246,9 @@ export default {
         leftText: '好友',
         icon: 'wode'
       },
-      dialog: {
-        type: 'double',
-        title: ''
-      },
-      isWebRTCConnect: false,
-      voiceCallShow: false,
-      videoCallShow: false,
-      informCallShow: false,
-      callTimer: null,
-      netcall: null,
-      beCalledInfo: null,
-      channelId: null,
-      beCalling: false, // 通话中
-      callType: null, // 通话类型
-      beCallTimer: null,
-      netcallDurationText: null, // 通话时间
-      netcallDurationTimer: null, // 通话时间倒计时
-      acceptAndWait: true, // 接收等待通话
-      isCallType: false,
+      audio: null,
+      audioTimer: null,
+      isAudioPaly: false,
       messages: [],
       content: '',
       facebread: 'small',
@@ -289,11 +275,7 @@ export default {
     OpenPictureComponent,
     ModalComponent,
     TextMessage,
-    CallVideoComponent,
-    Vmodel,
-    CallVoiceComponent,
-    CallInformComponent,
-    DialogComponent
+    Vmodel
     // include components
   },
   created () {
@@ -310,21 +292,27 @@ export default {
     this.scrollToBottom()
   },
   methods: {
+    // 音视频通话
+    gotoCall (type) {
+      Storage.callType = type
+    },
     // 初始化
     init () {
-      this.netcall = this.$store.state.netcall
       Chat.historyMsgs(Chat.target.id).success(data => {
         this.messages = []
         data.msgs = data.msgs.reverse()
         if (Storage.customMsg) {
           data.msgs.push(Storage.customMsg)
         }
-        console.log('20条消息', Storage.customMsg)
         data.msgs.forEach((message, index) => {
           let custom = {}
           let isMine = true
           let avator = Account.portrait
           let content = null
+          if (Chat.target.id === message.from) {
+            isMine = false
+            avator = Chat.target.portrait
+          }
           switch (message.type) {
             case 'custom':
               custom = JSON.parse(message.content)
@@ -345,21 +333,20 @@ export default {
               content = message.text.replace(regexp, "<a class='text-link' href='$1' target='_blank'>$1</a>")
               break
             case 'tip':
-              content = message.tip
+              custom = JSON.parse(message.custom)
+              content = custom.content
               break
             case 'image':
               content = message.file
               break
             case 'audio':
+              message.file.dur = Math.floor(message.file.dur / 1000)
+              message.file.audioDuration = message.file.dur
               content = message.file
               break
             case 'notification':
-              content = message.text
+              content = this.disposeCallMsg(message.attach)
               break
-          }
-          if (Chat.target.id === message.from) {
-            isMine = false
-            avator = Chat.target.portrait
           }
           this.messages.push({
             type: message.type,
@@ -370,157 +357,10 @@ export default {
             mark: false
           })
         })
-        this.sessionsTime(this.messages)
         console.log(this.messages)
+        this.sessionsTime(this.messages)
         Storage.customMsg = null
       })
-    },
-    // 视频通话
-    videoCall () {
-      // eslint-disable-next-line
-      // Call.getDevicesOfType(WebRTC.DEVICE_TYPE_AUDIO_IN).then((data) => {
-      //   console.log('获取成功', data)
-      // if (!data.video.length) {
-      //   Error.show('没有摄像头,转为音频')
-      //   this.voiceCall()
-      //   return
-      // }
-      this.voiceCallShow = false
-      this.videoCallShow = true
-      // eslint-disable-next-line
-      Call.sendCall(Storage.userInfo.account, WebRTC.NETCALL_TYPE_VIDEO).then(data => {
-        console.log('发送通话成功，等待对方接听')
-        console.log(data)
-        this.callTimer = setTimeout(() => {
-          if (!this.netcall.callAccepted) {
-            Error.show('超时未接通')
-            Call.hangup()
-            clearTimeout(this.callTimer)
-            this.videoCallShow = false
-          }
-        }, 1000 * 30)
-      }).catch(data => {
-        console.log(data)
-        if (data && data.event.code === 11001) {
-          Error.show('发起音视频通话请求失败，对方不在线')
-          setTimeout(() => {
-            clearTimeout(this.callTimer)
-            Call.hangup()
-            this.videoCallShow = false
-          }, 2000)
-        } else {
-          Error.show(data.event.message)
-          setTimeout(() => {
-            clearTimeout(this.callTimer)
-            Call.hangup()
-            this.videoCallShow = false
-          }, 2000)
-        }
-        // })
-      }).catch((err) => {
-        console.log('获取失败', err)
-      })
-    },
-    // 音频通话
-    voiceCall () {
-      this.voiceCallShow = true
-      // eslint-disable-next-line
-      Call.sendCall(Storage.userInfo.account, WebRTC.NETCALL_TYPE_AUDIO).then(data => {
-        console.log('发送通话成功，等待对方接听')
-        console.log(data)
-        this.callTimer = setTimeout(() => {
-          if (!this.netcall.callAccepted) {
-            Error.show('超时未接通')
-            Call.hangup()
-            this.voiceCallShow = false
-          }
-        }, 1000 * 30)
-      }).catch(data => {
-        if (data && data.event.code === 11001) {
-          Error.show('发起音视频通话请求失败，对方不在线')
-          setTimeout(() => {
-            clearTimeout(this.callTimer)
-            Call.hangup()
-            this.voiceCallShow = false
-          }, 2000)
-        } else {
-          Error.show(data.event.message)
-          setTimeout(() => {
-            clearTimeout(this.callTimer)
-            Call.hangup()
-            this.voiceCallShow = false
-          }, 2000)
-        }
-      })
-    },
-    acceptVoice () {
-      clearTimeout(this.beCallTimer)
-      this.beCalling = false
-      Call.callAcceptedResponse(this.beCalledInfo).then(() => {
-        console.log('同意对方音视频请求成功')
-        this.beCalling = true
-        this.informCallShow = false
-        if (this.isCallType) {
-          this.voiceCallShow = true
-        } else {
-          this.videoCallShow = true
-        }
-        // 加个定时器 处理点击接听了 实际上对面杀进程了，没有callAccepted回调
-        // this.acceptAndWait = true
-        // setTimeout(() => {
-        //   if (this.acceptAndWait) {
-        //     console.log('通话建立过程超时')
-        //     Call.hangup()
-        //     this.informCallShow = false
-        //     this.voiceCallShow = false
-        //     this.acceptAndWait = false
-        //   }
-        // }, 45 * 1000)
-      }).catch(err => {
-        console.log(err)
-        console.log('同意对方音视频通话失败，转为拒绝')
-        Call.control({
-          channelId: this.beCalledInfo.channelId,
-          // eslint-disable-next-line
-          command: WebRTC.NETCALL_CONTROL_COMMAND_BUSY
-        })
-        Call.hangup()
-        clearInterval(this.netcallDurationTimer)
-        this.beCalledInfo = null
-        console.log('接听失败', err)
-        this.informCallShow = false
-      })
-    },
-    rejectVoice () {
-      clearTimeout(this.beCallTimer)
-      Call.control({
-        channelId: this.beCalledInfo.channelId,
-        // eslint-disable-next-line
-        command: WebRTC.NETCALL_CONTROL_COMMAND_BUSY
-      })
-      Call.callRejectResponse(this.beCalledInfo).then(data => {
-        this.informCallShow = false
-        this.beCalledInfo = null
-        this.beCalling = false
-      }).catch(err => {
-        console.log(err)
-        // 自己断网
-        Call.hangup()
-        this.beCalledInfo = null
-        this.beCalling = false
-      })
-    },
-    cancelVoice () {
-      Call.hangup()
-      clearTimeout(this.callTimer)
-      clearTimeout(this.beCallTimer)
-      clearInterval(this.netcallDurationTimer)
-      this.voiceCallShow = false
-    },
-    cancelVideo () {
-      Call.hangup()
-      clearTimeout(this.callTimer)
-      this.videoCallShow = false
     },
     // 发送文本消息
     sendText () {
@@ -619,24 +459,27 @@ export default {
     // 获取表情src
     getEmojiArr () {
       for (let i = 1; i < 20; i++) {
-        let ltJson = {}
-        ltJson.file = require('../../assets/images/lt/lt0' + (i >= 10 ? i : '0' + i) + '.png')
-        ltJson.catalog = 'lt'
-        ltJson.chartlet = 'lt0' + (i >= 10 ? i : '0' + i)
+        let ltJson = {
+          file: require('../../assets/images/lt/lt0' + (i >= 10 ? i : '0' + i) + '.png'),
+          catalog: 'lt',
+          chartlet: 'lt0' + (i >= 10 ? i : '0' + i)
+        }
         this.ltArr.push(ltJson)
       }
       for (let i = 1; i < 48; i++) {
-        let ltJson = {}
-        ltJson.file = require('../../assets/images/ajmd/ajmd0' + (i >= 10 ? i : '0' + i) + '.png')
-        ltJson.catalog = 'ajmd'
-        ltJson.chartlet = 'ajmd0' + (i >= 10 ? i : '0' + i)
+        let ltJson = {
+          file: require('../../assets/images/ajmd/ajmd0' + (i >= 10 ? i : '0' + i) + '.png'),
+          catalog: 'ajmd',
+          chartlet: 'ajmd0' + (i >= 10 ? i : '0' + i)
+        }
         this.ajmdArr.push(ltJson)
       }
       for (let i = 1; i < 40; i++) {
-        let ltJson = {}
-        ltJson.file = require('../../assets/images/xxy/xxy0' + (i >= 10 ? i : '0' + i) + '.png')
-        ltJson.catalog = 'xxy'
-        ltJson.chartlet = 'xxy0' + (i >= 10 ? i : '0' + i)
+        let ltJson = {
+          file: require('../../assets/images/xxy/xxy0' + (i >= 10 ? i : '0' + i) + '.png'),
+          catalog: 'xxy',
+          chartlet: 'xxy0' + (i >= 10 ? i : '0' + i)
+        }
         this.xxyArr.push(ltJson)
       }
     },
@@ -680,6 +523,58 @@ export default {
       }
       chatTime = Time.format('YYYY-MM-DD', updateTime) + '   ' + Time.format('HH : mm', updateTime)
       return chatTime
+    },
+    // 音视频消息处理
+    disposeCallMsg (msg) {
+      if (msg.duration) {
+        msg.duration = this.dealCallTime(msg.duration)
+      } else {
+        msg.duration = '未接听'
+      }
+      if (msg.netcallType === 1) msg.toggleType = true
+      if (msg.netcallType === 2) msg.toggleType = false
+      return msg
+    },
+    dealCallTime (time) {
+      let callTime = null
+      let callHour = null
+      let callMinute = null
+      let callSecond = null
+      callHour = this.fillZero(parseInt(time / 60 / 60))
+      callMinute = this.fillZero(parseInt(time / 60))
+      callSecond = this.fillZero(time % 60)
+      if (parseInt(time / 60 / 60)) {
+        callTime = callHour + ' : ' + callMinute + ' : ' + callSecond
+        return callTime
+      }
+      callTime = callMinute + ' : ' + callSecond
+      return callTime
+    },
+    fillZero (num) {
+      num = num < 10 ? '0' + num : num
+      return num
+    },
+    playAudio (item, index) {
+      clearInterval(this.audioTimer)
+      this.isAudioPaly = !this.isAudioPaly
+      if (this.isAudioPaly) {
+        item.dur = item.audioDuration
+        this.audio = new Audio(item.mp3Url)
+        this.audio.play()
+        this.messages[index].content.dur = 0
+        this.audioTimer = setInterval(() => {
+          this.messages[index].content.dur++
+          if (this.messages[index].content.dur >= item.audioDuration) this.messages[index].content.dur = item.audioDuration
+        }, 1000)
+      } else {
+        clearInterval(this.audioTimer)
+        this.audio.pause()
+      }
+      this.audio.addEventListener('ended', () => {
+        this.isAudioPaly = false
+        clearInterval(this.audioTimer)
+        console.log('执行结束')
+      })
     },
     // 聊天记录滚动底部
     scrollToBottom () {
@@ -733,104 +628,6 @@ export default {
     closeModal () {
       this.modalShow = false
       this.openPictureShow = false
-    },
-    // 通话显示时长
-    startDurationTimer () {
-      let netcallDuration = 0
-      clearInterval(this.netcallDurationTimer)
-      let netcallStartTime = (new Date()).getTime()
-      this.netcallDurationTimer = setInterval(() => {
-        let now = (new Date()).getTime()
-        netcallDuration = now - netcallStartTime
-        this.netcallDurationText = this.getDurationText(netcallDuration)
-      }, 500)
-    },
-    getDurationText (ms) {
-      let allSeconds = parseInt(ms / 1000)
-      let result = ''
-      let hours, minutes, seconds
-      if (allSeconds >= 3600) {
-        hours = parseInt(allSeconds / 3600)
-        result += ('00' + hours).slice(-2) + ' : '
-      }
-      if (allSeconds >= 60) {
-        minutes = parseInt(allSeconds % 3600 / 60)
-        result += ('00' + minutes).slice(-2) + ' : '
-      } else {
-        result += '00 : '
-      }
-      seconds = parseInt(allSeconds % 3600 % 60)
-      result += ('00' + seconds).slice(-2)
-      return result
-    },
-    // 开启摄像头
-    startCamera () {
-      return Call.startDeviceVideo().then(() => {
-        // 通知对方自己开启摄像头
-        Call.control({
-          // eslint-disable-next-line
-          command: WebRTC.NETCALL_CONTROL_COMMAND_NOTIFY_VIDEO_ON
-        })
-      }).catch(() => {
-        Error.show('摄像头不可用')
-        // 通知对方，我方摄像头不可用
-        Call.control({
-          // eslint-disable-next-line
-          command: WebRTC.NETCALL_CONTROL_COMMAND_SELF_CAMERA_INVALID
-        })
-      })
-    },
-    // 关闭摄像头
-    stopCamera () {
-      return Call.stopDeviceVideo().then(() => {
-        Error.show('关掉摄像头')
-        // 通知对方自己关闭了摄像头
-        Call.control({
-          // eslint-disable-next-line
-          command: WebRTC.NETCALL_CONTROL_COMMAND_NOTIFY_VIDEO_OFF
-        })
-      }).catch(() => {
-        Error.show('关闭摄像头失败')
-      })
-    },
-    // 开启麦克风
-    startAudio () {
-      return Call.startMicrophone().then(date => {
-        Error.show('开启麦克风')
-        // 通知对方自己开启了麦克风
-        Call.control({
-          // eslint-disable-next-line
-          command: WebRTC.NETCALL_CONTROL_COMMAND_NOTIFY_AUDIO_ON
-        })
-      }).catch(() => {
-        Error.show('开启麦克风失败')
-        // 通知对方，我方麦克风不可用
-        Call.control({
-          // eslint-disable-next-line
-          command: WebRTC.NETCALL_CONTROL_COMMAND_SELF_AUDIO_INVALID
-        })
-      })
-    },
-    // 开启对方声音
-    startOtherVoice () {
-      return Call.startDeviceAudioOutChat().then(() => {
-        Error.show('开启扬声器成功')
-      }).catch(() => {
-        Error.show('开启扬声器失败')
-      })
-    },
-    // 对方接收或者拒绝发送本地消息通知自己
-    sendLocalMessage (callType) {
-      let messagText = ''
-      // if (callType === 1 || callType === WebRTC.NETCALL_TYPE_AUDIO) {
-      //   messagText = '未接听'
-      // }
-      this.messages.push({
-        type: 'notification',
-        isMine: true,
-        content: messagText,
-        portrait: Account.portrait
-      })
     }
   },
   watch: {
@@ -839,6 +636,8 @@ export default {
       console.log(message)
       let custom = {}
       let content = null
+      let isMine = true
+      let avator = Account.portrait
       switch (message.type) {
         case 'custom':
           custom = JSON.parse(message.content)
@@ -865,182 +664,35 @@ export default {
           content = message.file
           break
         case 'audio':
+          message.file.dur = Math.floor(message.file.dur / 1000)
+          message.file.audioDuration = message.file.dur
           content = message.file
           break
+          // type:   netcallBill
         case 'notification':
-          content = message.text
-          console.log('接收的音视频消息', content)
+          content = this.disposeCallMsg(message.attach)
+          console.log(content)
           break
+      }
+      if (Chat.target.id === message.from) {
+        isMine = false
+        avator = Chat.target.portrait
       }
       this.messages.push({
         type: message.type,
         content: content,
-        isMine: false,
-        portrait: Chat.target.portrait,
+        isMine: isMine,
+        portrait: avator,
         time: message.time
       })
       this.sessionsTime(this.messages)
       Chat.sessionUnread(message.sessionId)
-    },
-    // 监听收到呼叫的通知
-    '$store.state.beCalling' (beCalling) {
-      if (beCalling.channelId === this.channelId) return
-      if (this.netcall.calling || this.beCalling) {
-        console.log('我方正忙')
-        Call.control({
-          // eslint-disable-next-line
-          command: WebRTC.NETCALL_CONTROL_COMMAND_BUSY,
-          channelId: beCalling.channelId
-        })
-        return
-      }
-      console.log(beCalling)
-      // eslint-disable-next-line
-      if (beCalling.type === 1 || beCalling.type === WebRTC.NETCALL_TYPE_AUDIO) {
-        this.isCallType = true
-      } else {
-        this.isCallType = false
-      }
-      this.informCallShow = true
-      this.beCalledInfo = beCalling
-      /**
-       * 考虑被呼叫时，呼叫方断网，被呼叫方不能收到hangup消息，因此设置一个超时时间
-       * 在通话连接建立后，停掉这个计时器
-       */
-      this.beCallTimer = setTimeout(() => {
-        if (!this.beCallTimer) return
-        console.log('呼叫方可能已经掉线，挂断通话')
-        this.beCallTimer = null
-        // 拒绝音视频通话
-        // reject()
-      }, 62 * 1000)
-    },
-    // 监听被拒绝
-    '$store.state.callRejected' (callRejected) {
-      clearTimeout(this.callTimer)
-      console.log('对方拒绝音视频通话')
-      Error.show('对方拒绝通话')
-      Call.hangup()
-      this.voiceCallShow = false
-      // 发送本地消息
-      // sendText()
-    },
-    // 监听对方接受通话
-    '$store.state.callAccepted' (callAccepted) {
-      clearTimeout(this.callTimer)
-      this.callType = callAccepted.type
-      Call.startRtc().then((data) => {
-        Error.show('音视频通话开始')
-        this.acceptAndWait = false
-        this.callType = callAccepted.type
-        clearInterval(this.callTimer)
-        return this.startAudio()
-      }).then(() => {
-        // eslint-disable-next-line
-        if (callAccepted.type === WebRTC.NETCALL_TYPE_VIDEO || callAccepted.type === 2) {
-          this.startCamera().then(() => {
-            Call.startLocalStream()
-            Call.setVideoViewSize()
-            Call.setCaptureVolume(255)
-            Call.setPlayVolume(callAccepted.account, 255)
-          })
-        } else {
-          this.stopCamera().then(() => {
-            Call.setCaptureVolume(255)
-            Call.setPlayVolume(callAccepted.account, 255)
-          })
-        }
-      }).catch((e) => {
-        console.error(e)
-        console.log('连接出错')
-      })
-      this.isWebRTCConnect = true
-      // 通话时长显示
-      this.startDurationTimer()
-      // 关闭被呼叫倒计时
-      this.beCallTimer = null
-    },
-    // 监听对方接入webrtc
-    '$store.state.remoteTrack' (remoteTrack) {
-      console.log(remoteTrack)
-      if (remoteTrack.track.kind === 'video') {
-        Call.startRemoteStream(remoteTrack.account)
-        Call.setVideoViewRemoteSize()
-      }
-      this.startOtherVoice()
-    },
-    // 监听control指令
-    '$store.state.control' (control) {
-      // 如果不是当前通话的指令, 直接丢掉
-      if (Call.notCurrentChannelId(control)) return
-      switch (control.type) {
-        // NETCALL_CONTROL_COMMAND_NOTIFY_AUDIO_ON 通知对方自己打开了音频
-        // eslint-disable-next-line
-        case WebRTC.NETCALL_CONTROL_COMMAND_NOTIFY_AUDIO_ON:
-          Error.show('对方打开了音频')
-          break
-        // NETCALL_CONTROL_COMMAND_NOTIFY_AUDIO_OFF 通知对方自己关闭了音频
-        // eslint-disable-next-line
-        case WebRTC.NETCALL_CONTROL_COMMAND_NOTIFY_AUDIO_OFF:
-          Error.show('对方关闭了音频')
-          break
-        // NETCALL_CONTROL_COMMAND_NOTIFY_VIDEO_ON 通知对方自己打开了视频
-        // eslint-disable-next-line
-        case WebRTC.NETCALL_CONTROL_COMMAND_NOTIFY_VIDEO_ON:
-          Error.show('对方打开了视频')
-          break
-        // NETCALL_CONTROL_COMMAND_NOTIFY_VIDEO_OFF 通知对方自己关闭了视频
-        // eslint-disable-next-line
-        case WebRTC.NETCALL_CONTROL_COMMAND_NOTIFY_VIDEO_OFF:
-          Error.show('对方关闭了视频')
-          break
-        // NETCALL_CONTROL_COMMAND_SWITCH_AUDIO_TO_VIDEO 请求从音频切换到视频
-        // eslint-disable-next-line
-        case WebRTC.NETCALL_CONTROL_COMMAND_SWITCH_AUDIO_TO_VIDEO:
-          // agreeSwitchAudioToVideo()
-          break
-        // NETCALL_CONTROL_COMMAND_SWITCH_AUDIO_TO_VIDEO_REJECT 拒绝从音频切换到视频
-        // eslint-disable-next-line
-        case WebRTC.NETCALL_CONTROL_COMMAND_SWITCH_AUDIO_TO_VIDEO_REJECT:
-          break
-        // NETCALL_CONTROL_COMMAND_SWITCH_AUDIO_TO_VIDEO_AGREE 同意从音频切换到视频
-        // eslint-disable-next-line
-        case WebRTC.NETCALL_CONTROL_COMMAND_SWITCH_AUDIO_TO_VIDEO_AGREE:
-          // switchAudioToVideo()
-          break
-        // NETCALL_CONTROL_COMMAND_SWITCH_VIDEO_TO_AUDIO 从视频切换到音频
-        // eslint-disable-next-line
-        case WebRTC.NETCALL_CONTROL_COMMAND_SWITCH_VIDEO_TO_AUDIO:
-          // switchVideoToAudio()
-          break
-        // eslint-disable-next-line
-        case WebRTC.NETCALL_CONTROL_COMMAND_START_NOTIFY_RECEIVED:
-          Error.show('对方收到通知')
-          break
-        // NETCALL_CONTROL_COMMAND_BUSY 占线
-        // eslint-disable-next-line
-        case WebRTC.NETCALL_CONTROL_COMMAND_BUSY:
-          Error.show('对方忙')
-          break
-        // NETCALL_CONTROL_COMMAND_SELF_CAMERA_INVALID 自己的摄像头不可用
-        // NETCALL_CONTROL_COMMAND_SELF_ON_BACKGROUND 自己处于后台
-        // NETCALL_CONTROL_COMMAND_START_NOTIFY_RECEIVED 告诉发送方自己已经收到请求了（用于通知发送方开始播放提示音）
-        // NETCALL_CONTROL_COMMAND_NOTIFY_RECORD_START 通知对方自己开始录制视频了
-        // NETCALL_CONTROL_COMMAND_NOTIFY_RECORD_STOP 通知对方自己结束录制视频了
-      }
-    },
-    // 监听挂断通话
-    '$store.state.hangup' (hangup) {
-      // 判断需要挂断的通话是否是当前正在进行中的通话
-      if (!this.beCalledInfo || this.beCalledInfo.channelId === hangup.channelId) {
-        // 也可以直接调用hangup接口实现各种清除工作
-        clearInterval(this.netcallDurationTimer)
-        Call.hangup()
-        this.voiceCallShow = false
-        this.videoCallShow = false
-        this.informCallShow = false
-      }
     }
+    // 监听音视频通话消息   打开页面时消息消失，所以把自动模拟两边消息发送情况
+    // '$store.state.callMessage' (msg) {
+    //   this.messages.push(msg)
+    //   this.sessionsTime(this.messages)
+    // }
   }
 }
 </script>

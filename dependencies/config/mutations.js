@@ -184,6 +184,12 @@ const mutations = {
   // 对方接入WebRTC通知
   saveRemoteTrack (state, remoteTrack) {
     state.remoteTrack = remoteTrack
+  },
+  saveCallType (state, callType) {
+    state.callType = callType
+  },
+  saveCallMessage (state, callMessage) {
+    state.callMessage = callMessage
   }
 }
 module.exports = mutations

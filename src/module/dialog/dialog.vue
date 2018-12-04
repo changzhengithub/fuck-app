@@ -10,7 +10,7 @@
           <span>确认</span>
         </div>
         <div class="button-double" v-if="dialog.type == 'double'">
-          <div class="double-btn" @click="cancle">取消</div>
+          <div class="double-btn double-left" @click="cancle">取消</div>
           <div class="double-btn" @click="sure">确认</div>
         </div>
       </div>

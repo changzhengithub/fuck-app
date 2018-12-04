@@ -276,6 +276,24 @@ export default class Storage {
     return this.getOut('customMsg')
   }
 
+  // 音视频通话类型
+  static set callType (callType) {
+    this.save('callType', callType)
+  }
+
+  static get callType () {
+    return this.getOut('callType')
+  }
+
+  // 音视频通话消息
+  static set callMessage (callMessage) {
+    this.save('callMessage', callMessage)
+  }
+
+  static get callMessage () {
+    return this.getOut('callMessage')
+  }
+
   static clear () {
     for (const item in window.app.$store.mutations) window.app.$store.commit(item, null)
     try {
