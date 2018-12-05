@@ -1,0 +1,107 @@
+// include module
+@import '../../../../dependencies/sass/_flex.scss';
+@import '../../../../dependencies/sass/_unit.scss';
+// current sass
+.facebread {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  // height: 459 / $unit * $symbol;
+
+  .facebread-content {
+    width: 100%;
+    height: 375 / $unit * $symbol;
+
+    .content-item {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+
+      .small-list {
+        $param: (flex flex) (flexWrap wrap);
+        @include flexSet($param);
+        width: 100%;
+
+        padding: {
+          left: 18 / $unit * $symbol;
+          right: 18 / $unit * $symbol;
+        }
+
+        .list-item {
+          @include center();
+          width: 102 / $unit * $symbol;
+          height: 90 / $unit * $symbol;
+
+          padding: {
+            top: 15 / $unit * $symbol;
+            right: 21 / $unit * $symbol;
+            bottom: 15 / $unit * $symbol;
+            left: 21 / $unit * $symbol;
+          }
+
+          img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
+
+      .rooster-list,
+      .dog-list,
+      .rabbit-list {
+        $param: (flex flex) (flexWrap wrap);
+        @include flexSet($param);
+        width: 100%;
+
+        padding: {
+          left: 15 / $unit * $symbol;
+          right: 15 / $unit * $symbol;
+        }
+
+        .list-item {
+          @include center();
+          width: 180 / $unit * $symbol;
+          height: 180 / $unit * $symbol;
+
+          img {
+            width: 150 / $unit * $symbol;
+            height: 150 / $unit * $symbol;
+          }
+        }
+      }
+    }
+  }
+
+  .facebread-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    @include vertical-center();
+    width: 100%;
+    height: 81 / $unit * $symbol;
+
+    border: {
+      top: 1px solid #ddd;
+    }
+
+    .nav-item {
+      @include center();
+      width: 87 / $unit * $symbol;
+      height: 100%;
+
+      border: {
+        right: 1px solid #d9d9d9;
+      }
+
+      img {
+        width: 69 / $unit * $symbol;
+        height: 69 / $unit * $symbol;
+      }
+    }
+
+    .nav-active {
+      background-color: #d9d9d9;
+    }
+  }
+}
