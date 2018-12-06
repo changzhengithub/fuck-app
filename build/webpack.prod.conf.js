@@ -24,6 +24,12 @@ const webpackConfig = merge(baseWebpackConfig, {
     })
   },
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
+  externals: {
+    'vue':'Vue',
+    'axios':'axios',
+    'vue-router':'vueRouter',
+    'es6-promise': 'Es6Promise'
+  },
   output: {
     path: config.build.assetsRoot,
     filename: utils.assetsPath('js/[name].[chunkhash:8].js'),
@@ -84,7 +90,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     new webpack.optimize.ModuleConcatenationPlugin(),
     // split vendor js into its own file
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
+      name: ['vendor'],
       minChunks (module) {
         // any required modules inside node_modules are extracted to vendor
         return (
@@ -95,6 +101,12 @@ const webpackConfig = merge(baseWebpackConfig, {
           ) === 0
         )
       }
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      async: 'used-twice',
+      minChunks: (module, count) => (
+        count >= 2
+      ),
     }),
     // extract webpack runtime and module manifest to its own file in order to
     // prevent vendor hash from being updated whenever app bundle is updated

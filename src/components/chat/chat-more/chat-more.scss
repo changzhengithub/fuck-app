@@ -1,0 +1,46 @@
+// include module
+@import '../../../../dependencies/sass/_flex.scss';
+@import '../../../../dependencies/sass/_unit.scss';
+
+// current sass
+.chat-more {
+  $param: (flex flex) (flexWrap wrap) (justifyContent space-around);
+  @include flexSet($param);
+  width: 100%;
+  height: 459 / $unit * $symbol;
+
+  padding: {
+    top: 24 / $unit * $symbol;
+    right: 30 / $unit * $symbol;
+    bottom: 30 / $unit * $symbol;
+    left: 30 / $unit * $symbol;
+  }
+
+  .more-item {
+    @include vertical_direction_center();
+    width: 25%;
+
+    padding: {
+      top: 12 / $unit * $symbol;
+    }
+
+    p {
+      @include center();
+      width: 100%;
+      height: 72 / $unit * $symbol;
+      color: #888;
+    }
+
+    .item-icon {
+      @include center();
+      width: 117 / $unit * $symbol;
+      height: 117 / $unit * $symbol;
+      border: 1px solid #ddd;
+      border-radius: 24 / $unit * $symbol;
+
+      i {
+        color: #6f7378;
+      }
+    }
+  }
+}

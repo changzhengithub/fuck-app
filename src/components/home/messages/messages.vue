@@ -1,11 +1,11 @@
 <template>
   <!-- s 消息 -->
-  <section class="message">
-    <div class="message-header font-30 color-white">
+  <section class="messages">
+    <div class="messages-header font-30 color-white">
       <p>最近消息</p>
       <i class="iconfont icon-jiahao" @click="openMore"></i>
     </div>
-    <div class="message-content">
+    <div class="messages-content">
       <div class="content-search padding-horizontal-30 font-24 border-bottom-1" @click="gotoPage('search-friend')">
         <div class="search-content">
           <i class="iconfont icon-sousuo"></i>
@@ -142,8 +142,6 @@ export default {
       let count = -1
       sessions.forEach((item, index) => {
         if (item.lastMsg) {
-          console.log(1111)
-          console.log(item.lastMsg)
           let account = item.id.substr(4)
           accounts.push(account)
           if (this.$store.state.updatesession) {
@@ -175,8 +173,6 @@ export default {
     // 处理消息类型
     disposeMessageType (message) {
       let msgType = message.lastMsg.type
-      console.log(msgType)
-      console.log(2222)
       if (!/text|image|file|audio|video|geo|custom|tip|notification/i.test(msgType)) return ''
       switch (msgType) {
         case 'notification':
@@ -272,13 +268,11 @@ export default {
   watch: {
     // 监听消息，更新未读数
     '$store.state.updatesession' (updatesession) {
-      console.log(updatesession)
       this.sessions.forEach(item => {
         if (item.to === updatesession.to) {
           item.lastMsg = updatesession.lastMsg
           item.unread = updatesession.unread
           item.chatTime = this.dealTime(updatesession.updateTime)
-          console.log(item)
           this.disposeMessageType(item)
         }
       })
@@ -286,7 +280,6 @@ export default {
     // 更新会话列表
     '$store.state.sessions': function (sessions) {
       this.dealSessions(sessions)
-      console.log(3333)
     }
   }
 }
