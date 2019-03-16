@@ -29,7 +29,7 @@
             <span>静音</span>
           </div>
         </button>
-        <button class="switch-item">
+        <button class="switch-item" @click="openAudioOut">
           <div class="item-btn">
             <i class="iconfont icon-xiaolian"></i>
             <span>扬声器</span>

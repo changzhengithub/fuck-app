@@ -24,9 +24,6 @@ export default class Http {
       headers: headers,
       params: args.data
     }).then(response => {
-      console.log(args.url)
-      console.log(args.data)
-      console.log(response)
       instance.dispense(response.data)
       if (instance.defaultCallback) instance.defaultCallback()
     }).catch(() => {
@@ -44,6 +41,7 @@ export default class Http {
           modal: true,
           message: response.message
         })
+        console.log(response)
         if (this.failCallback) this.failCallback(response)
     }
   }

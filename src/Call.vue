@@ -28,8 +28,105 @@
         </div>
       </div>
     </section>
-    <CallVideoComponent v-if="videoCallShow" :isWebRTCConnect="isWebRTCConnect" :waitSwitchVideo="waitSwitchVideo" :netcallDurationText="netcallDurationText" @CANCEL_VIDEO_EVENT="hangup" @SWITCH_VOICE_EVENT="switchVoice" @REMOTE_EVENT="remoteData"  @UPDATA_LOCAL_EVENT="updataLocalSize" @UPDATA_REMOTE_EVENT="updataRemoteSize"></CallVideoComponent>
-    <CallVoiceComponent v-if="voiceCallShow" :waitCallVideo="waitCallVideo" :isWebRTCConnect="isWebRTCConnect" :netcallDurationText="netcallDurationText" @CANCEL_VOICE_EVENT="hangup" @SWITCH_VIDEO_EVENT="switchVideo" @REJECT_CALL_VIDEO_EVENT="rejectCallVideo" @ACCEPT_CALL_VIDEO_EVENT="acceptCallVideo"></CallVoiceComponent>
+    <!-- s 语音 -->
+    <section class="call-voice" v-if="voiceCallShow">
+      <div class="voice-top">
+        <div class="top-switch" v-if="isWebRTCConnect" @click="switchVideo">
+          <div class="switch-video color-white font-30">
+            <i class="iconfont icon-xiaolian"></i>
+            <span>切换视频</span>
+          </div>
+        </div>
+        <div class="top-info">
+          <div class="info-portrait">
+            <img src="@/assets/images/master.png">
+          </div>
+          <p class="info-account font-39 color-white">17730127131</p>
+          <div class="info-accept" v-if="isWebRTCConnect">
+            <p class="accept-video font-39 color-white" v-if="waitCallVideo">对方邀请你进行视频聊天...</p>
+            <p class="accept-time font-39 color-white">{{netcallDurationText}}</p>
+            <p class="accept-network font-33 color-white">网络: 111</p>
+          </div>
+          <p class="info-waiting font-30 color-white" v-if="!isWebRTCConnect && waitCallVideo">等待对方接听...</p>
+        </div>
+      </div>
+      <div class="voice-answer" v-if="!waitCallVideo">
+        <div class="answer-switch">
+          <button class="switch-item" @click="openAudioIn">
+            <div class="item-btn">
+              <i class="iconfont icon-xiaolian"></i>
+              <span>静音</span>
+            </div>
+          </button>
+          <button class="switch-item" @click="openAudioOut">
+            <div class="item-btn">
+              <i class="iconfont icon-xiaolian"></i>
+              <span>扬声器</span>
+            </div>
+          </button>
+          <button class="switch-item">
+            <div class="item-btn">
+              <i class="iconfont icon-xiaolian"></i>
+              <span>录制</span>
+            </div>
+          </button>
+        </div>
+        <div class="answer-over" @click="hangup">
+          <span class="font-36 color-white">结束通话</span>
+        </div>
+      </div>
+      <div class="voice-waiting" v-if="waitCallVideo">
+        <div class="waiting-item bg-red" @click="rejectCallVideo">
+          <span class="font-36 color-white">拒绝</span>
+        </div>
+        <div class="waiting-item bg-blue" @click="acceptCallVideo">
+          <span class="font-36 color-white">开启</span>
+        </div>
+      </div>
+    </section>
+    <!-- e  -->
+    <!-- s 视频 -->
+    <section class="call-video" v-if="videoCallShow">
+      <div class="video-wait" v-if="waitSwitchVideo">
+        <p class="font-39 color-white">等待对方接听</p>
+      </div>
+      <div class="video-info" v-if="!isWebRTCConnect">
+        <div class="info-portrait">
+          <img src="@/assets/images/master.png">
+        </div>
+        <div class="info-detail">
+          <p class="info-account font-39 color-white">17730127131</p>
+          <p class="info-waiting font-30 color-white">等待对方接听...</p>
+        </div>
+      </div>
+      <div class="video-switch font-33 color-white" v-if="isWebRTCConnect" @click="switchVoice">
+        <i class="iconfont icon-xiaolian"></i>
+        <span>切换音频</span>
+      </div>
+      <div class="video-time font-33 color-white" v-if="isWebRTCConnect"><span>{{netcallDurationText}}</span></div>
+      <div :class="isPlay ? 'video-remoteContainer' : 'video-myself'" id="video-container" @click="updataLocalSize"></div>
+      <div :class="isRemotePlay ? 'video-remoteContainer' : 'video-myself'" id="video-remoteContainer" @click="updataRemoteSize"></div>
+      <div class="video-footer bg-white">
+        <div class="footer-item">
+          <i class="iconfont icon-video"></i>
+        </div>
+        <div class="footer-item">
+          <i class="iconfont icon-video"></i>
+        </div>
+        <div class="footer-item">
+          <i class="iconfont icon-video"></i>
+        </div>
+        <div class="footer-item">
+          <i class="iconfont icon-video"></i>
+        </div>
+        <div class="footer-item bg-red color-white" @click="hangup">
+          <i class="iconfont icon-video"></i>
+        </div>
+      </div>
+    </section>
+    <!-- e  -->
+    <!-- <CallVideoComponent v-if="videoCallShow" :isWebRTCConnect="isWebRTCConnect" :waitSwitchVideo="waitSwitchVideo" :netcallDurationText="netcallDurationText" @CANCEL_VIDEO_EVENT="hangup" @SWITCH_VOICE_EVENT="switchVoice" @REMOTE_EVENT="remoteData"  @UPDATA_LOCAL_EVENT="updataLocalSize" @UPDATA_REMOTE_EVENT="updataRemoteSize"></CallVideoComponent> -->
+    <!-- <CallVoiceComponent v-if="voiceCallShow" :waitCallVideo="waitCallVideo" :isWebRTCConnect="isWebRTCConnect" :netcallDurationText="netcallDurationText" @CANCEL_VOICE_EVENT="hangup" @SWITCH_VIDEO_EVENT="switchVideo" @REJECT_CALL_VIDEO_EVENT="rejectCallVideo" @ACCEPT_CALL_VIDEO_EVENT="acceptCallVideo"></CallVoiceComponent> -->
   </section>
 </template>
 
@@ -50,6 +147,10 @@ export default {
         type: 'double',
         title: ''
       },
+      deviceAudioOutOn: false, // 关闭扬声器
+      deviceAudioInOn: false, // 关闭麦克风
+      isPlay: false,
+      isRemotePlay: true,
       localWidth: 0,
       localHeight: 0,
       remoteWidth: 0,
@@ -90,17 +191,48 @@ export default {
     init () {
       this.netcall = this.$store.state.netcall
     },
-    remoteData (remoteWidth, remoteHeight, localWidth, localHeight) {
-      this.remoteWidth = remoteWidth
-      this.remoteHeight = remoteHeight
-      this.localWidth = localWidth
-      this.localHeight = localHeight
+    // 点击扬声器控制按钮
+    openAudioOut () {
+      if (this.deviceAudioOutOn) {
+        Call.stopDeviceAudioOutLocal().then(() => {
+          this.deviceAudioOutOn = false
+          Error.show('关闭扬声器')
+        })
+      } else {
+        this.startOtherVoice()
+        this.deviceAudioOutOn = true
+      }
+    },
+    // 点击麦克风
+    openAudioIn () {
+      if (this.deviceAudioInOn) {
+        Call.stopMicrophone().then(() => {
+          this.deviceAudioInOn = false
+          Error.show('关闭麦克风')
+        })
+      } else {
+        this.startAudio()
+        this.deviceAudioInOn = true
+      }
+    },
+    getVoideSize () {
+      console.log(document.getElementById('video-remoteContainer'))
+      this.remoteWidth = document.getElementById('video-remoteContainer').offsetWidth
+      this.remoteHeight = document.getElementById('video-remoteContainer').offsetHeight
+      this.localWidth = document.getElementById('video-container').offsetWidth
+      this.localHeight = document.getElementById('video-container').offsetHeight
     },
     updataLocalSize () {
+      if (this.isPlay) return
+      this.isPlay = true
+      this.isRemotePlay = false
       Call.setVideoViewSize(this.remoteWidth, this.remoteHeight)
       Call.setVideoViewRemoteSize(this.localWidth, this.localHeight)
     },
     updataRemoteSize () {
+      if (this.isRemotePlay) return
+      this.isRemotePlay = true
+      this.isPlay = false
       Call.setVideoViewSize(this.localWidth, this.localHeight)
       Call.setVideoViewRemoteSize(this.remoteWidth, this.remoteHeight)
     },
@@ -237,6 +369,8 @@ export default {
       this.videoCallShow = false
       this.voiceCallShow = false
       this.callShow = false
+      this.deviceAudioOutOn = false
+      this.deviceAudioInOn = false
       clearTimeout(this.callTimer)
       clearTimeout(this.beCallTimer)
       clearInterval(this.netcallDurationTimer)
@@ -384,6 +518,7 @@ export default {
     },
     // 开启麦克风
     startAudio () {
+      this.deviceAudioInOn = true
       return Call.startMicrophone().then(date => {
         Error.show('开启麦克风')
         // 通知对方自己开启了麦克风
@@ -402,6 +537,7 @@ export default {
     },
     // 开启对方声音
     startOtherVoice () {
+      this.deviceAudioOutOn = true
       return Call.startDeviceAudioOutChat().then(() => {
         Error.show('开启扬声器成功')
       }).catch(() => {
@@ -423,6 +559,11 @@ export default {
     }
   },
   watch: {
+    'videoCallShow' (videoShow) {
+      this.$nextTick(() => {
+        this.getVoideSize()
+      })
+    },
     // 监听是否发起音视频通话
     '$store.state.callType' (type) {
       this.callShow = true
@@ -518,6 +659,15 @@ export default {
     '$store.state.hangup' (hangup) {
       this.hangup()
     },
+    // 同步命令
+    '$store.state.callerAckSync' (callerAckSync) {
+      if (this.beCalledInfo && callerAckSync.channelId === this.beCalledInfo.channelId) {
+        Error.show('其它端已处理')
+        this.beCalledInfo = null
+        this.beCalling = false
+        this.callShow = false
+      }
+    },
     // 监听control指令
     '$store.state.control' (control) {
       // 如果不是当前通话的指令, 直接丢掉
@@ -581,7 +731,11 @@ export default {
         case WebRTC.NETCALL_CONTROL_COMMAND_BUSY:
           Error.show('对方忙')
           break
-        // NETCALL_CONTROL_COMMAND_SELF_CAMERA_INVALID 自己的摄像头不可用
+        // 自己的摄像头不可用
+        // eslint-disable-next-line
+        case WebRTC.NETCALL_CONTROL_COMMAND_SELF_CAMERA_INVALID:
+          Error.show('自己摄像头不可用')
+          break
         // NETCALL_CONTROL_COMMAND_SELF_ON_BACKGROUND 自己处于后台
         // NETCALL_CONTROL_COMMAND_START_NOTIFY_RECEIVED 告诉发送方自己已经收到请求了（用于通知发送方开始播放提示音）
         // NETCALL_CONTROL_COMMAND_NOTIFY_RECORD_START 通知对方自己开始录制视频了

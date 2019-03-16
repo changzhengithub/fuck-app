@@ -16,7 +16,7 @@
         <div class="photo-add bg-white" v-if="!imgArr.length" @click="getImg">
           <i class="iconfont icon-tianjiatupianjiahao"></i>
         </div>
-        <div class="photo-default" v-if="imgArr.length" v-for="(item, index) in imgArr" :key="index">
+        <div class="photo-default" v-else-if="imgArr.length" v-for="(item, index) in imgArr" :key="index">
           <img src="">
         </div>
       </div>

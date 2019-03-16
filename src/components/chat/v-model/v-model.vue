@@ -48,7 +48,7 @@ export default {
       // this.interval = setInterval(() => {
       //   document.body.scrollTop = document.body.scrollHeight
       // }, 100)
-      // this.$emit('INTO_VIEW_EVENT')
+      this.$emit('INTO_VIEW_EVENT')
       this.isLocked = true
     },
     inputBlur () {

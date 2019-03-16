@@ -31,6 +31,12 @@ module.exports = {
       ? config.build.assetsPublicPath
       : config.dev.assetsPublicPath
   },
+  // 公共的组件单独取出不打包，如，vue、vuex、router、axios等，在index.html中引入cdn包，去掉
+  // main.js import引入的node包，在.eslintrc.js的globals中添加修改为全局对象，在下面externals对象中加入不打包的包
+  // 键值为main里引入的对象名
+  externals: {
+    vue: 'Vue'
+  },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
@@ -74,10 +80,6 @@ module.exports = {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
-      },
-      {
-        test: /\.sass$/,
-        loaders: ['style', 'css', 'sass']
       }
     ]
   },

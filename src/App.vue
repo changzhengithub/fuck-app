@@ -5,9 +5,22 @@
 </template>
 
 <script>
+import './main.scss'
 import Chat from './class/Chat.class.js'
 export default {
   name: 'App',
+  beforeCreate () {
+    if (window.plus) {
+      this.plusReady()
+    } else {
+      document.addEventListener('plusready', this.plusReady, false)
+    }
+  },
+  methods: {
+    plusReady () {
+      console.log(17840)
+    }
+  },
   watch: {
     '$store.state.chat': function (chat) {
       Chat.init()
@@ -21,5 +34,4 @@ export default {
 </script>
 
 <style>
-
 </style>

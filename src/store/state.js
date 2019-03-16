@@ -54,6 +54,7 @@ const state = {
   audioVolume: null, // 音量大小实时回调通知
   remoteTrack: null, // 对接入webrtc通知
   callType: null, // 发起音视频通话类型
-  callMessage: null // 通话时的消息
+  callMessage: null, // 通话时的消息
+  callerAckSync: null
 }
 export default state

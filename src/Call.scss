@@ -94,4 +94,218 @@
       }
     }
   }
+  .call-voice {
+    width: 100%;
+    height: 100%;
+    padding: {
+      right: 30 / $unit * $symbol;
+      left: 30 / $unit * $symbol;
+    }
+    background: #606265;
+    .voice-top {
+      @include vertical_direction_center();
+      width: 100%;
+      height: 930 / $unit * $symbol;
+      .top-switch {
+        width: 100%;
+        height: 180 / $unit * $symbol;
+        padding: {
+          top: 78 / $unit * $symbol;
+        }
+        .switch-video {
+          @include center();
+          width: 186 / $unit * $symbol;
+          height: 99 / $unit * $symbol;
+          padding: {
+            right: 15 / $unit * $symbol;
+          }
+          border: 1px solid #909092;
+          border-radius: 9 / $unit * $symbol;
+          background: #272e32;
+        }
+      }
+      .top-info {
+        @include vertical_direction_center();
+        width: 100%;
+        padding: {
+          top: 150 / $unit * $symbol;
+        }
+        .info-portrait {
+          width: 150 / $unit * $symbol;
+          height: 150 / $unit * $symbol;
+          img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+        .info-account {
+          @include center();
+          width: 100%;
+          height: 120 / $unit * $symbol;
+        }
+        .info-accept {
+          width: 100%;
+          p {
+            @include center();
+            width: 100%;
+            height: 81 / $unit * $symbol;
+          }
+        }
+        .info-waiting {
+          @include center();
+          width: 100%;
+          height: 51 / $unit * $symbol;
+        }
+      }
+    }
+    .voice-answer {
+      .answer-switch {
+        @include vertical_center_horizontal_between();
+        width: 100%;
+        height: 150 / $unit * $symbol;
+        .switch-item {
+          width: 216 / $unit * $symbol;
+          height: 120 / $unit * $symbol;
+          border-radius: 9 / $unit * $symbol;
+          .item-btn {
+            @include vertical_center_horizontal_between();
+            padding: {
+              right: 30 / $unit * $symbol;
+              left: 30 / $unit * $symbol;
+            }
+            font-size: 30 / $unit * $symbol;
+            color: #fff;
+            border: 2px solid #909092;
+            border-radius: 9 / $unit * $symbol;
+          }
+        }
+      }
+      .answer-over {
+        @include center();
+        width: 100%;
+        height: 135 / $unit * $symbol;
+        background: #f5455e;
+        border-radius: 12 / $unit * $symbol;
+      }
+    }
+    .voice-waiting {
+      @include vertical_center_horizontal_between();
+      width: 100%;
+      height: 285 / $unit * $symbol;
+      padding: {
+        top: 150 / $unit * $symbol;
+      }
+      .waiting-item {
+        @include center();
+        width: 339 / $unit * $symbol;
+        height: 100%;
+        border-radius: 9 / $unit * $symbol;
+      }
+    }
+  }
+  .call-video {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #606265;
+    .video-myself {
+      position: absolute;
+      right: 0;
+      top: 60 / $unit * $symbol;
+      z-index: 99;
+      width: 210 / $unit * $symbol;
+      height: 300 / $unit * $symbol;
+      background: rgba(0, 0, 0, .5);
+      overflow: hidden;
+    }
+    .video-remoteContainer {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    .video-wait {
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 90;
+      @include center();
+      width: 100%;
+      height: 100%;
+    }
+    .video-info {
+      position: absolute;
+      top: 30 / $unit * $symbol;
+      left: 0;
+      right: 0;
+      z-index: 90;
+      @include vertical_center();
+      width: 100%;
+      height: 174 / $unit * $symbol;
+      padding: {
+        right: 21 / $unit * $symbol;
+        left: 21 / $unit * $symbol;
+      }
+      .info-portrait {
+        width: 150 / $unit * $symbol;
+        height: 150 / $unit * $symbol;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .info-detail {
+        flex: 1;
+        padding: {
+          left: 24 / $unit * $symbol;
+        }
+        .info-account {
+          @include vertical_center();
+          width: 100%;
+          height: 60 / $unit * $symbol;
+        }
+        .info-waiting {
+          @include vertical_center();
+          width: 100%;
+          height: 60 / $unit * $symbol;
+        }
+      }
+    }
+    .video-switch {
+      position: absolute;
+      left: 30 / $unit * $symbol;
+      top: 60 / $unit * $symbol;
+      z-index: 98;
+      @include center();
+      width: 186 / $unit * $symbol;
+      height: 99 / $unit * $symbol;
+      padding: {
+        right: 15 / $unit * $symbol;
+      }
+      border: 1px solid #909092;
+      border-radius: 9 / $unit * $symbol;
+      background: #272e32;
+    }
+    .video-time {
+      position: absolute;
+      top: 60 / $unit * $symbol;
+      z-index: 96;
+      @include center();
+      width: 100%;
+      height: 99 / $unit * $symbol;
+    }
+    .video-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      @include vertical_center();
+      width: 100%;
+      height: 99 / $unit * $symbol;
+      .footer-item {
+        @include center();
+        width: 25%;
+        height: 100%;
+        font-size: 36 / $unit * $symbol;
+      }
+    }
+  }
 }

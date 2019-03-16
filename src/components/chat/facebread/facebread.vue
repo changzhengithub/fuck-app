@@ -5,28 +5,28 @@
       <div class="content-item" v-if="facebread == 'small'">
         <ul class="small-list">
           <li class="list-item" v-for="(item, index) in emojiArr" :key="index">
-            <img :src="item.file" @click="selectSmall(item)">
+            <img v-lazy="item.file" @click="selectSmall(item)">
           </li>
         </ul>
       </div>
       <div class="content-item" v-if="facebread == 'rooster'">
         <ul class="rooster-list">
           <li class="list-item" v-for="(item, index) in ajmdArr" :key="index"  @click="selectEmoji(item, index)">
-            <img :src="item.file">
+            <img v-lazy="item.file">
           </li>
         </ul>
       </div>
       <div class="content-item" v-if="facebread == 'dog'">
         <ul class="dog-list">
           <li class="list-item" v-for="(item, index) in xxyArr" :key="index" @click="selectEmoji(item, index)">
-            <img :src="item.file">
+            <img v-lazy="item.file">
           </li>
         </ul>
       </div>
       <div class="content-item" v-if="facebread == 'rabbit'">
         <ul class="rabbit-list">
           <li class="list-item" v-for="(item, index) in ltArr" :key="index" @click="selectEmoji(item, index)">
-            <img :src="item.file">
+            <img v-lazy="item.file">
           </li>
         </ul>
       </div>

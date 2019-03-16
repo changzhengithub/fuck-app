@@ -6,25 +6,25 @@
     </div>
     <div class="empower-tab">
       <div class="tab-nav">
-        <div class="nav-item" :class="{'badge-active': switcher}" @click="switchCode"><span>验证码登录</span></div>
-        <div class="nav-item" :class="{'badge-active': !switcher}" @click="switchPassword"><span>密码登录</span></div>
+        <div class="nav-item" :class="{'badge-active': switchar}" @click="switchCode"><span>验证码登录</span></div>
+        <div class="nav-item" :class="{'badge-active': !switchar}" @click="switchPassword"><span>密码登录</span></div>
       </div>
       <div class="tab-form">
         <div class="form-item form-phone">
           <input type="text" v-model="phone" maxlength="11" placeholder="输入手机号">
         </div>
-        <div class="form-item form-code" v-if="switcher">
+        <div class="form-item form-code" v-if="switchar">
           <input type="text" v-model="code" maxlength="6" placeholder="请输入验证码">
           <button class="button font-27 color-blue bg-white" @click="getCode" :disabled="codeDisabled"><div>{{getCodeText}}</div></button>
         </div>
-        <div class="form-item form-password" v-if="!switcher">
+        <div class="form-item form-password" v-if="!switchar">
           <input type="password" v-model="password" placeholder="输入密码">
           <i class="iconfont icon-cong" v-if="password" @click="clearPassword"></i>
         </div>
         <div class="form-button">
           <ButtonComponent :button="button" @SUBMIT_EVENT="login"></ButtonComponent>
         </div>
-        <div class="form-forget" v-if="!switcher"><span @click="gotoPage('forget-password')">忘记密码</span></div>
+        <div class="form-forget" v-if="!switchar"><span @click="gotoPage('forget-password')">忘记密码</span></div>
       </div>
     </div>
   </section>
@@ -48,7 +48,7 @@ export default {
       password: '123456cz',
       code: '',
       getCodeText: '获取验证码',
-      switcher: true,
+      switchar: true,
       codeDisabled: false,
       // start params
       'button': {
@@ -69,10 +69,10 @@ export default {
   },
   methods: {
     switchCode () {
-      this.switcher = true
+      this.switchar = true
     },
     switchPassword () {
-      this.switcher = false
+      this.switchar = false
     },
     clearPassword () {
       this.password = ''
@@ -109,9 +109,9 @@ export default {
       let url = null
       let data = null
       if (!Check.phone(this.phone)) return // phone is not correct
-      if (this.switcher && !Check.code(this.code)) return // code is not correct
-      if (!this.switcher && !Check.password(this.password)) return // password is not correct
-      if (this.switcher) {
+      if (this.switchar && !Check.code(this.code)) return // code is not correct
+      if (!this.switchar && !Check.password(this.password)) return // password is not correct
+      if (this.switchar) {
         url = 'UserSmsLogin'
         data = {
           deviceId: '',
@@ -152,6 +152,7 @@ export default {
         Storage.name = data.Name
         Router.push('home')
       }).fail(data => {
+        console.log(data)
       })
     },
     gotoPage (page) {

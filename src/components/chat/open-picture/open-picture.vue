@@ -8,7 +8,8 @@
     </div>
     <div class="picture-switch padding-horizontal-30">
       <span>从手机相册选择</span>
-      <input class="switch-camera" type="file" ref="inputFile" accept="audio/*" @change="getImageFile($event)">
+      <button @click="galleryImg">选择单张图片</button>
+      <!-- <input class="switch-camera" type="file" ref="inputFile" accept="audio/*" @change="getImageFile($event)"> -->
     </div>
   </section>
   <!-- e  -->
@@ -30,6 +31,14 @@ export default {
     // include components
   },
   methods: {
+    galleryImg () {
+      console.log('从相册中选择图片')
+      plus.gallery.pick((path) => {
+        console.log(path)
+      }, (e) => {
+        console.log('取消选择图片')
+      }, {filter: 'image'})
+    },
     takePicture () {
       this.$emit('TAKE_PICTURE_EVENT')
     },

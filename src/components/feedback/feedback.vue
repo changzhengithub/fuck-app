@@ -59,7 +59,7 @@ export default {
     backPage () {},
     feedbackSubmit () {
       if (!this.opinion) return
-      if (!Check.phont(this.contactWay)) return
+      if (!Check.phone(this.contentWay)) return
       Http.send({
         url: 'Opinion',
         data: {

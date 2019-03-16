@@ -122,6 +122,9 @@ export default class Call {
       window.app.$store.commit('saveAudioVolume', obj)
       console.log('音量', obj)
     })
+    this.netcall.on('callerAckSync', (obj) => {
+      window.app.$store.commit('saveCallerAckSync', obj)
+    })
   }
 
   /**

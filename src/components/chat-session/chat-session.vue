@@ -119,7 +119,20 @@ export default {
     TextMessage
     // include components
   },
+  mounted () {
+    this.scrollToBottom()
+  },
+  updated () {
+    this.scrollToBottom()
+  },
   methods: {
+    // 聊天记录滚动底部
+    scrollToBottom () {
+      this.$nextTick(() => {
+        let container = document.getElementById('chat-list')
+        container.scrollTop = container.scrollHeight
+      })
+    },
     playAudio (item, index) {
       clearInterval(this.audioTimer)
       this.isAudioPaly = !this.isAudioPaly

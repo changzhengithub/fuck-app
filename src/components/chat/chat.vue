@@ -2,14 +2,14 @@
   <!-- s 好友聊天 -->
   <section class="chat" :class="{switchMore: switchMoreShow || switchEmojiShow}">
     <TitleComponent :title="title" @OTHER_EVENT="gotoPage('personal-info')"></TitleComponent>
-    <ChatSessionComponent :messages="messages"></ChatSessionComponent>
+    <ChatSessionComponent id="chat-list" :messages="messages"></ChatSessionComponent>
     <div class="chat-input" ref="input">
       <div class="input-eara">
         <i class="iconfont" :class="inputType ? 'icon-jianpan' : 'icon-yuyin1'" @click="toggleInputType"></i>
         <div class="eara-content bg-white">
           <div class="content-edit" v-if="!inputType">
             <div class="edit-container">
-              <vmodel ref="edit" :onFocus="onFocus" @INPUT_EVENT="getInputValue" @INTO_VIEW_EVENT="scrollInfoView"></vmodel>
+              <vmodel ref="edit" :onFocus="onFocus" @INPUT_EVENT="getInputValue" @INTO_VIEW_EVENT="scrollToBottom"></vmodel>
             </div>
           </div>
           <div class="content-voice" v-if="inputType">
@@ -35,12 +35,6 @@
 </template>
 
 <script>
-import ChatMoreComponent from './chat-more/chat-more.vue'
-import ChatSessionComponent from '../chat-session/chat-session.vue'
-import FaceBreadComponent from './facebread/facebread.vue'
-import TextMessage from './message/message.vue'
-import OpenPictureComponent from './open-picture/open-picture.vue'
-import Vmodel from './v-model/v-model.vue'
 // include dependence
 import Account from '../../class/Account.class.js'
 import Chat from '../../class/Chat.class.js'
@@ -81,13 +75,13 @@ export default {
   },
   components: {
     TitleComponent,
-    OpenPictureComponent,
     ModalComponent,
-    TextMessage,
-    Vmodel,
-    FaceBreadComponent,
-    ChatSessionComponent,
-    ChatMoreComponent
+    OpenPictureComponent: resolve => require(['./open-picture/open-picture.vue'], resolve),
+    TextMessage: resolve => require(['./message/message.vue'], resolve),
+    Vmodel: resolve => require(['./v-model/v-model.vue'], resolve),
+    FaceBreadComponent: resolve => require(['./facebread/facebread.vue'], resolve),
+    ChatSessionComponent: resolve => require(['../chat-session/chat-session.vue'], resolve),
+    ChatMoreComponent: resolve => require(['./chat-more/chat-more.vue'], resolve)
     // include components
   },
   created () {
@@ -95,12 +89,6 @@ export default {
       this.title.contentText = Storage.userInfo.nick
     }
     this.init()
-  },
-  mounted () {
-    this.scrollToBottom()
-  },
-  updated () {
-    this.scrollToBottom()
   },
   methods: {
     // 音视频通话
@@ -258,14 +246,9 @@ export default {
       this.enCodeInput = value
       this.inputText = this.emojiEncode(value)
     },
-    scrollInfoView () {
-      this.$nextTick(() => {
-        document.getElementById('chat-list').scrollIntoView()
-        this.$refs.input.scrollIntoView()
-      })
-      // setTimeout(() => {
-      //   document.getElementById('chat-list').scrollTop = document.body.scrollHeight + 100
-      // }, 300)
+    scrollToBottom () {
+      let container = document.getElementById('chat-list')
+      container.scrollTop = container.scrollHeight
     },
     // 表情src反解码
     emojiEncode (inputEmojiText) {
@@ -358,13 +341,6 @@ export default {
         this.isAudioPaly = false
         clearInterval(this.audioTimer)
         console.log('执行结束')
-      })
-    },
-    // 聊天记录滚动底部
-    scrollToBottom () {
-      this.$nextTick(() => {
-        let container = document.getElementById('chat-list')
-        container.scrollTop = container.scrollHeight
       })
     },
     gotoPage (page) {

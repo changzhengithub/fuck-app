@@ -95,11 +95,15 @@ export default {
       axios({
         url: 'http://114.55.139.83:8088/udcredit/verify/index.c',
         method: 'post',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
         params: {
           phone: Storage.phone,
           bid: Storage.phone
         }
       }).then(response => {
+        console.log(response)
         response = response.data
         if (response.resp_code) {
           this.show = true

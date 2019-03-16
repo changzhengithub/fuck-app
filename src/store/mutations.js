@@ -190,6 +190,9 @@ const mutations = {
   },
   saveCallMessage (state, callMessage) {
     state.callMessage = callMessage
+  },
+  saveCallerAckSync (state, callerAckSync) {
+    state.callerAckSync = callerAckSync
   }
 }
 export default mutations
