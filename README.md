@@ -1,4 +1,4 @@
-# amster app
+# master app
 
 > A Vue.js project
 
