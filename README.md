@@ -1,4 +1,4 @@
-# fuckapp
+# amster app
 
 > A Vue.js project
 
